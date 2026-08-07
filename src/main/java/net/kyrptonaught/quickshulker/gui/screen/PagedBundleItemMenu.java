@@ -1,6 +1,5 @@
 package net.kyrptonaught.quickshulker.gui.screen;
 
-import com.mojang.serialization.DataResult;
 import net.kyrptonaught.quickshulker.api.ItemInventoryContainer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -15,7 +14,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BundleContents;
-import org.apache.commons.lang3.math.Fraction;
 
 /**
  * Server-side bundle menu backed by the vanilla six-row chest protocol.
@@ -195,25 +193,9 @@ public class PagedBundleItemMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            if (!container.canPlaceItem(index, stack) || !BundleContents.canItemBeInBundle(stack)) return false;
-
-            BundleContents contents = backing.getBundleContents();
-            if (contents == null) return false;
-            BundleContents.Mutable mutable = new BundleContents.Mutable(contents);
-            ItemStack stackInSlot = getItem();
-            if (stackInSlot.isEmpty() || ItemStack.isSameItemSameComponents(stackInSlot, stack)) {
-                DataResult<Fraction> weight = BundleContents.getWeight(stack);
-                return weight.isSuccess() && mutable.getMaxAmountToAdd(weight.getOrThrow()) > 0;
-            }
-
-            Fraction oldWeight = calculateWeight(stackInSlot);
-            Fraction newWeight = calculateWeight(stack);
-            return Fraction.ONE.subtract(mutable.weight()).add(oldWeight).compareTo(newWeight) >= 0;
-        }
-
-        private static Fraction calculateWeight(ItemStack stack) {
-            return BundleContents.getWeight(stack).getOrThrow()
-                    .multiplyBy(Fraction.getFraction(stack.getCount(), 1));
+            return container.canPlaceItem(index, stack)
+                    && BundleContents.canItemBeInBundle(stack)
+                    && backing.countCanInsertToBundle(stack) > 0;
         }
 
         @Override
