@@ -1,145 +1,86 @@
-# Quick Shulker
+# QuickShulker
 
-[English](README.md) | **中文**
+[English](README.md)
 
-用按键快速打开手持的潜影盒！
+QuickShulker 是一个 Fabric 模组，可以直接从玩家手中或物品栏中打开便携容器和功能方块。
 
-这个项目将 [kyrptonaught](https://github.com/kyrptonaught) 的 [QuickShulker](https://github.com/kyrptonaught/quickshulker.git) 模组更新到更高的我的世界版本并且修复了一些东西。
+## Fork 来源
 
----
+本仓库 fork 自 [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker)，而该项目维护并更新了 [kyrptonaught/quickshulker](https://github.com/kyrptonaught/quickshulker) 原始项目。
 
-## Latest Release
+原项目实现了快捷打开、容器快捷操作、配置系统和公共 API。本 fork 主要维护新版 Fabric，并让收纳袋界面对客户端变为可选。
 
-### Fabric：
+## 相比上游的修改
 
-点击下面的链接下载。
+相较于 `MoRanpcy/quickshulker`，本 fork 新增了：
 
-<details>
-<summary>1.21.x</summary>
+- **收纳袋客户端可选：** Fabric 服务端可以保持收纳袋打开功能启用，同时允许完全未安装模组的客户端加入。
+- **原版备用界面：** 未安装模组的客户端使用服务端分页的 `GENERIC_9x6` 原版容器界面。
+- **保留增强界面：** 安装 QuickShulker 的客户端继续使用现有的 64 槽滚动收纳袋界面。
+- **使用原版容器协议：** 除第一次 QuickShulker 打开请求外，开屏、槽位同步、点击、拖拽和关闭均使用原版容器数据包。
+- **移除自定义菜单注册项：** 不再注册 `quickshulker:bundle_item`，避免纯原版客户端因注册表同步而断开连接。
+- **支持 Minecraft 26.1 和 26.2：** 两个版本的构建产物会发布到同一个 GitHub Release。
+- **自动 CI/CD：** 推送 `main` 时发布 26.2，推送 `26.1` 时把 26.1 JAR 追加到同一个 Release。
 
-* [3.0.0-1.21.1](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.1/quickshulker-3.0.0-1.21.1.jar)
-* [3.0.1-1.21.2](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.2/quickshulker-3.0.1-1.21.2.jar)
-* [3.0.1-1.21.3](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.3/quickshulker-3.0.1-1.21.3.jar)
-* [3.0.1-1.21.4](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.4/quickshulker-3.0.1-1.21.4.jar)
-* [3.0.1-1.21.5](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.5/quickshulker-3.0.1-1.21.5.jar)
-* [3.0.1-1.21.6](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.6/quickshulker-3.0.1-1.21.6.jar)
-* [3.0.1-1.21.7](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.7/quickshulker-3.0.1-1.21.7.jar)
-* [3.0.1-1.21.8](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.8/quickshulker-3.0.1-1.21.8.jar)
-* [3.0.1-1.21.9](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.9/quickshulker-3.0.1-1.21.9.jar)
-* [3.0.1-1.21.10](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.10/quickshulker-3.0.1-1.21.10.jar)
-* [3.0.1-1.21.11](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-1.21.11/quickshulker-3.0.1-1.21.11.jar)
+`net.kyrptonaught.quickshulker.api` 下的公共 API 保持不变。
 
-</details>
+## 下载
 
-<details>
-    <summary>26.x</summary>
+请从 [GitHub Releases](https://github.com/water2004/quickshulker/releases/latest) 下载最新 Fabric 版本。
 
-* [3.0.1-26.1](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.1-26.1/quickshulker-3.0.1-26.1.jar)
-* [3.0.2-26.2](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.2-26.2/quickshulker-3.0.2-26.2.jar)
+| 分支 | Minecraft | 文件 |
+| :--- | :--- | :--- |
+| `main` | 26.2 | `quickshulker-3.0.3-26.2.jar` |
+| `26.1` | 26.1 | `quickshulker-3.0.3-26.1.jar` |
 
-</details>
+## 安装方式
 
-> 如果你需要 1.20.2~1.20.6，点击[这里](https://moranpcy.lanzouq.com/b004io7t1a)，密码是`1ipd`，它们已经停止维护了，所以存在许多问题。
+| 安装位置 | 行为 |
+| :--- | :--- |
+| 仅服务端 | 允许原版客户端加入；手持收纳袋右键时打开原版分页界面。 |
+| 客户端和服务端 | 提供完整快捷操作，以及 64 槽滚动收纳袋界面。 |
+| 仅客户端，服务端未安装 | 依赖服务端的快捷打开功能不可用。 |
 
-### Neoforge:
-
-<details>
-<summary>26.x</summary>
-
-* [3.0.2-26.1](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.2-26.1-neo/quickshulker-neo-3.0.2-26.1.jar)
-* [3.0.2-26.2](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.2-26.2-neo/quickshulker-neo-3.0.2-26.2.jar)
-
-</details>
-
-## Beta
-
-### Fabric:
-
-<details>
-<summary>1.21.6-1.21.8</summary>
-
-* [1.21.6-1.21.8-beta.1](https://github.com/MoRanpcy/quickshulker/releases/download/1.21.6-1.21.8-beta.1/quickshulker-1.21.6-1.21.8-beta.1.jar)
-
-</details>
-
----
+QuickShulker 需要 [Fabric Loader](https://fabricmc.net/use/installer/) 和 [Fabric API](https://modrinth.com/mod/fabric-api)。Minecraft 26.x 需要 Java 25。
 
 ## 功能
 
-### 快速打开物品
+### 快捷打开
 
-你可以使用快捷键（默认是<kbd>k</kbd>）或者鼠标右键快速打开玩家手里或者物品栏内物品的界面。
+使用可配置快捷键（默认 <kbd>K</kbd>）、物品栏右键或手持物品右键打开：
 
-| 支持的物品 |
-|  :-----:  |
-|工作台|
-|切石机|
-|潜影盒|
-|末影箱|
-|铁砧  |
-|收纳袋|
+- 潜影盒
+- 末影箱
+- 工作台
+- 切石机
+- 铁砧
+- 收纳袋
 
-> Fabric 端打开收纳袋不再强制客户端安装模组：未安装的客户端使用原版六行箱子分页界面，安装了模组的客户端继续使用 QuickShulker 的滚动界面。
+### 容器快捷操作
 
-### 容器的快捷操作
+- 使用受支持的容器右击物品以放入。
+- 使用受支持的容器右击空物品栏槽位以取出。
+- 按住右键拖动以批量放入或取出。
+- 在受支持的容器之间转移物品。
 
-* 你可以用鼠标拖动容器右键物品来存入容器，也可以用物品右键容器。
-* 你可以用鼠标拖动容器右键物品栏内的空槽位来取出容器内的物品。
-* 你可以用鼠标拖动并长按鼠标右键来批量存入或者取出容器内的物品。
+### 收纳袋客户端兼容
 
-### 配置菜单
+客户端安装 QuickShulker 时，会主动请求增强收纳袋菜单，并把下一次原版开屏事件替换为滚动界面；服务端与客户端后续仍使用同一套原版容器槽位协议。
 
-模组提供了一个配置菜单以便你更方便地启用或者禁用某些功能，你可以使用[Mod Menu](https://modrinth.com/mod/modmenu)来打开它，但不是必须的，你可以用一个可配置的按键来打开它，默认是小键盘的<kbd>+</kbd>。
+客户端未安装模组时，只会发送普通的物品使用交互。服务端将打开一个原版六行容器，每页显示 45 个内容槽位，并由服务端控制翻页。
 
-### API
+## 配置
 
-原作者提供了一个API可以让你的模组里的物品也可以做到[快速打开物品](#快速打开物品)和[容器的快捷操作](#容器的快捷操作)。
+可以通过 [Mod Menu](https://modrinth.com/mod/modmenu) 或配置界面快捷键（默认小键盘 <kbd>+</kbd>）打开设置。
 
-你需要实现 `RegisterQuickShulker` ，然后在 `registerProviders()` 中注册你的模组，以`26.2`为例：
+## 构建
 
-* 为你的模组注册[快速打开物品](#快速打开物品)。
+```bash
+./gradlew clean build
+```
 
-    <details>
-    <summary>点击展开</summary>
+构建产物位于 `build/libs`。
 
-    ```java
-    import net.kyrptonaught.quickshulker.api.RegisterQuickShulker;
+## 许可证
 
-    public class YourClass implements RegisterQuickShulker {
-        @Override
-        public void registerProviders() {
-            if (...) // 你可以在这里设置启用或者禁用的条件
-                new QuickOpenableRegistry.Builder()
-                    .setItem(YourBlockOrItem.class) // 必需的
-                    .ignoreSingleStackCheck(true)  // 可选的。设置物品是否能在堆叠时打开，就像工作台和铁砧，默认是false
-                    .setOpenAction((player, stack) -> player.openMenu(new SimpleMenuProvider((i, playerInventory, player) -> 
-                            new YourItemMenu(...), YourMenuTitle))) // 必需的
-                    .register();
-        }
-    }
-    ```
-
-    </details>
-
-* 为你的模组注册[容器的快捷操作](#容器的快捷操作)。
-   
-    <details>
-    <summary>点击展开</summary>
-
-    ``` java
-    import net.kyrptonaught.quickshulker.api.RegisterQuickShulker;
-
-    public class YourClass implements RegisterQuickShulker {
-        @Override
-        public void registerProviders() {
-            new QuickOpenableRegistry.Builder()
-                .setItem(YourBlockOrItem.class) // 必需的
-                .supportsBundleing(true) // 必需的。默认是false
-                .getBundleInv((player, stack) -> new YourItemContainer()) // 必需的
-                .register();
-        }
-    }
-
-   ```
-
-    </details>
+QuickShulker 使用 [MIT License](LICENSE)。原作者与项目历史请参阅上游仓库。

@@ -1,120 +1,86 @@
-# Quick Shulker
+# QuickShulker
 
-Quickly open a held shulker box with the press of a key!
+[简体中文](README_CN.md)
 
-This project updates [kyrptonaught](https://github.com/kyrptonaught)'s [QuickShulker](https://github.com/kyrptonaught/quickshulker.git) mod to higher Minecraft versions，and fixes something.
+QuickShulker is a Fabric mod for opening portable containers and utility blocks directly from a player's hand or inventory.
 
-## Latest Release
+## Fork lineage
 
-### Fabric:
+This repository is a fork of [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker), which updates and maintains the original [kyrptonaught/quickshulker](https://github.com/kyrptonaught/quickshulker).
 
-Click on the link below to download.
+The upstream projects created the original quick-open behavior, container actions, configuration system, and public API. This fork focuses on modern Fabric compatibility and client-optional bundle screens.
 
-* [3.0.0-1.21.1](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.1/quickshulker-3.0.0-1.21.1.jar)
-* [3.0.0-1.21.2](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.2/quickshulker-3.0.0-1.21.2.jar)
-* [3.0.0-1.21.3](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.3/quickshulker-3.0.0-1.21.3.jar)
-* [3.0.0-1.21.4](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.4/quickshulker-3.0.0-1.21.4.jar)
-* [3.0.0-1.21.5](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.5/quickshulker-3.0.0-1.21.5.jar)
-* [3.0.0-1.21.6](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.6/quickshulker-3.0.0-1.21.6.jar)
-* [3.0.0-1.21.7](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.7/quickshulker-3.0.0-1.21.7.jar)
-* [3.0.0-1.21.8](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.8/quickshulker-3.0.0-1.21.8.jar)
-* [3.0.0-1.21.9](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.9/quickshulker-3.0.0-1.21.9.jar)
-* [3.0.0-1.21.10](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.10/quickshulker-3.0.0-1.21.10.jar)
-* [3.0.0-1.21.11](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-1.21.11/quickshulker-3.0.0-1.21.11.jar)
-* [3.0.0-26.1](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-26.1/quickshulker-3.0.0-26.1.jar)
+## Changes in this fork
 
-### Noeforge:
+Compared with `MoRanpcy/quickshulker`, this fork adds:
 
-* [3.0.0-26.1](https://github.com/MoRanpcy/quickshulker/releases/download/3.0.0-26.1-neo/quickshulker-neo-3.0.0-26.1.jar)
+- **Client-optional bundle opening:** a Fabric server can keep bundle opening enabled while allowing completely unmodded clients to join.
+- **Vanilla fallback screen:** unmodded clients open bundles through a server-side paged `GENERIC_9x6` container.
+- **Enhanced installed-client screen:** clients with QuickShulker keep the existing 64-slot scrolling bundle interface.
+- **Vanilla container transport:** after the initial QuickShulker open request, screen opening, slot synchronization, clicks, drag actions, and closing use vanilla container packets.
+- **No custom menu registry entry:** the bundle screen no longer registers `quickshulker:bundle_item`, avoiding registry-sync disconnects for vanilla clients.
+- **Minecraft 26.1 and 26.2 builds:** both versions are published as assets of the same GitHub Release.
+- **Automated CI/CD:** pushes to `main` publish the 26.2 asset, and pushes to `26.1` append the 26.1 asset.
 
-## Beta
+The public QuickShulker API under `net.kyrptonaught.quickshulker.api` remains unchanged.
 
-### Fabric:
+## Downloads
 
-<details>
-<summary>1.21.6-1.21.8</summary>
+Download the newest Fabric builds from [GitHub Releases](https://github.com/water2004/quickshulker/releases/latest).
 
-* [1.21.6-1.21.8-beta.1](https://github.com/MoRanpcy/quickshulker/releases/download/1.21.6-1.21.8-beta.1/quickshulker-1.21.6-1.21.8-beta.1.jar)
+| Branch | Minecraft | Artifact |
+| :--- | :--- | :--- |
+| `main` | 26.2 | `quickshulker-3.0.3-26.2.jar` |
+| `26.1` | 26.1 | `quickshulker-3.0.3-26.1.jar` |
 
-</details>
+## Installation modes
 
----
+| Installation | Behavior |
+| :--- | :--- |
+| Server only | Vanilla clients may join. Right-clicking a held bundle opens the vanilla paged screen. |
+| Client and server | Full QuickShulker controls and the scrolling 64-slot bundle screen are available. |
+| Client without a QuickShulker server | Server-backed quick-open features are unavailable. |
+
+QuickShulker requires [Fabric Loader](https://fabricmc.net/use/installer/) and [Fabric API](https://modrinth.com/mod/fabric-api). Java 25 is required for Minecraft 26.x.
 
 ## Features
 
-### Quick Open Item
+### Quick open
 
-Use a hotkey (default: <kbd>k</kbd>) or right-click to quickly open the screen of an item held in your hand or stored in your inventory.
+Use the configurable hotkey (default: <kbd>K</kbd>), inventory right-click, or held-item right-click to open supported items:
 
-| Supported Items  |
-| :--------------: |
-| Crafting Table   |
-| Stonecutter      |
-| Shulker Box      |
-| Ender Chest      |
-| Anvil            |
-| Bundle           |
+- Shulker boxes
+- Ender chests
+- Crafting tables
+- Stonecutters
+- Anvils
+- Bundles
 
-> On Fabric, the client mod is optional for opening bundles. Unmodded clients use a vanilla six-row paged screen; modded clients keep the scrolling QuickShulker screen.
+### Quick container actions
 
-### Quick Container Actions
+- Right-click an item with a supported container to insert it.
+- Right-click an empty inventory slot with a supported container to extract an item.
+- Drag while holding right-click to insert or extract multiple stacks.
+- Transfer items between supported containers.
 
-* Drag a container item and right‑click another item to store that item into the container; you can also right‑click the container with an item.
-* Drag a container item and right‑click an empty slot in your inventory to extract items from the container.
-* Drag a container item and hold the right mouse button to batch‑store or batch‑extract items.
+### Bundle client compatibility
 
-### Config Menu
+When the client has QuickShulker, it explicitly requests the enhanced bundle menu and replaces the next vanilla open-screen event with the scrolling interface. The server and client still use the same vanilla container slot protocol.
 
-A config menu is provided so you can easily enable or disable certain features. You can open it via [Mod Menu](https://modrinth.com/mod/modmenu), but it is not required – you can also use a configurable hotkey (default: numpad<kbd>+</kbd>).
+When the client is unmodded, it sends only the normal use-item interaction. The server opens a six-row vanilla container with 45 content slots per page and server-controlled navigation.
 
-### API
+## Configuration
 
-The original author provides an API that allows items from your own mod to also support [Quick Open Item](#quick-open-item) and [Quick Container Actions](#quick-container-actions).
+Open the configuration screen through [Mod Menu](https://modrinth.com/mod/modmenu) or the configurable settings key (default: numpad <kbd>+</kbd>).
 
-You need to implement `RegisterQuickShulker` and register your mod in `registerProviders()`. Here is an example for version `26.2`:
+## Building
 
-* Register [Quick Open Item](#quick-open-item) for your mod.
+```bash
+./gradlew clean build
+```
 
-    <details>
-    <summary>Click to expand</summary>
+Built JARs are written to `build/libs`.
 
-    ```java
-    import net.kyrptonaught.quickshulker.api.RegisterQuickShulker;
+## License
 
-    public class YourClass implements RegisterQuickShulker {
-        @Override
-        public void registerProviders() {
-            if (...) // You can add conditions to enable/disable here
-                new QuickOpenableRegistry.Builder()
-                    .setItem(YourBlockOrItem.class) // Required
-                    .ignoreSingleStackCheck(true)  // Optional. Set whether the item can be opened even when stacked (like Crafting Table or Anvil). Default is false.
-                    .setOpenAction((player, stack) -> player.openMenu(new SimpleMenuProvider((i, playerInventory, player) ->
-                            new YourItemMenu(...), YourMenuTitle))) // Required
-                    .register();
-        }
-    }
-    ```
-
-    </details>
-
-* Register [Quick Container Actions](#quick-container-actions) for your mod.
-
-    <details>
-    <summary>Click to expand</summary>
-
-    ```java
-    import net.kyrptonaught.quickshulker.api.RegisterQuickShulker;
-
-    public class YourClass implements RegisterQuickShulker {
-        @Override
-        public void registerProviders() {
-            new QuickOpenableRegistry.Builder()
-                .setItem(YourBlockOrItem.class) // Required
-                .supportsBundleing(true) // Required. Default is false.
-                .getBundleInv((player, stack) -> new YourItemContainer()) // Required
-                .register();
-        }
-    }
-    ```
-
-    </details>
+QuickShulker is distributed under the [MIT License](LICENSE). See the upstream repositories for the original authors and project history.
