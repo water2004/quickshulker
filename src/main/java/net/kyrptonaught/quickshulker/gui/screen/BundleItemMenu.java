@@ -1,12 +1,12 @@
 package net.kyrptonaught.quickshulker.gui.screen;
 
-import net.kyrptonaught.quickshulker.gui.MenuTypes;
 import net.kyrptonaught.quickshulker.mixin.SlotAccessor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,7 +23,7 @@ public class BundleItemMenu extends AbstractContainerMenu {
     }
 
     public BundleItemMenu(int syncId, Inventory playerInventory, Container container) {
-        super(MenuTypes.BUNDLE_ITEM, syncId);
+        super(MenuType.GENERIC_9x6, syncId);
         checkContainerSize(container, CONTAINER_SIZE);
         this.container = container;
         container.startOpen(playerInventory.player);

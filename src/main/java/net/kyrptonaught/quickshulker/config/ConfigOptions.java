@@ -41,7 +41,7 @@ public class ConfigOptions implements AbstractConfigFile {
     public boolean quickStonecutter = true;
     @Comment("Enable opening EnderChest")
     public boolean quickEChest = true;
-    @Comment("Enable opening Bundle")
+    @Comment("Enable opening Bundle (unmodded clients use the vanilla paged screen)")
     public boolean quickBundle = true;
     @Comment("Enable opening Anvil")
     public boolean quickAnvil = true;

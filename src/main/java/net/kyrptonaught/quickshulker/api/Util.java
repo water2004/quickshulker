@@ -12,14 +12,22 @@ import net.minecraft.world.item.ItemStack;
 public class Util {
 
     public static void openItem(Player player, int invSlot) {
+        openItem(player, invSlot, false);
+    }
+
+    public static void openItem(Player player, int invSlot, boolean enhanced) {
         if (invSlot < 0) {
             System.out.println("[QuickShulker]: unknown slot opened");
             //return; //not preventing the crash might make it easier to debug a fix.
         }
-        openItem(player, invSlot, player.containerMenu.slots.get(invSlot).getContainerSlot());
+        openItem(player, invSlot, player.containerMenu.slots.get(invSlot).getContainerSlot(), enhanced);
     }
 
     public static void openItem(Player player, int invSlot, int playerInvIndex) {
+        openItem(player, invSlot, playerInvIndex, false);
+    }
+
+    public static void openItem(Player player, int invSlot, int playerInvIndex, boolean enhanced) {
         if (QuickShulkerMod.getConfig().rightClickClose && playerInvIndex == ((ItemInventoryContainer) player.containerMenu).getUsedSlotInPlayerInv()) {
             ((ServerPlayer) player).closeContainer();
             OpenInventoryPacket.send((ServerPlayer) player);
@@ -29,7 +37,7 @@ public class Util {
         //stack.removeSubNbt(QuickShulkerMod.MOD_ID);
         QuickShulkerData qsData = QuickOpenableRegistry.getQuickie(stack.getItem());
         if (qsData != null) {
-            qsData.openConsumer.accept(player, stack);
+            qsData.open(player, stack, enhanced);
             ((ItemInventoryContainer) player.containerMenu).setUsedSlot(playerInvIndex);
             player.containerMenu.addSlotListener(forceCloseScreenIfNotPresent(player, playerInvIndex, stack.copy()));
         }

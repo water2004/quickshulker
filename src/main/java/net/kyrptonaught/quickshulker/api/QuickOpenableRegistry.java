@@ -77,6 +77,11 @@ public class QuickOpenableRegistry {
             return this;
         }
 
+        public Builder setEnhancedOpenAction(BiConsumer<Player, ItemStack> openAction) {
+            qsdata.enhancedOpenConsumer = openAction;
+            return this;
+        }
+
         public Builder supportsBundleing(Boolean supportsBundleing) {
             qsdata.supportsBundleing = supportsBundleing;
             return this;

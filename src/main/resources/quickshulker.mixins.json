@@ -12,6 +12,7 @@
     "PlayerInventoryMixin"
   ],
   "client": [
+    "ClientPacketListenerMixin",
     "ScreenMixin",
     "CreativeSlotMixin",
     "HandledScreenInvoker",

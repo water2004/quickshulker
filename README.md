@@ -31,4 +31,90 @@ Click on the link below to download.
 
 ### Fabric:
 
+<details>
+<summary>1.21.6-1.21.8</summary>
+
 * [1.21.6-1.21.8-beta.1](https://github.com/MoRanpcy/quickshulker/releases/download/1.21.6-1.21.8-beta.1/quickshulker-1.21.6-1.21.8-beta.1.jar)
+
+</details>
+
+---
+
+## Features
+
+### Quick Open Item
+
+Use a hotkey (default: <kbd>k</kbd>) or right-click to quickly open the screen of an item held in your hand or stored in your inventory.
+
+| Supported Items  |
+| :--------------: |
+| Crafting Table   |
+| Stonecutter      |
+| Shulker Box      |
+| Ender Chest      |
+| Anvil            |
+| Bundle           |
+
+> On Fabric, the client mod is optional for opening bundles. Unmodded clients use a vanilla six-row paged screen; modded clients keep the scrolling QuickShulker screen.
+
+### Quick Container Actions
+
+* Drag a container item and right‑click another item to store that item into the container; you can also right‑click the container with an item.
+* Drag a container item and right‑click an empty slot in your inventory to extract items from the container.
+* Drag a container item and hold the right mouse button to batch‑store or batch‑extract items.
+
+### Config Menu
+
+A config menu is provided so you can easily enable or disable certain features. You can open it via [Mod Menu](https://modrinth.com/mod/modmenu), but it is not required – you can also use a configurable hotkey (default: numpad<kbd>+</kbd>).
+
+### API
+
+The original author provides an API that allows items from your own mod to also support [Quick Open Item](#quick-open-item) and [Quick Container Actions](#quick-container-actions).
+
+You need to implement `RegisterQuickShulker` and register your mod in `registerProviders()`. Here is an example for version `26.2`:
+
+* Register [Quick Open Item](#quick-open-item) for your mod.
+
+    <details>
+    <summary>Click to expand</summary>
+
+    ```java
+    import net.kyrptonaught.quickshulker.api.RegisterQuickShulker;
+
+    public class YourClass implements RegisterQuickShulker {
+        @Override
+        public void registerProviders() {
+            if (...) // You can add conditions to enable/disable here
+                new QuickOpenableRegistry.Builder()
+                    .setItem(YourBlockOrItem.class) // Required
+                    .ignoreSingleStackCheck(true)  // Optional. Set whether the item can be opened even when stacked (like Crafting Table or Anvil). Default is false.
+                    .setOpenAction((player, stack) -> player.openMenu(new SimpleMenuProvider((i, playerInventory, player) ->
+                            new YourItemMenu(...), YourMenuTitle))) // Required
+                    .register();
+        }
+    }
+    ```
+
+    </details>
+
+* Register [Quick Container Actions](#quick-container-actions) for your mod.
+
+    <details>
+    <summary>Click to expand</summary>
+
+    ```java
+    import net.kyrptonaught.quickshulker.api.RegisterQuickShulker;
+
+    public class YourClass implements RegisterQuickShulker {
+        @Override
+        public void registerProviders() {
+            new QuickOpenableRegistry.Builder()
+                .setItem(YourBlockOrItem.class) // Required
+                .supportsBundleing(true) // Required. Default is false.
+                .getBundleInv((player, stack) -> new YourItemContainer()) // Required
+                .register();
+        }
+    }
+    ```
+
+    </details>
