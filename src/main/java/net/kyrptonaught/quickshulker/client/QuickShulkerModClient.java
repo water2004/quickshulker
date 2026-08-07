@@ -10,7 +10,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.kyrptonaught.kyrptconfig.keybinding.CustomKeyBinding;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.kyrptonaught.quickshulker.event.KeyBindingRegister;
-import net.kyrptonaught.quickshulker.gui.MenuScreens;
 import net.kyrptonaught.quickshulker.util.EnderChestSyncHandler;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
@@ -26,8 +25,6 @@ public class QuickShulkerModClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientTickEvents.START_LEVEL_TICK.register(ModKeyCallback::onKeyPressed);
         KeyBindingRegister.register();
-        MenuScreens.registerMenuScreens();
-
         PayloadTypeRegistry.serverboundPlay().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(OpenInventoryPacket.OPEN_INV_ID, (payload, context) -> {
             context.client().gui.setScreen(new InventoryScreen(context.player()));

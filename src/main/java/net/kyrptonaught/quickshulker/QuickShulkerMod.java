@@ -13,9 +13,9 @@ import net.kyrptonaught.kyrptconfig.config.ConfigManager;
 import net.kyrptonaught.quickshulker.api.*;
 import net.kyrptonaught.quickshulker.config.ConfigOptions;
 import net.kyrptonaught.quickshulker.event.EventListeners;
-import net.kyrptonaught.quickshulker.gui.MenuTypes;
 import net.kyrptonaught.quickshulker.gui.screen.BundleContainer;
 import net.kyrptonaught.quickshulker.gui.screen.BundleItemMenu;
+import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -42,13 +42,18 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
         OpenShulkerPacket.registerReceivePacket();
         QuickBundlePacket.registerReceivePacket();
         EventListeners.registerEventListeners();
-        if(getConfig().quickBundle) MenuTypes.registerMenuTypes();
-
         UseItemCallback.EVENT.register((player, level, hand) -> {
             ItemStack stack = player.getItemInHand(hand);
             if (QuickShulkerMod.getConfig().rightClickToOpen) {
                 if (Util.isOpenableItem(stack) && Util.canOpenInHand(stack)) {
                     if(level.isClientSide()){
+                        if (OpenShulkerPacket.canSendOpenPacket()) {
+                            int menuSlot = hand == InteractionHand.MAIN_HAND
+                                    ? 36 + player.getInventory().getSelectedSlot()
+                                    : 45;
+                            OpenShulkerPacket.sendOpenPacket(menuSlot, stack);
+                            return InteractionResult.FAIL;
+                        }
                         return InteractionResult.SUCCESS;
                     }else{
                         if (hand == InteractionHand.MAIN_HAND)
@@ -111,6 +116,8 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
             new QuickOpenableRegistry.Builder()
                     .setItem(BundleItem.class)
                     .setOpenAction((playerEntity, stack) -> playerEntity.openMenu(new SimpleMenuProvider((i, playerInventory, player) ->
+                            new PagedBundleItemMenu(i, playerInventory, new BundleContainer(stack, 64)), stack.getComponents().has(DataComponents.CUSTOM_NAME) ? stack.getHoverName() : Component.translatable("item.minecraft.bundle"))))
+                    .setEnhancedOpenAction((playerEntity, stack) -> playerEntity.openMenu(new SimpleMenuProvider((i, playerInventory, player) ->
                             new BundleItemMenu(i, playerInventory, new BundleContainer(stack, 64)), stack.getComponents().has(DataComponents.CUSTOM_NAME) ? stack.getHoverName() : Component.translatable("item.minecraft.bundle"))))
                     .register();
 

@@ -79,7 +79,7 @@ Use a hotkey (default: <kbd>k</kbd>) or right-click to quickly open the screen o
 | Anvil            |
 | Bundle           |
 
-> On Fabric, you can disable the bundle on the server side to allow clients without mod to join.
+> On Fabric, the client mod is optional for opening bundles. Unmodded clients use a vanilla six-row paged screen; modded clients keep the scrolling QuickShulker screen.
 
 ### Quick Container Actions
 

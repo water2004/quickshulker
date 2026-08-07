@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
 
 public class QuickShulkerData {
     public BiConsumer<Player, ItemStack> openConsumer;
+    public BiConsumer<Player, ItemStack> enhancedOpenConsumer;
     BiFunction<Player, ItemStack, Container> bundleInvGetter;
     CanBundleInsertItemFunction canBundleInsertItem;
 
@@ -35,6 +36,13 @@ public class QuickShulkerData {
     public Container getInventory(Player player, ItemStack stack) {
         if (bundleInvGetter != null) return bundleInvGetter.apply(player, stack);
         return ShulkerUtils.getInventoryFromShulker(stack);
+    }
+
+    public void open(Player player, ItemStack stack, boolean enhanced) {
+        BiConsumer<Player, ItemStack> consumer = enhanced && enhancedOpenConsumer != null
+                ? enhancedOpenConsumer
+                : openConsumer;
+        if (consumer != null) consumer.accept(player, stack);
     }
 
     public boolean canBundleInsertItem(Player player, Container inventory, ItemStack hostStack, ItemStack insertStack) {

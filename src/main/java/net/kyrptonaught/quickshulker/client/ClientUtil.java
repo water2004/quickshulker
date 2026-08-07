@@ -14,14 +14,14 @@ public class ClientUtil {
 
     public static boolean CheckAndSend(ItemStack stack, int slot) {
         if (Util.isOpenableItem(stack)) {
-            SendOpenPacket(slot);
+            SendOpenPacket(slot, stack);
             return true;
         }
         return false;
     }
 
-    private static void SendOpenPacket(int slot) {
-        OpenShulkerPacket.sendOpenPacket(slot);
+    private static void SendOpenPacket(int slot, ItemStack stack) {
+        OpenShulkerPacket.sendOpenPacket(slot, stack);
     }
 
     public static boolean isCreativeScreen(Player player) {

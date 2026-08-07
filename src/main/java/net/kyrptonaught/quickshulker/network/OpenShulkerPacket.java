@@ -7,10 +7,13 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.kyrptonaught.quickshulker.api.Util;
+import net.kyrptonaught.quickshulker.client.EnhancedBundleScreenHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BundleItem;
+import net.minecraft.world.item.ItemStack;
 
 public record OpenShulkerPacket(int invSlot) implements CustomPacketPayload {
 
@@ -23,12 +26,23 @@ public record OpenShulkerPacket(int invSlot) implements CustomPacketPayload {
     public static void registerReceivePacket() {
         PayloadTypeRegistry.serverboundPlay().register(OpenShulkerPacket.OPEN_SHULKER_PACKET_ID, OpenShulkerPacket.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(OpenShulkerPacket.OPEN_SHULKER_PACKET_ID, OpenShulkerPacket.CODEC);
-        ServerPlayNetworking.registerGlobalReceiver(OpenShulkerPacket.OPEN_SHULKER_PACKET_ID, (payload, context) -> context.server().execute(() -> Util.openItem(context.player(), payload.invSlot)));
+        ServerPlayNetworking.registerGlobalReceiver(OpenShulkerPacket.OPEN_SHULKER_PACKET_ID, (payload, context) -> context.server().execute(() -> Util.openItem(context.player(), payload.invSlot, true)));
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static boolean canSendOpenPacket() {
+        return ClientPlayNetworking.canSend(OPEN_SHULKER_PACKET_ID);
     }
 
     @Environment(EnvType.CLIENT)
     public static void sendOpenPacket(int invSlot) {
         ClientPlayNetworking.send(new OpenShulkerPacket(invSlot));
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void sendOpenPacket(int invSlot, ItemStack stack) {
+        if (stack.getItem() instanceof BundleItem) EnhancedBundleScreenHandler.expectOpen();
+        sendOpenPacket(invSlot);
     }
 
     @Override
