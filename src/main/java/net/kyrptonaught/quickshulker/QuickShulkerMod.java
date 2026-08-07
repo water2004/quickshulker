@@ -22,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
@@ -56,9 +57,14 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
                         }
                         return InteractionResult.SUCCESS;
                     }else{
-                        if (hand == InteractionHand.MAIN_HAND)
-                            Util.openItem(player, 0, player.getInventory().getSelectedSlot());
-                        else Util.openItem(player, 0, Inventory.SLOT_OFFHAND);
+                        int playerInvSlot = hand == InteractionHand.MAIN_HAND
+                                ? player.getInventory().getSelectedSlot()
+                                : Inventory.SLOT_OFFHAND;
+                        if (stack.getItem() instanceof BundleItem) {
+                            openPagedBundle(player, stack, playerInvSlot);
+                        } else {
+                            Util.openItem(player, 0, playerInvSlot);
+                        }
                         return InteractionResult.SUCCESS_SERVER;
                     }
                 }
@@ -75,6 +81,16 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
 
     public static ConfigOptions getConfig() {
         return (ConfigOptions) config.getConfig();
+    }
+
+    private static void openPagedBundle(Player player, ItemStack stack, int playerInvSlot) {
+        Component title = stack.getComponents().has(DataComponents.CUSTOM_NAME)
+                ? stack.getHoverName()
+                : Component.translatable("item.minecraft.bundle");
+        player.openMenu(new SimpleMenuProvider((containerId, playerInventory, menuPlayer) ->
+                new PagedBundleItemMenu(containerId, playerInventory, new BundleContainer(stack, 64)), title));
+        ((ItemInventoryContainer) player.containerMenu).setUsedSlot(playerInvSlot);
+        player.containerMenu.addSlotListener(Util.forceCloseScreenIfNotPresent(player, playerInvSlot, stack.copy()));
     }
 
     @Override
@@ -116,8 +132,6 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
             new QuickOpenableRegistry.Builder()
                     .setItem(BundleItem.class)
                     .setOpenAction((playerEntity, stack) -> playerEntity.openMenu(new SimpleMenuProvider((i, playerInventory, player) ->
-                            new PagedBundleItemMenu(i, playerInventory, new BundleContainer(stack, 64)), stack.getComponents().has(DataComponents.CUSTOM_NAME) ? stack.getHoverName() : Component.translatable("item.minecraft.bundle"))))
-                    .setEnhancedOpenAction((playerEntity, stack) -> playerEntity.openMenu(new SimpleMenuProvider((i, playerInventory, player) ->
                             new BundleItemMenu(i, playerInventory, new BundleContainer(stack, 64)), stack.getComponents().has(DataComponents.CUSTOM_NAME) ? stack.getHoverName() : Component.translatable("item.minecraft.bundle"))))
                     .register();
 
