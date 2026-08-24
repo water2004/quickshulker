@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">Quick Shulker</title>
+  <desc id="description">A purple shulker box marked with a white lightning bolt.</desc>
+
+  <defs>
+    <radialGradient id="background" cx="50%" cy="48%" r="72%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.56" stop-color="#faf6ff"/>
+      <stop offset="1" stop-color="#efe4fb"/>
+    </radialGradient>
+
+    <linearGradient id="box" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7540b4"/>
+      <stop offset="0.48" stop-color="#914bc7"/>
+      <stop offset="1" stop-color="#7136a8"/>
+    </linearGradient>
+
+    <linearGradient id="bolt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fbf9ff"/>
+    </linearGradient>
+
+    <filter id="boxGlow" x="-24%" y="-24%" width="148%" height="148%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="28" flood-color="#8d4bc0" flood-opacity="0.20"/>
+    </filter>
+
+    <filter id="boltShadow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="6" stdDeviation="9" flood-color="#51217b" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#background)"/>
+
+  <g fill="url(#box)" filter="url(#boxGlow)">
+    <!-- Lid and its centered latch. -->
+    <path d="M240 228
+             H784
+             A16 16 0 0 1 800 244
+             V388
+             A16 16 0 0 1 784 404
+             H568
+             V480
+             A10 10 0 0 1 558 490
+             H466
+             A10 10 0 0 1 456 480
+             V404
+             H240
+             A16 16 0 0 1 224 388
+             V244
+             A16 16 0 0 1 240 228Z"/>
+
+    <!-- The body uses the same x=224 and x=800 side edges as the lid. -->
+    <path d="M224 420
+             H440
+             V480
+             A26 26 0 0 0 466 506
+             H558
+             A26 26 0 0 0 584 480
+             V420
+             H800
+             V784
+             A18 18 0 0 1 782 802
+             H242
+             A18 18 0 0 1 224 784Z"/>
+  </g>
+
+  <path d="M804 500
+           L622 666
+           L704 668
+           L660 804
+           L842 630
+           L758 628Z"
+        fill="url(#bolt)"
+        filter="url(#boltShadow)"/>
+</svg>

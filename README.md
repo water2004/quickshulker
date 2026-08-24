@@ -11,8 +11,8 @@
 
 | Fork branch | Minecraft | Exact upstream baseline | Upstream commit | Fork version | Public API |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `main` | 26.2 | `3.0.2-26.2` | [`ae16c41`](https://github.com/MoRanpcy/quickshulker/commit/ae16c419206a79c9d1a866e79bd74dd38e3f47a5) | `3.0.3-26.2` | Fully compatible |
-| `26.1` | 26.1 | `3.0.0-26.1` | [`ef2f380`](https://github.com/MoRanpcy/quickshulker/commit/ef2f3808ac8cc9ad469fb0034a8e5135380e032e) | `3.0.3-26.1` | Fully compatible |
+| `main` | 26.2 | `3.0.2-26.2` | [`ae16c41`](https://github.com/MoRanpcy/quickshulker/commit/ae16c419206a79c9d1a866e79bd74dd38e3f47a5) | `3.0.4-26.2` | Fully compatible |
+| `26.1` | 26.1 | `3.0.0-26.1` | [`ef2f380`](https://github.com/MoRanpcy/quickshulker/commit/ef2f3808ac8cc9ad469fb0034a8e5135380e032e) | `3.0.4-26.1` | Fully compatible |
 
 The table records the exact commits from which the fork branches were derived, not the current versions of the upstream branches.
 
@@ -39,8 +39,8 @@ Download this fork from [GitHub Releases](https://github.com/water2004/quickshul
 
 | Branch | Minecraft | Artifact |
 | :--- | :--- | :--- |
-| `main` | 26.2 | `quickshulker-3.0.3-26.2.jar` |
-| `26.1` | 26.1 | `quickshulker-3.0.3-26.1.jar` |
+| `main` | 26.2 | `quickshulker-3.0.4-26.2.jar` |
+| `26.1` | 26.1 | `quickshulker-3.0.4-26.1.jar` |
 
 ---
 
