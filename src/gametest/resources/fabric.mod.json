@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "quickshulker-gametest",
+  "version": "1.0.0",
+  "name": "Quick Shulker GameTest",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "net.kyrptonaught.quickshulker.gametest.QuickStorageGameTests"
+    ]
+  }
+}

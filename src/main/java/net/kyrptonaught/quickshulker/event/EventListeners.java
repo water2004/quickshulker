@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyrptonaught.quickshulker.util.EnderChestSyncHandler;
+import net.kyrptonaught.quickshulker.network.DirectTransferTransactions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ChestMenu;
 
@@ -15,6 +16,8 @@ public class EventListeners {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             EnderChestSyncHandler.syncEnderChestContent(handler.player);
         });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+                DirectTransferTransactions.clear(handler.player));
 
         // Respawn
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
