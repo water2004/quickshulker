@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 public class ClientUtil {
 
     public static boolean CheckAndSend(ItemStack stack, int slot) {
-        if (Util.isOpenableItem(stack)) {
+        if (Util.isOpenableItem(stack) && OpenShulkerPacket.canSendOpenPacket()) {
             SendOpenPacket(slot, stack);
             return true;
         }

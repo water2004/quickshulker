@@ -15,6 +15,17 @@ loom {
 	accessWidenerPath = file("src/main/resources/quickshulker.accesswidener")
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "quickshulker-gametest"
+		enableGameTests = true
+		enableClientGameTests = false
+		eula = true
+		clearRunDirectory = true
+	}
+}
+
 repositories {
 	maven { url 'https://maven.fabricmc.net' }
 	maven { url 'https://cursemaven.com' }
@@ -39,6 +50,11 @@ dependencies {
 
 	implementation include("me.fallenbreath:conditional-mixin-fabric:0.6.4")
 	compileOnly group: "com.google.code.findbugs", name: "jsr305", version: "3.0.2"
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+}
+
+test {
+	useJUnitPlatform()
 }
 
 processResources {

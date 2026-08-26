@@ -5,17 +5,20 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kyrptonaught.kyrptconfig.keybinding.CustomKeyBinding;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.kyrptonaught.quickshulker.event.KeyBindingRegister;
+import net.kyrptonaught.quickshulker.client.api.QuickStorageClient;
 import net.kyrptonaught.quickshulker.util.EnderChestSyncHandler;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.kyrptonaught.quickshulker.api.RegisterQuickShulkerClient;
 import net.kyrptonaught.quickshulker.event.ModKeyCallback;
 import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
+import net.kyrptonaught.quickshulker.network.DirectTransferResultPacket;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 
 @Environment(EnvType.CLIENT)
@@ -24,7 +27,13 @@ public class QuickShulkerModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.START_LEVEL_TICK.register(ModKeyCallback::onKeyPressed);
+        ClientTickEvents.END_CLIENT_TICK.register(client -> QuickStorageClient.tick());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> QuickStorageClient.clear());
         KeyBindingRegister.register();
+
+        ClientPlayNetworking.registerGlobalReceiver(DirectTransferResultPacket.ID,
+                (payload, context) -> context.client().execute(
+                        () -> QuickStorageClient.receive(payload)));
         PayloadTypeRegistry.serverboundPlay().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(OpenInventoryPacket.OPEN_INV_ID, (payload, context) -> {
             context.client().setScreen(new InventoryScreen(context.player()));

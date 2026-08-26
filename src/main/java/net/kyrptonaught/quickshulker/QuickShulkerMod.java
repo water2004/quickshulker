@@ -1,6 +1,7 @@
 package net.kyrptonaught.quickshulker;
 
 import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
+import net.kyrptonaught.quickshulker.network.DirectTransferProtocol;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.kyrptonaught.quickshulker.network.OpenShulkerPacket;
 import net.kyrptonaught.quickshulker.network.QuickBundlePacket;
@@ -39,6 +40,7 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
     @Override
     public void onInitialize() {
         config.load();
+        DirectTransferProtocol.registerServer();
         OpenShulkerPacket.registerReceivePacket();
         QuickBundlePacket.registerReceivePacket();
         EventListeners.registerEventListeners();
@@ -54,7 +56,9 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
                             OpenShulkerPacket.sendOpenPacket(menuSlot, stack);
                             return InteractionResult.FAIL;
                         }
-                        return InteractionResult.SUCCESS;
+                        // The server does not provide Quick Shulker. Do not consume the
+                        // interaction; let vanilla or another mod handle the item normally.
+                        return InteractionResult.PASS;
                     }else{
                         int playerInvSlot = hand == InteractionHand.MAIN_HAND
                                 ? player.getInventory().getSelectedSlot()
