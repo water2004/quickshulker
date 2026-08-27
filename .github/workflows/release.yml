@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build --no-daemon
+          ./gradlew clean test runGameTest build --no-daemon
 
       - name: Collect release JAR
         shell: bash
