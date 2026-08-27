@@ -1,0 +1,79 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = '1.0.0'
+group = 'net.kyrptonaught.quickshulker.test'
+
+def quickShulkerJar = providers.gradleProperty('quickShulkerJar').orNull
+if (quickShulkerJar == null || !file(quickShulkerJar).exists()) {
+    throw new GradleException('Pass -PquickShulkerJar=<Quick Shulker jar>')
+}
+
+def matrixName = providers.gradleProperty('matrixName').orElse('manual').get()
+def matrixPort = providers.gradleProperty('matrixPort').orElse('25571').get()
+def expectedClient = providers.gradleProperty('expectedClient').orElse('new').get()
+def expectedDirect = providers.gradleProperty('expectedDirect').orElse('false').get()
+def resultFile = file("build/matrix-results/${matrixName}.txt").absolutePath
+
+repositories {
+    maven { url = 'https://maven.fabricmc.net/' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    implementation files(quickShulkerJar)
+}
+
+loom {
+    runs {
+        server {
+            runDir "run/server-${matrixName}"
+            programArgs 'nogui'
+        }
+        client {
+            runDir "run/client-${matrixName}"
+            programArgs '--width', '854', '--height', '480', '--username', 'MatrixClient'
+            vmArgs "-Dquickshulker.matrix.address=127.0.0.1:${matrixPort}"
+            vmArgs "-Dquickshulker.matrix.expectedClient=${expectedClient}"
+            vmArgs "-Dquickshulker.matrix.expectedDirect=${expectedDirect}"
+            vmArgs "-Dquickshulker.matrix.result=${resultFile}"
+        }
+    }
+}
+
+tasks.named('runServer') {
+    doFirst {
+        def runDirectory = file("run/server-${matrixName}")
+        runDirectory.mkdirs()
+        new File(runDirectory, 'eula.txt').text = 'eula=true\n'
+        new File(runDirectory, 'server.properties').text = """
+online-mode=false
+server-port=${matrixPort}
+level-name=matrix-world
+gamemode=survival
+spawn-protection=0
+view-distance=4
+simulation-distance=4
+""".stripIndent().trim() + '\n'
+    }
+}
+
+tasks.named('runClient') {
+    doFirst {
+        def output = file(resultFile)
+        output.parentFile.mkdirs()
+        output.delete()
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
