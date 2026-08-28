@@ -1,12 +1,14 @@
-# QuickShulker 4.0.0
+# QuickShulker 4.0.0-alpha.1 for Minecraft 26.2
 
-This release adds a screen-independent storage transfer API and network protocol for client-side integrations.
+This alpha introduces a screen-independent, shulker-specific integration API while preserving QuickShulker's existing public API and legacy screen behavior.
 
-- Integrations can move items between the player inventory and carried storage without opening or simulating a container screen.
-- Clients detect protocol support from the connected server before selecting the direct path.
-- Requests use stable IDs, server-side idempotency, and bounded client retries, so a lost response does not duplicate a transfer or leave an integration waiting indefinitely.
-- The existing public API and legacy screen protocol remain available and use the same storage backend.
-- Compatibility was verified with 3.0.4 and 4.0.0 on both sides: new/new, new/old, old/new, and old/old.
-- Builds are provided for Minecraft 26.2.x and 26.1.x.
+- Client integrations can transfer items between player slots and carried shulker boxes without opening a simulated container screen.
+- Server integrations can discover carried shulker boxes as standard Fabric Transfer API `SlottedStorage<ItemVariant>` instances with transactional commit and rollback semantics.
+- Client requests are serialized and retried with stable request IDs, preventing duplicate transfers after a lost response.
+- Storage leases prevent stale or concurrent handles from overwriting authoritative shulker contents.
+- The existing `QuickOpenableRegistry` API and legacy compatibility path remain available.
+- The new protocol is currently scoped to shulker boxes; bundle support remains on the existing path.
+
+This is an alpha release for Minecraft 26.2 and requires Java 25.
 
 This repository is a fork of [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker), based on the original [kyrptonaught/quickshulker](https://github.com/kyrptonaught/quickshulker).
