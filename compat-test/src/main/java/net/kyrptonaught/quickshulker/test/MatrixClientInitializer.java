@@ -19,13 +19,14 @@ import java.nio.file.Path;
 
 public final class MatrixClientInitializer implements ClientModInitializer {
     private static final String API_CLASS =
-            "net.kyrptonaught.quickshulker.client.api.QuickStorageClient";
+            "net.kyrptonaught.quickshulker.api.shulker.client.ShulkerTransferClient";
     private static final String LEGACY_PACKET_CLASS =
             "net.kyrptonaught.quickshulker.network.OpenShulkerPacket";
 
     private static Stage stage = Stage.WAIT_TITLE;
     private static int stageTicks;
     private static int authoritativeTicks;
+    private static Object directHandle;
 
     @Override
     public void onInitializeClient() {
@@ -41,6 +42,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
             switch (stage) {
                 case WAIT_TITLE -> connect(client);
                 case WAIT_JOIN -> waitForInventory(client);
+                case WAIT_DIRECT -> verifyDirectTransfer(client);
                 case WAIT_MENU -> takeStone(client);
                 case WAIT_AUTHORITATIVE_ITEM -> verifyAuthoritativeItem(client);
                 case WAIT_CLOSE -> finishWhenClosed(client);
@@ -88,10 +90,66 @@ public final class MatrixClientInitializer implements ClientModInitializer {
                     + ", expected " + expectedDirect);
         }
 
+        if (directAvailable) {
+            submitDirectTransfer();
+            advance(Stage.WAIT_DIRECT);
+            return;
+        }
+
         Class<?> packet = Class.forName(LEGACY_PACKET_CLASS);
         Method send = packet.getMethod("sendOpenPacket", int.class);
         send.invoke(null, 9);
         advance(Stage.WAIT_MENU);
+    }
+
+    private static void submitDirectTransfer() throws Exception {
+        Class<?> shulkerEndpoint = Class.forName(
+                "net.kyrptonaught.quickshulker.api.shulker.ShulkerTransferEndpoint");
+        Class<?> carriedEndpoint = Class.forName(
+                "net.kyrptonaught.quickshulker.api.shulker.CarriedShulkerSlotEndpoint");
+        Class<?> playerEndpoint = Class.forName(
+                "net.kyrptonaught.quickshulker.api.shulker.PlayerSlotEndpoint");
+        Class<?> stackFilter = Class.forName(
+                "net.kyrptonaught.quickshulker.api.shulker.ShulkerItemFilter");
+        Class<?> requestClass = Class.forName(
+                "net.kyrptonaught.quickshulker.api.shulker.ShulkerTransferRequest");
+        Class<?> clientApi = Class.forName(API_CLASS);
+
+        Object source = carriedEndpoint.getConstructor(int.class, int.class)
+                .newInstance(9, 0);
+        Object destination = playerEndpoint.getConstructor(int.class)
+                .newInstance(0);
+        Object filter = stackFilter.getMethod("sameItem", ItemStack.class)
+                .invoke(null, new ItemStack(Items.STONE));
+        Object request = requestClass.getConstructor(
+                        shulkerEndpoint, shulkerEndpoint, stackFilter, int.class)
+                .newInstance(source, destination, filter, 4);
+        directHandle = clientApi.getMethod("submit", requestClass)
+                .invoke(null, request);
+    }
+
+    private static void verifyDirectTransfer(Minecraft client) throws Exception {
+        if (client.player == null || directHandle == null) return;
+        Class<?> handleClass = directHandle.getClass();
+        if (!Boolean.TRUE.equals(handleClass.getMethod("isDone").invoke(directHandle))) {
+            return;
+        }
+
+        Object result = handleClass.getMethod("resultOrNull").invoke(directHandle);
+        if (result == null) return;
+        Object status = result.getClass().getMethod("status").invoke(result);
+        if (!"SUCCESS".equals(status.toString())) {
+            throw new AssertionError("Direct transfer completed with " + status);
+        }
+        if (countLooseStone(client) != 4
+                || countStoredStone(client.player.getInventory().getItem(9)) != 0) {
+            return;
+        }
+        if (++authoritativeTicks < 3) return;
+
+        writeResult("PASS client=new direct=true");
+        stage = Stage.DONE;
+        client.stop();
     }
 
     private static void takeStone(Minecraft client) {
@@ -177,6 +235,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     private enum Stage {
         WAIT_TITLE,
         WAIT_JOIN,
+        WAIT_DIRECT,
         WAIT_MENU,
         WAIT_AUTHORITATIVE_ITEM,
         WAIT_CLOSE,

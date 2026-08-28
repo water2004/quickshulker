@@ -1,27 +1,29 @@
 package net.kyrptonaught.quickshulker.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import net.kyrptonaught.quickshulker.api.storage.QuickStorageProvider;
-import net.kyrptonaught.quickshulker.api.storage.QuickStorageRegistry;
-import net.kyrptonaught.quickshulker.internal.StorageRegistryBackend;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 public class QuickOpenableRegistry {
+    private static final HashMap<Class<? extends ItemLike>, QuickShulkerData> quickies = new HashMap<>();
+
     public static QuickShulkerData getQuickie(ItemLike item) {
-        return StorageRegistryBackend.legacyData(item);
+        if (item instanceof BlockItem) {
+            if (quickies.containsKey(((BlockItem) item).getBlock().getClass()))
+                return quickies.get(((BlockItem) item).getBlock().getClass());
+        }
+        return quickies.get(item.getClass());
     }
 
     public static void register(Class<? extends ItemLike> quickItem, QuickShulkerData quickShulkerData) {
-        QuickStorageProvider provider = quickShulkerData.supportsBundleing
-                ? QuickStorageRegistry.legacyProvider(quickShulkerData)
-                : null;
-        StorageRegistryBackend.registerLegacy(quickItem, quickShulkerData, provider);
+        quickies.put(quickItem, quickShulkerData);
     }
 
     @Deprecated

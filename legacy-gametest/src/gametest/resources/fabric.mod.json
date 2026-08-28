@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "quickshulker-legacy-contract-gametest",
+  "version": "1.0.0",
+  "name": "QuickShulker Legacy Contract GameTest",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "net.kyrptonaught.quickshulker.legacytest.LegacyRegistryGameTests",
+      "net.kyrptonaught.quickshulker.legacytest.LegacyTransferGameTests",
+      "net.kyrptonaught.quickshulker.legacytest.LegacyOpeningGameTests",
+      "net.kyrptonaught.quickshulker.legacytest.LegacyItemStackInventoryGameTests",
+      "net.kyrptonaught.quickshulker.legacytest.LegacyKnownBugGameTests"
+    ]
+  }
+}
