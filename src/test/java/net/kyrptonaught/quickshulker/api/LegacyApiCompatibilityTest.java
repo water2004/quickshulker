@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,6 +28,16 @@ public final class LegacyApiCompatibilityTest {
                 Player.class, ItemStack.class);
         assertPublicMethod(QuickShulkerData.class, "canBundleInsertItem", boolean.class,
                 Player.class, Container.class, ItemStack.class, ItemStack.class);
+
+        assertPublicConstructor(QuickShulkerData.class);
+        assertPublicConstructor(QuickShulkerData.class, BiConsumer.class, Boolean.class);
+        assertPublicConstructor(QuickShulkerData.class, BiConsumer.class, Boolean.class,
+                Boolean.class);
+        assertPublicConstructor(QuickShulkerData.QuickEnderData.class);
+        assertPublicConstructor(QuickShulkerData.QuickEnderData.class,
+                BiConsumer.class, Boolean.class);
+        assertPublicConstructor(QuickShulkerData.QuickEnderData.class,
+                BiConsumer.class, Boolean.class, Boolean.class);
     }
 
     @Test
@@ -35,6 +46,44 @@ public final class LegacyApiCompatibilityTest {
                 ItemLike.class);
         assertPublicMethod(QuickOpenableRegistry.class, "register", void.class,
                 Class.class, QuickShulkerData.class);
+        assertPublicMethod(QuickOpenableRegistry.class, "register", void.class,
+                Class.class, Boolean.class, Boolean.class, BiConsumer.class);
+        assertPublicMethod(QuickOpenableRegistry.class, "register", void.class,
+                Class.class, Boolean.class, BiConsumer.class);
+        assertPublicMethod(QuickOpenableRegistry.class, "register", void.class,
+                Class.class, BiConsumer.class);
+        assertPublicMethod(QuickOpenableRegistry.class, "register", void.class,
+                BiConsumer.class, Class[].class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "register", void.class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "setItem",
+                QuickOpenableRegistry.Builder.class, Class[].class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "setOpenAction",
+                QuickOpenableRegistry.Builder.class, BiConsumer.class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "supportsBundleing",
+                QuickOpenableRegistry.Builder.class, Boolean.class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "getBundleInv",
+                QuickOpenableRegistry.Builder.class, BiFunction.class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "canBundleInsertItem",
+                QuickOpenableRegistry.Builder.class, CanBundleInsertItemFunction.class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "canOpenInHand",
+                QuickOpenableRegistry.Builder.class, boolean.class);
+        assertPublicMethod(QuickOpenableRegistry.Builder.class, "ignoreSingleStackCheck",
+                QuickOpenableRegistry.Builder.class, Boolean.class);
+        assertPublicConstructor(QuickOpenableRegistry.Builder.class);
+        assertPublicConstructor(QuickOpenableRegistry.Builder.class,
+                QuickShulkerData.class);
+    }
+
+    @Test
+    void legacyExtensionInterfacesAndInventoryWrapperRemainPublic() throws Exception {
+        assertPublicMethod(CanBundleInsertItemFunction.class, "canBundleInsertItem",
+                boolean.class, Player.class, Container.class, ItemStack.class,
+                ItemStack.class);
+        assertPublicField(CanBundleInsertItemFunction.class, "ALWAYS",
+                CanBundleInsertItemFunction.class);
+        assertPublicMethod(RegisterQuickShulker.class, "registerProviders", void.class);
+        assertPublicMethod(RegisterQuickShulkerClient.class, "registerClient", void.class);
+        assertPublicConstructor(ItemStackInventory.class, ItemStack.class, int.class);
     }
 
     private static void assertPublicField(Class<?> owner, String name, Class<?> type)
@@ -50,5 +99,11 @@ public final class LegacyApiCompatibilityTest {
         assertNotNull(method);
         assertEquals(returnType, method.getReturnType());
         assertEquals(true, Modifier.isPublic(method.getModifiers()));
+    }
+
+    private static void assertPublicConstructor(Class<?> owner, Class<?>... parameters)
+            throws Exception {
+        assertEquals(true, Modifier.isPublic(
+                owner.getConstructor(parameters).getModifiers()));
     }
 }

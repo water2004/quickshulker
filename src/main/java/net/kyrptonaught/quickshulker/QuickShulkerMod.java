@@ -1,7 +1,7 @@
 package net.kyrptonaught.quickshulker;
 
 import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
-import net.kyrptonaught.quickshulker.network.DirectTransferProtocol;
+import net.kyrptonaught.quickshulker.internal.shulker.network.ShulkerTransferProtocol;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.kyrptonaught.quickshulker.network.OpenShulkerPacket;
 import net.kyrptonaught.quickshulker.network.QuickBundlePacket;
@@ -40,7 +40,7 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
     @Override
     public void onInitialize() {
         config.load();
-        DirectTransferProtocol.registerServer();
+        ShulkerTransferProtocol.register();
         OpenShulkerPacket.registerReceivePacket();
         QuickBundlePacket.registerReceivePacket();
         EventListeners.registerEventListeners();
