@@ -1,18 +1,22 @@
 package net.kyrptonaught.quickshulker.internal.legacy;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.kyrptonaught.quickshulker.api.Util;
 import net.kyrptonaught.quickshulker.gui.MenuTypes;
 import net.kyrptonaught.quickshulker.gui.screen.LegacyBundleItemMenu;
 import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ShulkerBoxMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class OriginalV3CompatibilityGameTests {
+    private static final int PLAYER_SLOT = 9;
+
     @GameTest
     public void originalV3GetsItsCustomBundleMenuAndExactSlotLayout(
             GameTestHelper helper) {
@@ -50,10 +54,8 @@ public final class OriginalV3CompatibilityGameTests {
     @GameTest
     public void vanillaGetsOnlyTheVanillaPagedBundleMenu(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        OriginalV3Compatibility.openBundle(
-                OriginalV3Compatibility.ClientKind.VANILLA,
-                player, new ItemStack(Items.BUNDLE),
-                () -> helper.fail("The v4 bundle path must not run for vanilla"));
+        player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.BUNDLE));
+        Util.openItem(player, 0, PLAYER_SLOT);
 
         helper.assertTrue(player.containerMenu instanceof PagedBundleItemMenu,
                 "Vanilla must receive the screen-independent paged menu");
@@ -61,6 +63,20 @@ public final class OriginalV3CompatibilityGameTests {
                 "Vanilla must receive a vanilla menu identifier");
         helper.assertValueEqual(player.containerMenu.slots.size(), 90,
                 "Vanilla expects 54 container and 36 player slots");
+        helper.succeed();
+    }
+
+    @GameTest
+    public void vanillaGetsTheVanillaShulkerMenu(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        player.getInventory().setItem(
+                PLAYER_SLOT, new ItemStack(Items.SHULKER_BOX));
+        Util.openItem(player, 0, PLAYER_SLOT);
+
+        helper.assertTrue(player.containerMenu instanceof ShulkerBoxMenu,
+                "Vanilla must receive Minecraft's standard shulker menu");
+        helper.assertTrue(player.containerMenu.getType() == MenuType.SHULKER_BOX,
+                "The shulker menu must use a vanilla identifier");
         helper.succeed();
     }
 
