@@ -1,7 +1,7 @@
 package net.kyrptonaught.quickshulker.api;
 
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
-import net.kyrptonaught.quickshulker.internal.legacy.OriginalV3Compatibility;
+import net.kyrptonaught.quickshulker.internal.menu.BundleMenuRouter;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -33,7 +33,7 @@ public class Util {
         if (qsData != null) {
             if (stack.getItem() instanceof BundleItem
                     && player instanceof ServerPlayer serverPlayer) {
-                OriginalV3Compatibility.openBundle(serverPlayer, stack,
+                BundleMenuRouter.open(serverPlayer, stack,
                         () -> qsData.openConsumer.accept(player, stack));
             } else {
                 qsData.openConsumer.accept(player, stack);
