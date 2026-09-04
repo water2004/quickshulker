@@ -26,7 +26,12 @@ public class BundleItemMenu extends AbstractContainerMenu {
     }
 
     public BundleItemMenu(int syncId, Inventory playerInventory, Container container) {
-        super(MenuType.GENERIC_9x6, syncId);
+        this(MenuType.GENERIC_9x6, syncId, playerInventory, container);
+    }
+
+    protected BundleItemMenu(MenuType<?> menuType, int syncId,
+                             Inventory playerInventory, Container container) {
+        super(menuType, syncId);
         checkContainerSize(container, CONTAINER_SIZE);
         this.container = container;
         container.startOpen(playerInventory.player);

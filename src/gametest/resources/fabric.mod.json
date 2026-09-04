@@ -6,7 +6,8 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "net.kyrptonaught.quickshulker.gametest.QuickShulkerTransferGameTests"
+      "net.kyrptonaught.quickshulker.gametest.QuickShulkerTransferGameTests",
+      "net.kyrptonaught.quickshulker.internal.legacy.OriginalV3CompatibilityGameTests"
     ]
   }
 }

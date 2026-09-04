@@ -1,10 +1,10 @@
 package net.kyrptonaught.quickshulker;
 
-import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
+import net.kyrptonaught.quickshulker.internal.legacy.OriginalV3Compatibility;
 import net.kyrptonaught.quickshulker.internal.shulker.network.ShulkerTransferProtocol;
+import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.kyrptonaught.quickshulker.network.OpenShulkerPacket;
-import net.kyrptonaught.quickshulker.network.QuickBundlePacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -15,7 +15,6 @@ import net.kyrptonaught.quickshulker.config.ConfigOptions;
 import net.kyrptonaught.quickshulker.event.EventListeners;
 import net.kyrptonaught.quickshulker.gui.screen.BundleContainer;
 import net.kyrptonaught.quickshulker.gui.screen.BundleItemMenu;
-import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -41,8 +40,7 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
     public void onInitialize() {
         config.load();
         ShulkerTransferProtocol.register();
-        OpenShulkerPacket.registerReceivePacket();
-        QuickBundlePacket.registerReceivePacket();
+        OriginalV3Compatibility.register();
         EventListeners.registerEventListeners();
         UseItemCallback.EVENT.register((player, level, hand) -> {
             ItemStack stack = player.getItemInHand(hand);
@@ -63,11 +61,7 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
                         int playerInvSlot = hand == InteractionHand.MAIN_HAND
                                 ? player.getInventory().getSelectedSlot()
                                 : Inventory.SLOT_OFFHAND;
-                        if (stack.getItem() instanceof BundleItem) {
-                            openPagedBundle(player, stack, playerInvSlot);
-                        } else {
-                            Util.openItem(player, 0, playerInvSlot);
-                        }
+                        Util.openItem(player, 0, playerInvSlot);
                         return InteractionResult.SUCCESS_SERVER;
                     }
                 }
@@ -84,16 +78,6 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
 
     public static ConfigOptions getConfig() {
         return (ConfigOptions) config.getConfig();
-    }
-
-    private static void openPagedBundle(Player player, ItemStack stack, int playerInvSlot) {
-        Component title = stack.getComponents().has(DataComponents.CUSTOM_NAME)
-                ? stack.getHoverName()
-                : Component.translatable("item.minecraft.bundle");
-        player.openMenu(new SimpleMenuProvider((containerId, playerInventory, menuPlayer) ->
-                new PagedBundleItemMenu(containerId, playerInventory, new BundleContainer(stack, 64)), title));
-        ((ItemInventoryContainer) player.containerMenu).setUsedSlot(playerInvSlot);
-        player.containerMenu.addSlotListener(Util.forceCloseScreenIfNotPresent(player, playerInvSlot, stack.copy()));
     }
 
     @Override

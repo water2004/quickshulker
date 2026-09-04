@@ -1,12 +1,14 @@
 package net.kyrptonaught.quickshulker.api;
 
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
+import net.kyrptonaught.quickshulker.internal.legacy.OriginalV3Compatibility;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 
 public class Util {
@@ -29,7 +31,13 @@ public class Util {
         //stack.removeSubNbt(QuickShulkerMod.MOD_ID);
         QuickShulkerData qsData = QuickOpenableRegistry.getQuickie(stack.getItem());
         if (qsData != null) {
-            qsData.openConsumer.accept(player, stack);
+            if (stack.getItem() instanceof BundleItem
+                    && player instanceof ServerPlayer serverPlayer) {
+                OriginalV3Compatibility.openBundle(serverPlayer, stack,
+                        () -> qsData.openConsumer.accept(player, stack));
+            } else {
+                qsData.openConsumer.accept(player, stack);
+            }
             ((ItemInventoryContainer) player.containerMenu).setUsedSlot(playerInvIndex);
             player.containerMenu.addSlotListener(forceCloseScreenIfNotPresent(player, playerInvIndex, stack.copy()));
         }
