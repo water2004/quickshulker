@@ -13,16 +13,16 @@ Quick Shulker is a Fabric mod for opening useful items directly from the player'
 
 ## Downloads
 
-### 4.0 prerelease
+### 4.0 stable
 
-The 4.0 alpha adds the new screen-independent shulker protocol and Fabric Transfer API server access while retaining the legacy public API and user-facing behavior.
+Quick Shulker 4.0 adds a screen-independent shulker protocol and Fabric Transfer API server access while retaining the established public API and user-facing behavior.
 
 | Minecraft | Release |
 | --- | --- |
-| 26.1 | [4.0.0-alpha.1-26.1](https://github.com/water2004/quickshulker/releases/tag/4.0.0-alpha.1-26.1) |
-| 26.2 | [4.0.0-alpha.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.0-alpha.1-26.2) |
+| 26.1 | [4.0.0-26.1](https://github.com/water2004/quickshulker/releases/tag/4.0.0-26.1) |
+| 26.2 | [4.0.0-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.0-26.2) |
 
-The two Minecraft artifacts are not interchangeable. Prerelease builds are intended for integration testing; back up important inventories before using them on a production server.
+The two Minecraft artifacts are not interchangeable.
 
 ## Requirements
 

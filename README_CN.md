@@ -13,16 +13,16 @@ Quick Shulker 是一个 Fabric 模组，可以直接打开玩家手中或物品�
 
 ## 下载
 
-### 4.0 预发布版
+### 4.0 正式版
 
-4.0 alpha 在保留旧公共 API 与玩家功能的同时，增加无界面的潜影盒协议和基于 Fabric Transfer API 的服务端访问。
+Quick Shulker 4.0 在保留既有公共 API 与玩家功能的同时，增加无界面的潜影盒协议和基于 Fabric Transfer API 的服务端访问。
 
 | Minecraft | Release |
 | --- | --- |
-| 26.1 | [4.0.0-alpha.1-26.1](https://github.com/water2004/quickshulker/releases/tag/4.0.0-alpha.1-26.1) |
-| 26.2 | [4.0.0-alpha.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.0-alpha.1-26.2) |
+| 26.1 | [4.0.0-26.1](https://github.com/water2004/quickshulker/releases/tag/4.0.0-26.1) |
+| 26.2 | [4.0.0-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.0-26.2) |
 
-两个 Minecraft 版本的文件不能混用。预发布版本主要用于集成测试；在正式服务器使用前请备份重要物品。
+两个 Minecraft 版本的文件不能混用。
 
 ## 运行要求
 
