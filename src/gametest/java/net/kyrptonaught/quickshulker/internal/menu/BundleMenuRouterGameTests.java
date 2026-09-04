@@ -1,10 +1,11 @@
-package net.kyrptonaught.quickshulker.internal.legacy;
+package net.kyrptonaught.quickshulker.internal.menu;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.kyrptonaught.quickshulker.api.Util;
 import net.kyrptonaught.quickshulker.gui.MenuTypes;
 import net.kyrptonaught.quickshulker.gui.screen.LegacyBundleItemMenu;
 import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
+import net.kyrptonaught.quickshulker.internal.compat.ClientProtocolResolver.ClientProtocol;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
@@ -14,15 +15,15 @@ import net.minecraft.world.item.Items;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class OriginalV3CompatibilityGameTests {
+public final class BundleMenuRouterGameTests {
     private static final int PLAYER_SLOT = 9;
 
     @GameTest
     public void originalV3GetsItsCustomBundleMenuAndExactSlotLayout(
             GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        OriginalV3Compatibility.openBundle(
-                OriginalV3Compatibility.ClientKind.ORIGINAL_V3,
+        BundleMenuRouter.open(
+                ClientProtocol.ORIGINAL_V3,
                 player, new ItemStack(Items.BUNDLE),
                 () -> helper.fail("The v4 bundle path must not run for a v3 client"));
 
@@ -84,8 +85,8 @@ public final class OriginalV3CompatibilityGameTests {
     public void v4UsesOnlyTheModernBundleCallback(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         AtomicInteger modernOpens = new AtomicInteger();
-        OriginalV3Compatibility.openBundle(
-                OriginalV3Compatibility.ClientKind.V4,
+        BundleMenuRouter.open(
+                ClientProtocol.V4,
                 player, new ItemStack(Items.BUNDLE), modernOpens::incrementAndGet);
 
         helper.assertValueEqual(modernOpens.get(), 1,

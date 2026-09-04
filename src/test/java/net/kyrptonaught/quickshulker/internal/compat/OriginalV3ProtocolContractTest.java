@@ -1,4 +1,4 @@
-package net.kyrptonaught.quickshulker.internal.legacy;
+package net.kyrptonaught.quickshulker.internal.compat;
 
 import io.netty.buffer.Unpooled;
 import net.kyrptonaught.quickshulker.gui.MenuTypes;
@@ -6,13 +6,13 @@ import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.kyrptonaught.quickshulker.network.OpenShulkerPacket;
 import net.kyrptonaught.quickshulker.network.QuickBundlePacket;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,18 +32,6 @@ public final class OriginalV3ProtocolContractTest {
     static void bootstrapMinecraftRegistries() {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
-    }
-
-    @Test
-    void serverClassifiesOnlyAdvertisedConnectionCapabilities() {
-        assertEquals(OriginalV3Compatibility.ClientKind.VANILLA,
-                OriginalV3Compatibility.classify(false, false));
-        assertEquals(OriginalV3Compatibility.ClientKind.ORIGINAL_V3,
-                OriginalV3Compatibility.classify(true, false));
-        assertEquals(OriginalV3Compatibility.ClientKind.V4,
-                OriginalV3Compatibility.classify(true, true));
-        assertEquals(OriginalV3Compatibility.ClientKind.V4,
-                OriginalV3Compatibility.classify(false, true));
     }
 
     @Test

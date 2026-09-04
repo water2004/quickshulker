@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker;
 
-import net.kyrptonaught.quickshulker.internal.legacy.OriginalV3Compatibility;
+import net.kyrptonaught.quickshulker.internal.compat.OriginalV3Protocol;
 import net.kyrptonaught.quickshulker.internal.shulker.network.ShulkerTransferProtocol;
 import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
@@ -40,7 +40,7 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
     public void onInitialize() {
         config.load();
         ShulkerTransferProtocol.register();
-        OriginalV3Compatibility.register();
+        OriginalV3Protocol.register();
         EventListeners.registerEventListeners();
         UseItemCallback.EVENT.register((player, level, hand) -> {
             ItemStack stack = player.getItemInHand(hand);
