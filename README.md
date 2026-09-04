@@ -13,17 +13,6 @@ Quick Shulker is a Fabric mod for opening useful items directly from the player'
 
 ## Downloads
 
-### Stable 3.0.4
-
-The stable release preserves the existing Quick Shulker UI, quick-open behavior, container actions, public API, and client-optional server fallback.
-
-| Minecraft | Artifact |
-| --- | --- |
-| 26.1 | `quickshulker-3.0.4-26.1.jar` |
-| 26.2 | `quickshulker-3.0.4-26.2.jar` |
-
-Download both artifacts from the [3.0.4 release](https://github.com/water2004/quickshulker/releases/tag/3.0.4).
-
 ### 4.0 prerelease
 
 The 4.0 alpha adds the new screen-independent shulker protocol and Fabric Transfer API server access while retaining the legacy public API and user-facing behavior.
@@ -48,9 +37,12 @@ The two Minecraft artifacts are not interchangeable. Prerelease builds are inten
 
 | Client | Server | Behavior |
 | --- | --- | --- |
-| Installed | Installed | Full quick-open UI, inventory actions, enhanced bundle screen, and the 4.0 direct shulker protocol when both sides support it. |
+| This fork 4.x | This fork 4.x | Full quick-open UI, inventory actions, enhanced bundle screen, and the 4.0 direct shulker protocol. |
+| Original Quick Shulker 3.x | This fork 4.x | The server accepts the frozen original-v3 packets and opens the original `quickshulker:bundle_item` menu with its exact 64-slot layout. |
 | Not installed | Installed | Vanilla clients can still join. Server-side right-click behavior uses vanilla menus, and bundles use a paged `9 x 6` vanilla container instead of a custom menu type. Client keybind and hover actions are unavailable. |
-| Installed | Not installed | The client does not pretend the protocol is available. Unsupported Quick Shulker interactions pass through to vanilla or other mods. |
+| This fork 4.x | Not installed | The client does not pretend the protocol is available. Unsupported Quick Shulker interactions pass through to vanilla or other mods. |
+
+“Original v3” specifically means MoRanpcy Quick Shulker `3.0.0-26.1` or `3.0.2-26.2` on the matching Minecraft version. This fork's own discontinued 3.x releases are not a protocol-compatibility target.
 
 For the 4.0 direct protocol, keep the Quick Shulker client and server on matching compatible releases. Integrations must capability-detect the protocol; API submission never silently falls back to screen simulation.
 
@@ -89,7 +81,7 @@ Shulker boxes cannot be nested by the built-in policy.
 
 ### Client-optional bundle screen
 
-Installed clients retain the enhanced scrolling 64-slot bundle interface. A server with this fork installed does not register the old custom bundle `MenuType`; unmodded clients therefore remain compatible and receive a server-paged vanilla `GENERIC_9x6` screen instead.
+This fork's clients retain the enhanced scrolling 64-slot bundle interface. The server also retains the original v3 custom bundle `MenuType`, but sends it only to clients that advertise the original v3 protocol. Unmodded clients never receive that custom type and instead get a server-paged vanilla `GENERIC_9x6` screen.
 
 After the initial open request, normal container synchronization, clicking, dragging, and closing use vanilla container packets.
 
@@ -237,7 +229,7 @@ cd quickshulker
 
 On Windows, use `gradlew.bat`. The release jar is written to `build/libs/`.
 
-The main GameTest suite covers current quick-open and shulker transaction behavior. `legacy-gametest/` separately runs the built jar against the locked 3.0 public behavior contract. Tagged commits on `main` publish Minecraft 26.2 artifacts; tagged commits on `26.1` publish Minecraft 26.1 artifacts.
+The main suite covers current quick-open and shulker transaction behavior, freezes the original v3 packet/menu wire contract, and verifies the v3, v4, and vanilla bundle layouts separately. `legacy-gametest/` additionally checks the retained public extension API. Tagged commits on `main` publish Minecraft 26.2 artifacts; tagged commits on `26.1` publish Minecraft 26.1 artifacts.
 
 ## License
 
