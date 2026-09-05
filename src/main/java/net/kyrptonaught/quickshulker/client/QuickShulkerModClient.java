@@ -11,7 +11,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.kyrptonaught.kyrptconfig.keybinding.CustomKeyBinding;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.kyrptonaught.quickshulker.event.KeyBindingRegister;
-import net.kyrptonaught.quickshulker.gui.MenuScreens;
 import net.kyrptonaught.quickshulker.internal.shulker.client.ShulkerTransferClientRuntime;
 import net.kyrptonaught.quickshulker.internal.shulker.network.ShulkerTransferResultPacket;
 import net.kyrptonaught.quickshulker.util.EnderChestSyncHandler;
@@ -34,7 +33,6 @@ public class QuickShulkerModClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register(
                 (handler, client) -> ShulkerTransferClientRuntime.endConnection());
         KeyBindingRegister.register();
-        MenuScreens.registerMenuScreens();
 
         ClientPlayNetworking.registerGlobalReceiver(ShulkerTransferResultPacket.ID,
                 (payload, context) -> context.client().execute(

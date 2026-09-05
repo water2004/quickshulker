@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "quickshulker-compat-test",
+  "version": "1.0.0",
+  "name": "Quick Shulker Compatibility Test",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.kyrptonaught.quickshulker.test.MatrixServerInitializer"
+    ],
+    "client": [
+      "net.kyrptonaught.quickshulker.test.MatrixClientInitializer"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25"
+  }
+}

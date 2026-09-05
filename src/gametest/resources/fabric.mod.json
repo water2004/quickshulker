@@ -7,7 +7,8 @@
   "entrypoints": {
     "fabric-gametest": [
       "net.kyrptonaught.quickshulker.gametest.QuickShulkerTransferGameTests",
-      "net.kyrptonaught.quickshulker.internal.menu.BundleMenuRouterGameTests"
+      "net.kyrptonaught.quickshulker.internal.menu.BundleMenuRouterGameTests",
+      "net.kyrptonaught.quickshulker.gametest.OptionalClientRegistryGameTests"
     ]
   }
 }

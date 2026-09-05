@@ -1,7 +1,6 @@
 package net.kyrptonaught.quickshulker.internal.compat;
 
 import io.netty.buffer.Unpooled;
-import net.kyrptonaught.quickshulker.gui.MenuTypes;
 import net.kyrptonaught.quickshulker.network.EnderChestS2CSyncPacket;
 import net.kyrptonaught.quickshulker.network.OpenInventoryPacket;
 import net.kyrptonaught.quickshulker.network.OpenShulkerPacket;
@@ -35,7 +34,7 @@ public final class OriginalV3ProtocolContractTest {
     }
 
     @Test
-    void originalV3ChannelAndMenuIdentifiersStayFrozen() {
+    void originalV3ChannelIdentifiersStayFrozen() {
         assertEquals("quickshulker:open_shulker_packet",
                 new OpenShulkerPacket(0).type().id().toString());
         assertEquals("quickshulker:quick_bundle_packet",
@@ -54,8 +53,6 @@ public final class OriginalV3ProtocolContractTest {
         assertEquals("quickshulker:s2c_echest_slot_packet",
                 new EnderChestS2CSyncPacket.S2CEChestSlotPacket(0, ItemStack.EMPTY)
                         .type().id().toString());
-        assertEquals("quickshulker:bundle_item",
-                BuiltInRegistries.MENU.getKey(MenuTypes.BUNDLE_ITEM).toString());
     }
 
     @Test

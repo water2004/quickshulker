@@ -1,7 +1,6 @@
 package net.kyrptonaught.quickshulker.internal.menu;
 
 import net.kyrptonaught.quickshulker.gui.screen.BundleContainer;
-import net.kyrptonaught.quickshulker.gui.screen.LegacyBundleItemMenu;
 import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
 import net.kyrptonaught.quickshulker.internal.compat.ClientProtocolResolver;
 import net.kyrptonaught.quickshulker.internal.compat.ClientProtocolResolver.ClientProtocol;
@@ -24,17 +23,12 @@ public final class BundleMenuRouter {
     static void open(ClientProtocol protocol, ServerPlayer player,
                      ItemStack stack, Runnable modernV4Open) {
         switch (protocol) {
-            case ORIGINAL_V3 -> openOriginalV3(player, stack);
             case V4 -> modernV4Open.run();
-            case VANILLA -> openVanilla(player, stack);
+            // A globally registered v3 MenuType would make Quick Shulker mandatory
+            // at login, even for peers that never open a bundle. Both older and
+            // unmodded clients understand the vanilla paged presentation.
+            case ORIGINAL_V3, VANILLA -> openVanilla(player, stack);
         }
-    }
-
-    private static void openOriginalV3(ServerPlayer player, ItemStack stack) {
-        player.openMenu(new SimpleMenuProvider(
-                (containerId, inventory, ignored) -> new LegacyBundleItemMenu(
-                        containerId, inventory, new BundleContainer(stack, 64)),
-                title(stack)));
     }
 
     private static void openVanilla(ServerPlayer player, ItemStack stack) {
