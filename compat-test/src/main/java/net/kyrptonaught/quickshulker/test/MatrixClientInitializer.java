@@ -37,8 +37,11 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     static void tick(Minecraft client) {
         if (stage == Stage.DONE) return;
         try {
+            if (stageTicks > 0 && stageTicks % 200 == 0) {
+                System.out.println("[compat-test] waiting " + describeState(client));
+            }
             if (++stageTicks > 1200) {
-                throw new AssertionError("Timed out in stage " + stage + " (bundle=" + bundlePhase + ")");
+                throw new AssertionError("Timed out: " + describeState(client));
             }
             switch (stage) {
                 case WAIT_TITLE -> connect(client);
@@ -260,6 +263,18 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         } catch (ClassNotFoundException error) {
             return false;
         }
+    }
+
+    private static String describeState(Minecraft client) {
+        String state = "stage=" + stage + " bundle=" + bundlePhase
+                + " screen=" + (client.gui.screen() == null ? "none" : client.gui.screen().getClass().getName());
+        if (client.player == null) return state + " player=absent";
+        ItemStack box = client.player.getInventory().getItem(9);
+        return state + " player=" + client.player.getName().getString()
+                + " alive=" + client.player.isAlive()
+                + " slot9=" + box + " storedStone=" + countStoredStone(box)
+                + " held=" + client.player.getMainHandItem()
+                + " menu=" + client.player.containerMenu.getClass().getName();
     }
 
     private static void advance(Stage next) {
