@@ -4,6 +4,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.core.component.DataComponents;
@@ -59,7 +61,15 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     }
 
     private static void connect(Minecraft client) {
-        if (stageTicks < 10 || client.getConnection() != null || client.gui.screen() == null) return;
+        // Fresh CI profiles show onboarding while the initial resource reload is
+        // still running. Connecting at that point can also precede model loading.
+        if (client.getConnection() != null || client.gui.overlay() != null) return;
+        if (client.gui.screen() instanceof AccessibilityOnboardingScreen onboarding) {
+            onboarding.onClose();
+            return;
+        }
+        if (!(client.gui.screen() instanceof TitleScreen)) return;
+        client.options.pauseOnLostFocus = false;
         String address = System.getProperty(
                 "quickshulker.matrix.address", "127.0.0.1:25571");
         ServerData data = new ServerData(
@@ -267,6 +277,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
 
     private static String describeState(Minecraft client) {
         String state = "stage=" + stage + " bundle=" + bundlePhase
+                + " overlay=" + (client.gui.overlay() == null ? "none" : client.gui.overlay().getClass().getName())
                 + " screen=" + (client.gui.screen() == null ? "none" : client.gui.screen().getClass().getName());
         if (client.player == null) return state + " player=absent";
         ItemStack box = client.player.getInventory().getItem(9);
