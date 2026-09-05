@@ -8,11 +8,11 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemContainerContents;
 
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,22 +27,24 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     private static int stageTicks;
     private static int authoritativeTicks;
     private static Object directHandle;
+    private static boolean bundlePhase;
 
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(MatrixClientInitializer::tick);
     }
 
-    private static void tick(Minecraft client) {
+    static void tick(Minecraft client) {
         if (stage == Stage.DONE) return;
         try {
-            if (++stageTicks > 400) {
-                throw new AssertionError("Timed out in stage " + stage);
+            if (++stageTicks > 1200) {
+                throw new AssertionError("Timed out in stage " + stage + " (bundle=" + bundlePhase + ")");
             }
             switch (stage) {
                 case WAIT_TITLE -> connect(client);
                 case WAIT_JOIN -> waitForInventory(client);
                 case WAIT_DIRECT -> verifyDirectTransfer(client);
+                case WAIT_HELD -> openHeld(client);
                 case WAIT_MENU -> takeStone(client);
                 case WAIT_AUTHORITATIVE_ITEM -> verifyAuthoritativeItem(client);
                 case WAIT_CLOSE -> finishWhenClosed(client);
@@ -65,7 +67,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     }
 
     private static void waitForInventory(Minecraft client) throws Exception {
-        if (client.player == null) return;
+        if (client.player == null || client.gui.screen() != null) return;
         ItemStack box = client.player.getInventory().getItem(9);
         if (!box.is(Items.SHULKER_BOX) || countStoredStone(box) != 4) return;
 
@@ -96,9 +98,20 @@ public final class MatrixClientInitializer implements ClientModInitializer {
             return;
         }
 
-        Class<?> packet = Class.forName(LEGACY_PACKET_CLASS);
-        Method send = packet.getMethod("sendOpenPacket", int.class);
-        send.invoke(null, 9);
+        if (expectedClient.equals("none")) {
+            client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId,
+                    9, 0, ContainerInput.SWAP, client.player);
+            advance(Stage.WAIT_HELD);
+            return;
+        }
+
+        openModded(client, 9);
+    }
+
+    private static void openHeld(Minecraft client) {
+        if (client.player == null || !client.player.getMainHandItem().is(bundlePhase ? Items.BUNDLE : Items.SHULKER_BOX)
+                || stageTicks < 5) return;
+        client.gameMode.useItem(client.player, InteractionHand.MAIN_HAND);
         advance(Stage.WAIT_MENU);
     }
 
@@ -147,18 +160,22 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         }
         if (++authoritativeTicks < 3) return;
 
-        writeResult("PASS client=new direct=true");
-        stage = Stage.DONE;
-        client.stop();
+        beginBundle(client);
     }
 
     private static void takeStone(Minecraft client) {
         if (client.player == null || client.gameMode == null
                 || client.player.containerMenu == client.player.inventoryMenu) return;
         var menu = client.player.containerMenu;
-        if (menu.slots.isEmpty() || !menu.slots.getFirst().getItem().is(Items.STONE)
+        if (menu.slots.isEmpty() || !menu.slots.getFirst().getItem().is(bundlePhase ? Items.DIAMOND : Items.STONE)
                 || menu.slots.getFirst().getItem().getCount() != 4) {
-            throw new AssertionError("Legacy screen did not expose four stone items");
+            throw new AssertionError("Screen did not expose the four expected items (bundle=" + bundlePhase + ")");
+        }
+        if (bundlePhase) {
+            int expectedSlots = System.getProperty("quickshulker.matrix.expectedClient").equals("new") ? 100 : 90;
+            if (menu.slots.size() != expectedSlots) {
+                throw new AssertionError("Bundle menu slot count=" + menu.slots.size() + ", expected=" + expectedSlots);
+            }
         }
         client.gameMode.handleContainerInput(
                 menu.containerId, 0, 0, ContainerInput.QUICK_MOVE, client.player);
@@ -167,7 +184,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
 
     private static void verifyAuthoritativeItem(Minecraft client) {
         if (client.player == null) return;
-        if (countLooseStone(client) != 4) return;
+        if (countLooseStone(client) != 4 || (bundlePhase && countLooseDiamonds(client) != 4)) return;
         if (++authoritativeTicks < 3) return;
         client.player.closeContainer();
         advance(Stage.WAIT_CLOSE);
@@ -177,12 +194,47 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         if (client.player == null
                 || client.player.containerMenu != client.player.inventoryMenu
                 || countLooseStone(client) != 4) return;
+        if (!bundlePhase) {
+            beginBundle(client);
+            return;
+        }
+        if (countLooseDiamonds(client) != 4 || stageTicks < 10) return;
         writeResult("PASS client="
                 + System.getProperty("quickshulker.matrix.expectedClient")
                 + " direct="
-                + System.getProperty("quickshulker.matrix.expectedDirect"));
+                + System.getProperty("quickshulker.matrix.expectedDirect")
+                + " shulker=4 bundle=4");
         stage = Stage.DONE;
         client.stop();
+    }
+
+    private static void beginBundle(Minecraft client) throws Exception {
+        bundlePhase = true;
+        authoritativeTicks = 0;
+        if (System.getProperty("quickshulker.matrix.expectedClient").equals("none")) {
+            client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId,
+                    10, 0, ContainerInput.SWAP, client.player);
+            advance(Stage.WAIT_HELD);
+        } else {
+            openModded(client, 10);
+        }
+    }
+
+    private static void openModded(Minecraft client, int slot) throws Exception {
+        Class<?> packet = Class.forName(LEGACY_PACKET_CLASS);
+        if (System.getProperty("quickshulker.matrix.expectedClient").equals("new")) {
+            packet.getMethod("sendOpenPacket", int.class, ItemStack.class)
+                    .invoke(null, slot, client.player.getInventory().getItem(slot));
+        } else {
+            packet.getMethod("sendOpenPacket", int.class).invoke(null, slot);
+        }
+        advance(Stage.WAIT_MENU);
+    }
+
+    private static int countLooseDiamonds(Minecraft client) {
+        return client.player.getInventory().getNonEquipmentItems().stream()
+                .filter(stack -> stack.is(Items.DIAMOND))
+                .mapToInt(ItemStack::getCount).sum();
     }
 
     private static int countLooseStone(Minecraft client) {
@@ -211,6 +263,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     }
 
     private static void advance(Stage next) {
+        System.out.println("[compat-test] " + stage + " -> " + next + " bundle=" + bundlePhase);
         stage = next;
         stageTicks = 0;
     }
@@ -236,6 +289,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         WAIT_TITLE,
         WAIT_JOIN,
         WAIT_DIRECT,
+        WAIT_HELD,
         WAIT_MENU,
         WAIT_AUTHORITATIVE_ITEM,
         WAIT_CLOSE,

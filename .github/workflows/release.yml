@@ -77,6 +77,17 @@ jobs:
           fi
           cp "${jars[0]}" release/
 
+      - name: Verify real vanilla, Fabric, original-v3 and v4 clients
+        run: bash compat-test/run-matrix.sh release/*.jar
+
+      - name: Upload connection test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: connection-tests-${{ github.ref_name }}
+          path: compat-test/build/matrix-results/
+          if-no-files-found: ignore
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
         with:

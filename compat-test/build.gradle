@@ -6,8 +6,8 @@ version = '1.0.0'
 group = 'net.kyrptonaught.quickshulker.test'
 
 def quickShulkerJar = providers.gradleProperty('quickShulkerJar').orNull
-if (quickShulkerJar == null || !file(quickShulkerJar).exists()) {
-    throw new GradleException('Pass -PquickShulkerJar=<Quick Shulker jar>')
+if (quickShulkerJar != null && !file(quickShulkerJar).exists()) {
+    throw new GradleException("Quick Shulker jar does not exist: ${quickShulkerJar}")
 }
 
 def matrixName = providers.gradleProperty('matrixName').orElse('manual').get()
@@ -15,6 +15,7 @@ def matrixPort = providers.gradleProperty('matrixPort').orElse('25571').get()
 def expectedClient = providers.gradleProperty('expectedClient').orElse('new').get()
 def expectedDirect = providers.gradleProperty('expectedDirect').orElse('false').get()
 def resultFile = file("build/matrix-results/${matrixName}.txt").absolutePath
+def serverStopFile = file("build/matrix-results/${matrixName}-stop").absolutePath
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
@@ -24,7 +25,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
-    implementation files(quickShulkerJar)
+    if (quickShulkerJar != null) implementation files(quickShulkerJar)
 }
 
 loom {
@@ -32,6 +33,8 @@ loom {
         server {
             runDir "run/server-${matrixName}"
             programArgs 'nogui'
+            vmArgs "-Dquickshulker.matrix.serverResult=${file("build/matrix-results/${matrixName}-server.txt").absolutePath}"
+            vmArgs "-Dquickshulker.matrix.serverStop=${serverStopFile}"
         }
         client {
             runDir "run/client-${matrixName}"
@@ -48,15 +51,18 @@ tasks.named('runServer') {
     doFirst {
         def runDirectory = file("run/server-${matrixName}")
         runDirectory.mkdirs()
+        file(serverStopFile).delete()
         new File(runDirectory, 'eula.txt').text = 'eula=true\n'
         new File(runDirectory, 'server.properties').text = """
 online-mode=false
 server-port=${matrixPort}
+server-ip=127.0.0.1
 level-name=matrix-world
 gamemode=survival
 spawn-protection=0
 view-distance=4
 simulation-distance=4
+pause-when-empty-seconds=0
 """.stripIndent().trim() + '\n'
     }
 }
@@ -66,6 +72,49 @@ tasks.named('runClient') {
         def output = file(resultFile)
         output.parentFile.mkdirs()
         output.delete()
+    }
+    doLast {
+        if (!file(resultFile).exists() || !file(resultFile).text.startsWith('PASS ')) {
+            throw new GradleException("Client compatibility test failed; see ${resultFile}")
+        }
+    }
+}
+
+processResources {
+    inputs.property 'minecraft_version', minecraft_version
+    inputs.property 'loader_version', loader_version
+    filesMatching('fabric.mod.json') {
+        expand minecraft_version: minecraft_version, loader_version: loader_version
+    }
+}
+
+// Launch Mojang's client directly: no Fabric Loader, no mixins, no mod entrypoints.
+// The test driver only schedules UI input on the game's own main thread.
+tasks.register('runVanillaClient', JavaExec) {
+    dependsOn classes, 'downloadAssets'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'net.kyrptonaught.quickshulker.test.VanillaClientMain'
+    workingDir = file("run/vanilla-${matrixName}")
+    args '--version', minecraft_version, '--accessToken', '0', '--username', 'VanillaMatrix',
+            '--assetsDir', "${gradle.gradleUserHomeDir}/caches/fabric-loom/assets",
+            '--width', '854', '--height', '480'
+    systemProperty 'quickshulker.matrix.address', "127.0.0.1:${matrixPort}"
+    systemProperty 'quickshulker.matrix.expectedClient', 'none'
+    systemProperty 'quickshulker.matrix.expectedDirect', 'false'
+    systemProperty 'quickshulker.matrix.result', resultFile
+    doFirst {
+        if (quickShulkerJar != null) throw new GradleException('Vanilla client must not include Quick Shulker')
+        workingDir.mkdirs()
+        file(resultFile).parentFile.mkdirs()
+        file(resultFile).delete()
+        def metadata = new groovy.json.JsonSlurper().parse(
+                file("${gradle.gradleUserHomeDir}/caches/fabric-loom/${minecraft_version}/mojang_minecraft_info.json"))
+        args '--assetIndex', "${minecraft_version}-${metadata.assetIndex.id}"
+    }
+    doLast {
+        if (!file(resultFile).exists() || !file(resultFile).text.startsWith('PASS ')) {
+            throw new GradleException("Vanilla compatibility test failed; see ${resultFile}")
+        }
     }
 }
 
