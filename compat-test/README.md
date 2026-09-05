@@ -19,7 +19,7 @@ On Linux (JDK 25, Xvfb, curl):
 
 ```sh
 ./gradlew build
-bash compat-test/run-matrix.sh build/libs/quickshulker-4.0.1-26.2.jar
+bash compat-test/run-matrix.sh build/libs/quickshulker-4.0.1-26.1.jar
 ```
 
 The fixture binds loopback only. Results and logs are in `build/matrix-results`
