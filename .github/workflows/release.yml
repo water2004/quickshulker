@@ -79,7 +79,20 @@ jobs:
           fi
           cp "${jars[0]}" release/
 
+      - name: Install headless graphics dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libegl1-mesa mesa-vulkan-drivers
+
       - name: Verify real vanilla, Fabric, original-v3 and v4 clients
+        env:
+          # The matrix launches real Minecraft clients under Xvfb. Force Mesa
+          # software rendering so the test does not depend on a GPU-backed
+          # GLX/Vulkan device on the GitHub runner.
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          GALLIUM_DRIVER: llvmpipe
+          SDL_VIDEODRIVER: x11
         run: bash compat-test/run-matrix.sh release/*.jar
 
       - name: Upload connection test results

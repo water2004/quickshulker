@@ -39,7 +39,11 @@ grep -q 'Done (' "$results/server.log"
 
 run_client() {
   name="$1"; task="$2"; shift 2
-  timeout 240s xvfb-run -a ./gradlew -p compat-test "$task" \
+  # Xvfb defaults to an 8-bit screen, which has no GLX visual. Minecraft's
+  # client then fails before the compatibility driver can connect. Use a
+  # 24-bit screen and explicitly enable GLX/render so Mesa can provide a
+  # software OpenGL context on headless CI runners.
+  timeout 240s xvfb-run -a -s "-screen 0 1280x720x24 +extension GLX +render -noreset" ./gradlew -p compat-test "$task" \
     -PmatrixName="ci-$name" -PmatrixPort=25574 --console=plain "$@" \
     >"$results/$name.log" 2>&1 || { cat "$results/$name.log"; return 1; }
   grep '^PASS ' "$results/ci-$name.txt"
