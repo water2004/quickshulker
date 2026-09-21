@@ -40,7 +40,6 @@ public abstract class ScreenMixin {
     @Inject(method = "init", at = @At("TAIL"))
     private void fixMouse(CallbackInfo ci) {
         if (QuickShulkerMod.lastMouseX != 0 && QuickShulkerMod.lastMouseY != 0) {
-            InputConstants.grabMouse(Minecraft.getInstance().getWindow(), QuickShulkerMod.lastMouseX, QuickShulkerMod.lastMouseY);
             InputConstants.releaseMouse(Minecraft.getInstance().getWindow(), QuickShulkerMod.lastMouseX, QuickShulkerMod.lastMouseY);
             QuickShulkerMod.lastMouseY = 0;
             QuickShulkerMod.lastMouseX = 0;
