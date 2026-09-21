@@ -25,7 +25,7 @@ public final class MatrixServerInitializer implements ModInitializer {
                             List.of(new ItemStack(Items.STONE, 4))));
                     player.getInventory().setItem(9, box);
                     ItemStack bundle = new ItemStack(Items.BUNDLE);
-                    var contents = new BundleContents.Mutable(BundleContents.EMPTY);
+                    var contents = BundleContents.EMPTY.asMutable();
                     contents.tryInsert(new ItemStack(Items.DIAMOND, 4));
                     bundle.set(DataComponents.BUNDLE_CONTENTS, contents.toImmutable());
                     player.getInventory().setItem(10, bundle);

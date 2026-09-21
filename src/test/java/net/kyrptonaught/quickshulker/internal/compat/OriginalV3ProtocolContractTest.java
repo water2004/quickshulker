@@ -23,7 +23,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Golden wire contract from original Quick Shulker 3.0.2 for Minecraft 26.2. */
+/** Golden wire contract shared with the matching original Quick Shulker v3 client. */
 public final class OriginalV3ProtocolContractTest {
     private static final int MARKER = 0x01020304;
 

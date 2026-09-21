@@ -31,7 +31,7 @@ public class BundleContainer extends SimpleContainer {
     public static NonNullList<ItemStack> getItems(ItemStack usedStack, int SIZE) {
         NonNullList<ItemStack> itemStacks = NonNullList.withSize(SIZE, ItemStack.EMPTY);
             BundleContents bundleContents = usedStack.get(DataComponents.BUNDLE_CONTENTS);
-            List<ItemStack> stacks = bundleContents.itemCopyStream().toList();
+            List<ItemStack> stacks = bundleContents.itemCopies().toList();
             for(int i = 0; i < stacks.size(); i++){
                 itemStacks.set(i, stacks.get(i));
             }
@@ -45,7 +45,7 @@ public class BundleContainer extends SimpleContainer {
     public int countCanInsertToBundle(ItemStack insertStack){
         BundleContents contents = this.getBundleContents();
         if(contents != null){
-            BundleContents.Mutable builder =new BundleContents.Mutable(contents);
+            BundleContents.Mutable builder = contents.asMutable();
             return builder.tryInsert(insertStack.copy());
         }
         return 0;

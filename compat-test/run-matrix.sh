@@ -5,7 +5,8 @@ jar="$(realpath "${1:?Usage: run-matrix.sh built-quickshulker.jar}")"
 mc="$(sed -n 's/^minecraft_version=//p' gradle.properties | tr -d '\r')"
 case "$mc" in
   26.1) old=3.0.0-26.1 ;;
-  26.2) old=3.0.2-26.2 ;;
+  26.2) old=3.1.0-26.2 ;;
+  26.3) old=3.1.0-26.3 ;;
   *) echo "Unsupported Minecraft version: $mc" >&2; exit 1 ;;
 esac
 results="$PWD/compat-test/build/matrix-results"

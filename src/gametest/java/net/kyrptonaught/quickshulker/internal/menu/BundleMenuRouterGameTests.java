@@ -32,7 +32,7 @@ public final class BundleMenuRouterGameTests {
 
     private static void verifySecondPage(GameTestHelper helper, ClientProtocol protocol) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        var contents = new BundleContents.Mutable(BundleContents.EMPTY);
+        var contents = BundleContents.EMPTY.asMutable();
         contents.tryInsert(new ItemStack(Items.DIAMOND, 4));
         int preceding = 0;
         for (var item : BuiltInRegistries.ITEM) {

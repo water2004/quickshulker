@@ -3,13 +3,13 @@
 [简体中文](README_CN.md)
 
 [![GitHub release](https://img.shields.io/github/v/release/water2004/quickshulker?include_prereleases)](https://github.com/water2004/quickshulker/releases)
-[![Minecraft](https://img.shields.io/badge/Minecraft-26.1%20%7C%2026.2-blue)](#downloads)
+[![Minecraft](https://img.shields.io/badge/Minecraft-26.2%20%7C%2026.3-blue)](#downloads)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > [!IMPORTANT]
 > This repository is a maintained fork of [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker). It has its own releases, compatibility range, APIs, issue tracker, and documentation. Download this fork only from the [water2004/quickshulker Releases page](https://github.com/water2004/quickshulker/releases).
 
-Quick Shulker is a Fabric mod for opening useful items directly from the player's hand or inventory and moving items into or out of carried containers. This fork supports Minecraft 26.1 and 26.2, preserves the established public extension API, makes server-side bundle support safe for unmodded clients, and adds a screen-independent shulker API for other mods.
+Quick Shulker is a Fabric mod for opening useful items directly from the player's hand or inventory and moving items into or out of carried containers. This fork supports Minecraft 26.2 and 26.3, preserves the established public extension API, makes server-side bundle support safe for unmodded clients, and adds a screen-independent shulker API for other mods.
 
 ## Downloads
 
@@ -19,14 +19,14 @@ Quick Shulker 4.0 adds a screen-independent shulker protocol and Fabric Transfer
 
 | Minecraft | Release |
 | --- | --- |
-| 26.1 | [4.0.1-26.1](https://github.com/water2004/quickshulker/releases/tag/4.0.1-26.1) |
 | 26.2 | [4.0.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.1-26.2) |
+| 26.3 | Main branch build (release pending) |
 
 The two Minecraft artifacts are not interchangeable.
 
 ## Requirements
 
-- Minecraft 26.1 or 26.2
+- Minecraft 26.2 or 26.3
 - [Fabric Loader](https://fabricmc.net/use/installer/)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - Java 25
@@ -42,7 +42,7 @@ The two Minecraft artifacts are not interchangeable.
 | Not installed | Installed | Vanilla clients can still join. Server-side right-click behavior uses vanilla menus, and bundles use a paged `9 x 6` vanilla container instead of a custom menu type. Client keybind and hover actions are unavailable. |
 | This fork 4.x | Not installed | The client does not pretend the protocol is available. Unsupported Quick Shulker interactions pass through to vanilla or other mods. |
 
-“Original v3” specifically means MoRanpcy Quick Shulker `3.0.0-26.1` or `3.0.2-26.2` on the matching Minecraft version. This fork's own discontinued 3.x releases are not a protocol-compatibility target.
+“Original v3” specifically means the matching MoRanpcy Quick Shulker `3.1.0-26.2` or `3.1.0-26.3` release. This fork's own discontinued 3.x releases are not a protocol-compatibility target.
 
 For the 4.0 direct protocol, keep the Quick Shulker client and server on matching compatible releases. Integrations must capability-detect the protocol; API submission never silently falls back to screen simulation.
 
@@ -231,7 +231,7 @@ cd quickshulker
 
 On Windows, use `gradlew.bat`. The release jar is written to `build/libs/`.
 
-The main suite covers quick-open, shulker transactions, the original-v3 packet contract, and the absence of mandatory Quick Shulker registry entries. `legacy-gametest/` checks the retained public extension API. `compat-test/` connects real vanilla, Fabric-without-QS, original-v3 and v4 clients to a dedicated server, checks container extraction and authoritative inventory contents, and gates CI releases. Tagged commits on `main` publish Minecraft 26.2 artifacts; tagged commits on `26.1` publish Minecraft 26.1 artifacts.
+The main suite covers quick-open, shulker transactions, the original-v3 packet contract, and the absence of mandatory Quick Shulker registry entries. `legacy-gametest/` checks the retained public extension API. `compat-test/` connects real vanilla, Fabric-without-QS, original-v3 and v4 clients to a dedicated server, checks container extraction and authoritative inventory contents, and gates CI releases. Tagged commits on `main` publish Minecraft 26.3 artifacts; tagged commits on `26.2` publish Minecraft 26.2 artifacts.
 
 ## License
 

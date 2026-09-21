@@ -14,7 +14,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class KeybindItem extends ConfigItem<String> {
     private final NotSuckyButton keyButton;
@@ -87,7 +86,7 @@ public class KeybindItem extends ConfigItem<String> {
     @Override
     public boolean keyPressed(KeyEvent input) {
         if (isListening) {
-            if (input.input() == GLFW.GLFW_KEY_ESCAPE) {
+            if (input.input() == InputConstants.KEY_ESCAPE) {
                 setValue("");
                 return true;
             }

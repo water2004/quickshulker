@@ -8,7 +8,7 @@ Run the published baseline:
 
 ```powershell
 ..\gradlew.bat -p . runGameTest `
-  -PquickShulkerJar=D:\litematica-printer\libs\quickshulker-3.0.4-26.2.jar `
+  -PquickShulkerJar=D:\litematica-printer\libs\quickshulker-3.0.4-26.3.jar `
   -PlegacyBehaviorProfile=baseline-3.0.4
 ```
 
@@ -17,7 +17,7 @@ Run a current build:
 ```powershell
 ..\gradlew.bat jar
 ..\gradlew.bat -p . runGameTest `
-  -PquickShulkerJar=D:\quickshulker\build\libs\quickshulker-4.0.0-alpha.1-26.2.jar `
+  -PquickShulkerJar=D:\quickshulker\build\libs\quickshulker-4.0.1-26.3.jar `
   -PlegacyBehaviorProfile=current
 ```
 

@@ -1,4 +1,4 @@
-# QuickShulker 4.0.1 for Minecraft 26.2
+# QuickShulker 4.0.1 for Minecraft 26.3
 
 Fixes the 4.0.0 regression that prevented clients without Quick Shulker from joining a modded server.
 
@@ -8,7 +8,7 @@ Fixes the 4.0.0 regression that prevented clients without Quick Shulker from joi
 - Existing legacy integration APIs, v3 packet formats, and the v4 direct shulker API/protocol are unchanged.
 - Added a handshake-registry GameTest and dedicated-server connection tests with real vanilla, Fabric-without-QS, upstream-v3 and v4 clients. Tests extract items from both shulker boxes and bundles and verify the authoritative server inventory. The connection matrix now gates CI releases.
 
-Requires Minecraft 26.2, Java 25, Fabric Loader and Fabric API on the server. Install Quick Shulker on both sides to use client shortcuts and the direct shulker protocol; it is not required on the client just to join.
+Requires Minecraft 26.3, Java 25, Fabric Loader and Fabric API on the server. Install Quick Shulker on both sides to use client shortcuts and the direct shulker protocol; it is not required on the client just to join.
 
 ## 中文
 

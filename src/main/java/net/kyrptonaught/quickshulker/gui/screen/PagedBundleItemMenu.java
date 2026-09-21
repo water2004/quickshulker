@@ -199,7 +199,7 @@ public class PagedBundleItemMenu extends AbstractContainerMenu {
 
             BundleContents contents = backing.getBundleContents();
             if (contents == null) return false;
-            BundleContents.Mutable mutable = new BundleContents.Mutable(contents);
+            BundleContents.Mutable mutable = contents.asMutable();
             ItemStack stackInSlot = getItem();
             if (stackInSlot.isEmpty() || ItemStack.isSameItemSameComponents(stackInSlot, stack)) {
                 DataResult<Fraction> weight = BundleContents.getWeight(stack);
