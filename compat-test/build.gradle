@@ -55,6 +55,7 @@ tasks.named('runServer') {
         new File(runDirectory, 'eula.txt').text = 'eula=true\n'
         new File(runDirectory, 'server.properties').text = """
 online-mode=false
+white-list=false
 server-port=${matrixPort}
 server-ip=127.0.0.1
 level-name=matrix-world
