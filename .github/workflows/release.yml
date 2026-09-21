@@ -5,12 +5,14 @@ on:
     branches:
       - main
       - "26.1"
+      - "26.2"
     tags:
       - "[0-9]*"
   pull_request:
     branches:
       - main
       - "26.1"
+      - "26.2"
 
 permissions:
   contents: read
@@ -114,7 +116,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$GITHUB_REF_NAME" in
-            *-26.2) release_branch="main" ;;
+            *-26.2) release_branch="26.2" ;;
             *-26.1) release_branch="26.1" ;;
             *)
               echo "Unsupported Minecraft version in tag $GITHUB_REF_NAME" >&2
