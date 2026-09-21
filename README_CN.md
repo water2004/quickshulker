@@ -20,7 +20,7 @@ Quick Shulker 4.0 在保留既有公共 API 与玩家功能的同时，增加无
 | Minecraft | Release |
 | --- | --- |
 | 26.2 | [4.0.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.1-26.2) |
-| 26.3 | 主分支构建（正式版待发布） |
+| 26.3 | [4.0.1+26.3](https://github.com/water2004/quickshulker/releases/tag/4.0.1%2B26.3) |
 
 两个 Minecraft 版本的文件不能混用。
 

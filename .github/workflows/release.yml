@@ -116,7 +116,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$GITHUB_REF_NAME" in
-            *-26.3) release_branch="main" ;;
+            *+26.3) release_branch="main" ;;
             *-26.2) release_branch="26.2" ;;
             *-26.1) release_branch="26.1" ;;
             *)

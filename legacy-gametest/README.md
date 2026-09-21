@@ -17,7 +17,7 @@ Run a current build:
 ```powershell
 ..\gradlew.bat jar
 ..\gradlew.bat -p . runGameTest `
-  -PquickShulkerJar=D:\quickshulker\build\libs\quickshulker-4.0.1-26.3.jar `
+  -PquickShulkerJar=D:\quickshulker\build\libs\quickshulker-4.0.1+26.3.jar `
   -PlegacyBehaviorProfile=current
 ```
 

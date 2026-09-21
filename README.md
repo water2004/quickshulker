@@ -20,7 +20,7 @@ Quick Shulker 4.0 adds a screen-independent shulker protocol and Fabric Transfer
 | Minecraft | Release |
 | --- | --- |
 | 26.2 | [4.0.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.1-26.2) |
-| 26.3 | Main branch build (release pending) |
+| 26.3 | [4.0.1+26.3](https://github.com/water2004/quickshulker/releases/tag/4.0.1%2B26.3) |
 
 The two Minecraft artifacts are not interchangeable.
 

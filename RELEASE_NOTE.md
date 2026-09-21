@@ -1,4 +1,4 @@
-# QuickShulker 4.0.1 for Minecraft 26.3
+# QuickShulker 4.0.1+26.3
 
 Fixes the 4.0.0 regression that prevented clients without Quick Shulker from joining a modded server.
 
