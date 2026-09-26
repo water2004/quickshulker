@@ -5,7 +5,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public abstract class ContainerMixin implements ItemInventoryContainer {
     public NonNullList<Slot> slots;
 
     @Inject(method = "clicked", at = @At("HEAD"), cancellable = true)
-    public void QS$onClick(int slotId, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
+    public void QS$onClick(int slotId, int button, ClickType actionType, Player player, CallbackInfo ci) {
         if (slotId > 0 && slotId < slots.size()) {
             if (hasItem())
                 if (slots.get(slotId).container instanceof Inventory && slots.get(slotId).getContainerSlot() == playerInvSlot)

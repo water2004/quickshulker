@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.kyrptonaught.quickshulker.api.QuickOpenableRegistry;
 import net.kyrptonaught.quickshulker.api.QuickShulkerData;
 import net.kyrptonaught.quickshulker.api.Util;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class LegacyKnownBugGameTests {
     /** QS-LB-001: retained deprecated-API compatibility quirk. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     @SuppressWarnings("deprecation")
     public void qsLb001DeprecatedSingularArgumentIsIgnored(GameTestHelper helper) {
         try (LegacyTestSupport.RegistrySnapshot ignored =
@@ -41,7 +41,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-002: 3.0.4 rejected valid non-SimpleContainer registrations. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb002BoxTransferSupportsAnyContainer(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack sourceHost = LegacyTestSupport.box();
@@ -83,7 +83,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-003: 3.0.4 bypassed the target registration's insertion rule. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb003BoxTransferEnforcesDestinationPolicy(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack source = LegacyTestSupport.box(new ItemStack(Items.STONE, 6));
@@ -115,7 +115,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-004: 3.0.4 coupled persistence to a mixin callback object. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb004NullCallbackStillPersistsBoxTransfer(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack sourceHost = LegacyTestSupport.box(new ItemStack(Items.STONE, 6));
@@ -161,7 +161,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-005: currently retained observable eager inventory lookup. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb005DisabledUnbundleStillResolvesInventory(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         AtomicInteger lookups = new AtomicInteger();
@@ -188,7 +188,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-006: currently retained invalid-input failure. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb006NegativeOpenSlotStillFailsFast(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         LegacyTestSupport.assertThrows(helper, IndexOutOfBoundsException.class,
@@ -198,7 +198,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-007: 3.0.4 treated a zero-item safeInsert as success. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb007UnbundleSkipsZeroMoveCandidate(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack host = LegacyTestSupport.box(
@@ -230,7 +230,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-007 companion case: no candidate can move at all. */
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void qsLb007UnbundleReportsNoTransferWhenEveryMoveIsZero(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);

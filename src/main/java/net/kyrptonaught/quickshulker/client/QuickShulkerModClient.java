@@ -26,7 +26,7 @@ public class QuickShulkerModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientTickEvents.START_LEVEL_TICK.register(ModKeyCallback::onKeyPressed);
+        ClientTickEvents.START_WORLD_TICK.register(ModKeyCallback::onKeyPressed);
         ClientTickEvents.END_CLIENT_TICK.register(client -> ShulkerTransferClientRuntime.tick());
         ClientPlayConnectionEvents.JOIN.register(
                 (handler, sender, client) -> ShulkerTransferClientRuntime.beginConnection());
@@ -37,19 +37,19 @@ public class QuickShulkerModClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(ShulkerTransferResultPacket.ID,
                 (payload, context) -> context.client().execute(
                         () -> ShulkerTransferClientRuntime.receive(payload)));
-        PayloadTypeRegistry.serverboundPlay().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(OpenInventoryPacket.OPEN_INV_ID, (payload, context) -> {
-            context.client().gui.setScreen(new InventoryScreen(context.player()));
+            context.client().setScreen(new InventoryScreen(context.player()));
         });
 
-        PayloadTypeRegistry.serverboundPlay().register(EnderChestS2CSyncPacket.S2CEChestContentPacket.S2C_ECHEST_CONTENT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestContentPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(EnderChestS2CSyncPacket.S2CEChestContentPacket.S2C_ECHEST_CONTENT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestContentPacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(EnderChestS2CSyncPacket.S2CEChestContentPacket.S2C_ECHEST_CONTENT_PACKET_ID, (payload, context) -> {
             context.client().execute(() -> {
                 EnderChestSyncHandler.setEnderChestContent(context.player(), payload.itemStacks());
             });
         });
 
-        PayloadTypeRegistry.serverboundPlay().register(EnderChestS2CSyncPacket.S2CEChestSlotPacket.S2C_ECHEST_SLOT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestSlotPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(EnderChestS2CSyncPacket.S2CEChestSlotPacket.S2C_ECHEST_SLOT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestSlotPacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(EnderChestS2CSyncPacket.S2CEChestSlotPacket.S2C_ECHEST_SLOT_PACKET_ID, (payload, context) -> {
             context.client().execute(() -> {
                 PlayerEnderChestContainer enderChestInventory = context.player().getEnderChestInventory();

@@ -25,7 +25,7 @@ public final class MatrixServerInitializer implements ModInitializer {
                             List.of(new ItemStack(Items.STONE, 4))));
                     player.getInventory().setItem(9, box);
                     ItemStack bundle = new ItemStack(Items.BUNDLE);
-                    var contents = BundleContents.EMPTY.asMutable();
+                    var contents = new BundleContents.Mutable(BundleContents.EMPTY);
                     contents.tryInsert(new ItemStack(Items.DIAMOND, 4));
                     bundle.set(DataComponents.BUNDLE_CONTENTS, contents.toImmutable());
                     player.getInventory().setItem(10, bundle);
@@ -40,12 +40,12 @@ public final class MatrixServerInitializer implements ModInitializer {
                 return;
             }
             for (var player : server.getPlayerList().getPlayers()) {
-                var items = player.getInventory().getNonEquipmentItems();
+                var items = player.getInventory().items;
                 int stone = items.stream().filter(s -> s.is(Items.STONE)).mapToInt(ItemStack::getCount).sum();
                 int diamond = items.stream().filter(s -> s.is(Items.DIAMOND)).mapToInt(ItemStack::getCount).sum();
                 boolean boxesEmpty = items.stream().filter(s -> s.is(Items.SHULKER_BOX))
                         .allMatch(s -> s.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-                                .nonEmptyItemCopyStream().findAny().isEmpty());
+                                .nonEmptyStream().findAny().isEmpty());
                 boolean bundlesEmpty = items.stream().filter(s -> s.is(Items.BUNDLE))
                         .allMatch(s -> s.getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY).isEmpty());
                 if (stone != 4 || diamond != 4 || !boxesEmpty || !bundlesEmpty

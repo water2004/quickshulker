@@ -3,15 +3,10 @@ package net.kyrptonaught.kyrptconfig.config.screen;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class ConfigScreen extends Screen {
@@ -22,8 +17,8 @@ public class ConfigScreen extends Screen {
     Screen previousScreen;
     private NotSuckyButton scrollLeftBTN, scrollRightBTN;
     int horizontalScrollOffset = -1;
-    private static final Identifier SCROLLER_TEXTURE = Identifier.parse("widget/scroller");
-    private static final Identifier OPTIONS_BACKGROUND_TEXTURE = Identifier.parse("textures/block/dirt.png");
+    private static final ResourceLocation SCROLLER_TEXTURE = ResourceLocation.parse("widget/scroller");
+    private static final ResourceLocation OPTIONS_BACKGROUND_TEXTURE = ResourceLocation.parse("textures/block/dirt.png");
 
     public ConfigScreen(Screen previousScreen, Component title) {
         super(title);
@@ -33,15 +28,15 @@ public class ConfigScreen extends Screen {
     protected void init() {
         int center = this.width / 2;
         this.addRenderableWidget(new NotSuckyButton(center - 153, height - 25, 150, 20, Component.translatable("key.kyrptconfig.config.exit"), widget -> {
-            this.minecraft.gui.setScreen(previousScreen);
+            this.minecraft.setScreen(previousScreen);
         }));
 
         this.addRenderableWidget(new NotSuckyButton(center + 3, height - 25, 150, 20, Component.translatable("key.kyrptconfig.config.saveExit"), widget -> {
             save();
-            this.minecraft.gui.setScreen(previousScreen);
+            this.minecraft.setScreen(previousScreen);
         }));
         for (ConfigSection section : sections) {
-            section.init(width, height - 57 - 30);
+            section.init(this.minecraft, width, height - 57 - 30);
         }
 
         adjustForHorizontalScroll(this.width);
@@ -133,27 +128,27 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
-        if (sections.get(selectedSection).keyPressed(input)) return true;
-        return super.keyPressed(input);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (sections.get(selectedSection).keyPressed(keyCode, scanCode, modifiers)) return true;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean charTyped(CharacterEvent input) {
-        return sections.get(selectedSection).charTyped(input);
+    public boolean charTyped(char codePoint, int modifiers) {
+        return sections.get(selectedSection).charTyped(codePoint, modifiers);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-        super.mouseClicked(click, doubled);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
 
-        if (scrollLeftBTN.mouseClicked(click, doubled) || scrollRightBTN.mouseClicked(click, doubled))
+        if (scrollLeftBTN.mouseClicked(mouseX, mouseY, button) || scrollRightBTN.mouseClicked(mouseX, mouseY, button))
             return true;
 
         for (ConfigSection section : sections)
-            if (section.sectionSelectionBTN.mouseClicked(click, doubled)) return true;
+            if (section.sectionSelectionBTN.mouseClicked(mouseX, mouseY, button)) return true;
 
-        return sections.get(selectedSection).mouseClicked(click, doubled);
+        return sections.get(selectedSection).mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -162,17 +157,17 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
-        super.extractBackground(context, mouseX, mouseY, deltaTicks);
+    public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+        super.renderBackground(context, mouseX, mouseY, deltaTicks);
 
         ConfigSection section = sections.get(selectedSection);
 
         context.enableScissor(0, 57, this.width, this.height - 30);
         context.fillGradient(0, 57, this.width, this.height, 1744830464, 1744830464);
-        section.extractRenderState(context, 57, mouseX, mouseY, deltaTicks);
+        section.render(context, 57, mouseX, mouseY, deltaTicks);
         context.disableScissor();
 
-        context.centeredText(this.font, this.title, this.width / 2, 13, -1);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 13, -1);
         drawHeaderAndFooterSeparators(context);
 
         boolean noHover = scrollLeftBTN.detectHover(mouseX, mouseY) | scrollRightBTN.detectHover(mouseX, mouseY);
@@ -188,16 +183,16 @@ public class ConfigScreen extends Screen {
                     selectionBTN.setX(previousBTN.getX() + previousBTN.getWidth() + 3);
                 }
                 selectionBTN.disableHover = noHover;
-                selectionBTN.extractRenderState(context, mouseX, mouseY, deltaTicks);
+                selectionBTN.render(context, mouseX, mouseY, deltaTicks);
             }
             context.disableScissor();
-            scrollLeftBTN.extractRenderState(context, mouseX, mouseY, deltaTicks);
-            scrollRightBTN.extractRenderState(context, mouseX, mouseY, deltaTicks);
+            scrollLeftBTN.render(context, mouseX, mouseY, deltaTicks);
+            scrollRightBTN.render(context, mouseX, mouseY, deltaTicks);
         }else{
             for (int i = 0; i < sections.size(); i++) {
                 NotSuckyButton selectionBTN = sections.get(i).sectionSelectionBTN;
                 selectionBTN.active = i != selectedSection;
-                selectionBTN.extractRenderState(context, mouseX, mouseY, deltaTicks);
+                selectionBTN.render(context, mouseX, mouseY, deltaTicks);
             }
         }
 
@@ -212,30 +207,30 @@ public class ConfigScreen extends Screen {
             int y = Mth.lerpInt(percentage, 57, this.height - 30 - height);
 
             context.fill(x, 57, x + 6, this.height - 30, -16777216);
-            context.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, x, y, 6, height);
+            context.blitSprite(SCROLLER_TEXTURE, x, y, 6, height);
         }
 
-        section.extractRenderState2(context, 57, mouseX, mouseY, deltaTicks);
+        section.render2(context, 57, mouseX, mouseY, deltaTicks);
 
-        super.extractRenderState(context, mouseX, mouseY, deltaTicks);
+        super.render(context, mouseX, mouseY, deltaTicks);
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
     }
 
-    private void extractBackgroundTexture(GuiGraphicsExtractor context) {
-        context.blit(RenderPipelines.GUI_TEXTURED, OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0, this.width, this.height, 32, 32);
+    private void renderBackgroundTexture(GuiGraphics context) {
+        context.blit(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0, this.width, this.height, 32, 32);
     }
 
-    private void drawHeaderAndFooterSeparators(GuiGraphicsExtractor context) {
-        context.blit(RenderPipelines.GUI_TEXTURED, Screen.HEADER_SEPARATOR, 0, 55, 0.0f, 0.0f, this.width, 2, 32, 2);
-        context.blit(RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.height -30, 0.0f, 0.0f, this.width, 2, 32, 2);
+    private void drawHeaderAndFooterSeparators(GuiGraphics context) {
+        context.blit(Screen.HEADER_SEPARATOR, 0, 55, 0.0f, 0.0f, this.width, 2, 32, 2);
+        context.blit(Screen.FOOTER_SEPARATOR, 0, this.height -30, 0.0f, 0.0f, this.width, 2, 32, 2);
     }
 
-    private void drawDirtTextureBlurred(GuiGraphicsExtractor context, int x, int y, int width, int height) {
-        int color = ARGB.colorFromFloat(.7f, 0, 0, 0);
-        context.blit(RenderPipelines.GUI_TEXTURED, OPTIONS_BACKGROUND_TEXTURE, x, y, 0, 0, width, height, 64, 64);
+    private void drawDirtTextureBlurred(GuiGraphics context, int x, int y, int width, int height) {
+        int color = 0xB2000000;
+        context.blit(OPTIONS_BACKGROUND_TEXTURE, x, y, 0, 0, width, height, 64, 64);
         context.fillGradient(x, y, x + width, y + height, color, color);
     }
 }

@@ -13,14 +13,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public record QuickBundlePacket(int slotId, ItemStack stackToBundle) implements CustomPacketPayload {
 
-    private static final Identifier QUICK_BUNDLE_PACKET = Identifier.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "quick_bundle_packet");
+    private static final ResourceLocation QUICK_BUNDLE_PACKET = ResourceLocation.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "quick_bundle_packet");
     private static final Type<QuickBundlePacket> QUICK_BUNDLE_PACKET_ID = new Type<>(QUICK_BUNDLE_PACKET);
     private static final StreamCodec<RegistryFriendlyByteBuf, QuickBundlePacket> CODEC = StreamCodec.ofMember(
             (value, buf) -> {
@@ -29,8 +29,8 @@ public record QuickBundlePacket(int slotId, ItemStack stackToBundle) implements 
             buf -> new QuickBundlePacket(buf.readInt(), PacketUtils.readItemStack(buf)));
 
     public static void registerReceivePacket() {
-        PayloadTypeRegistry.clientboundPlay().register(QuickBundlePacket.QUICK_BUNDLE_PACKET_ID, QuickBundlePacket.CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(QuickBundlePacket.QUICK_BUNDLE_PACKET_ID, QuickBundlePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(QuickBundlePacket.QUICK_BUNDLE_PACKET_ID, QuickBundlePacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(QuickBundlePacket.QUICK_BUNDLE_PACKET_ID, QuickBundlePacket.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(QuickBundlePacket.QUICK_BUNDLE_PACKET_ID, (payload, context) -> {
             if (context.player().isCreative()) {
                 context.server().execute(() -> BundleHelper.bundleItemIntoStack(context.player(), context.player().getInventory().getItem(payload.slotId), payload.stackToBundle, null));
@@ -56,12 +56,12 @@ public record QuickBundlePacket(int slotId, ItemStack stackToBundle) implements 
 
     public record BundleIntoHeld(List<ItemStack> stackList, int slotId) implements CustomPacketPayload{
 
-        private static final Identifier QUICK_BUNDLEHELD_PACKET = Identifier.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "quick_bundleheld_packet");
+        private static final ResourceLocation QUICK_BUNDLEHELD_PACKET = ResourceLocation.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "quick_bundleheld_packet");
         private static final Type<BundleIntoHeld> QUICK_BUNDLEHELD_PACKET_ID = new Type<>(QUICK_BUNDLEHELD_PACKET);
         private static final StreamCodec<RegistryFriendlyByteBuf, BundleIntoHeld> CODEC = StreamCodec.composite(ItemStack.OPTIONAL_LIST_STREAM_CODEC, BundleIntoHeld::stackList, ByteBufCodecs.INT, BundleIntoHeld::slotId, BundleIntoHeld::new);
         public static void registerReceivePacket() {
-            PayloadTypeRegistry.clientboundPlay().register(BundleIntoHeld.QUICK_BUNDLEHELD_PACKET_ID, BundleIntoHeld.CODEC);
-            PayloadTypeRegistry.serverboundPlay().register(BundleIntoHeld.QUICK_BUNDLEHELD_PACKET_ID, BundleIntoHeld.CODEC);
+            PayloadTypeRegistry.playS2C().register(BundleIntoHeld.QUICK_BUNDLEHELD_PACKET_ID, BundleIntoHeld.CODEC);
+            PayloadTypeRegistry.playC2S().register(BundleIntoHeld.QUICK_BUNDLEHELD_PACKET_ID, BundleIntoHeld.CODEC);
             ServerPlayNetworking.registerGlobalReceiver(BundleIntoHeld.QUICK_BUNDLEHELD_PACKET_ID, (payload, context) -> {
                 if (context.player().isCreative()) {
                     context.server().execute(() -> {
@@ -85,7 +85,7 @@ public record QuickBundlePacket(int slotId, ItemStack stackToBundle) implements 
 
     public record UnbundlePacket(int slotId, ItemStack unbundleStack) implements CustomPacketPayload{
 
-        private static final Identifier QUICK_UNBUNDLE_PACKET = Identifier.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "quick_unbundle_packet");
+        private static final ResourceLocation QUICK_UNBUNDLE_PACKET = ResourceLocation.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "quick_unbundle_packet");
         private static final Type<UnbundlePacket> QUICK_UNBUNDLE_PACKET_ID = new Type<>(QUICK_UNBUNDLE_PACKET);
         private static final StreamCodec<RegistryFriendlyByteBuf, UnbundlePacket> CODEC = StreamCodec.ofMember(
                 (value, buf) -> {
@@ -93,8 +93,8 @@ public record QuickBundlePacket(int slotId, ItemStack stackToBundle) implements 
                 buf -> new UnbundlePacket(buf.readInt(), PacketUtils.readItemStack(buf)));
 
         public static void registerReceivePacket() {
-            PayloadTypeRegistry.clientboundPlay().register(UnbundlePacket.QUICK_UNBUNDLE_PACKET_ID, UnbundlePacket.CODEC);
-            PayloadTypeRegistry.serverboundPlay().register(UnbundlePacket.QUICK_UNBUNDLE_PACKET_ID, UnbundlePacket.CODEC);
+            PayloadTypeRegistry.playS2C().register(UnbundlePacket.QUICK_UNBUNDLE_PACKET_ID, UnbundlePacket.CODEC);
+            PayloadTypeRegistry.playC2S().register(UnbundlePacket.QUICK_UNBUNDLE_PACKET_ID, UnbundlePacket.CODEC);
             ServerPlayNetworking.registerGlobalReceiver(UnbundlePacket.QUICK_UNBUNDLE_PACKET_ID, (payload, context) -> {
                 if (context.player().isCreative()) {
                     context.server().execute(() -> {

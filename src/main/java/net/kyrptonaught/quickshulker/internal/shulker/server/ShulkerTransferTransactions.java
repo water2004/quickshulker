@@ -71,7 +71,7 @@ public final class ShulkerTransferTransactions {
                                                   ShulkerTransferRequest request) {
         int playerSlot = request.playerEndpoint().slot();
         int hostSlot = request.shulkerEndpoint().hostInventorySlot();
-        int inventorySize = player.getInventory().getNonEquipmentItems().size();
+        int inventorySize = player.getInventory().items.size();
         if (playerSlot >= inventorySize || hostSlot >= inventorySize) {
             return ShulkerTransferResult.empty(ShulkerTransferStatus.INVALID_ENDPOINT);
         }

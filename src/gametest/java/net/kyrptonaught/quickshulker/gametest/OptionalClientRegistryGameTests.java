@@ -1,13 +1,13 @@
 package net.kyrptonaught.quickshulker.gametest;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 /** The actual Fabric handshake map, not a mock player's chosen menu. */
 public final class OptionalClientRegistryGameTests {
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void quickShulkerNeverRequiresClientRegistryEntries(GameTestHelper helper) {
         var map = RegistrySyncManager.createAndPopulateRegistryMap();
         if (map != null) {

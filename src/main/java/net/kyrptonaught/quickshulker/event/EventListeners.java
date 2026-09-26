@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.event;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyrptonaught.quickshulker.util.EnderChestSyncHandler;
@@ -26,7 +26,7 @@ public class EventListeners {
         });
 
         // Change dimension
-        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
             EnderChestSyncHandler.syncEnderChestContent(player);
         });
 

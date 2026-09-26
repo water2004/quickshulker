@@ -1,7 +1,7 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.kyrptonaught.quickshulker.api.QuickOpenableRegistry;
 import net.kyrptonaught.quickshulker.api.QuickShulkerData;
 import net.kyrptonaught.quickshulker.api.Util;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.ShulkerBoxBlock;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class LegacyRegistryGameTests {
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void selectedProfileMatchesLoadedQuickShulker(GameTestHelper helper) {
         String version = FabricLoader.getInstance()
                 .getModContainer("quickshulker")
@@ -35,7 +35,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void quickShulkerDataDefaultsAreStable(GameTestHelper helper) {
         QuickShulkerData data = new QuickShulkerData();
         helper.assertTrue(!data.supportsBundleing,
@@ -47,7 +47,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void constructorArgumentsPopulateObservableFields(GameTestHelper helper) {
         AtomicInteger opens = new AtomicInteger();
         QuickShulkerData data = new QuickShulkerData(
@@ -63,7 +63,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void registrationsOverwriteByExactRuntimeClass(GameTestHelper helper) {
         try (LegacyTestSupport.RegistrySnapshot ignored =
                      LegacyTestSupport.registrySnapshot()) {
@@ -81,7 +81,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     @SuppressWarnings("unchecked")
     public void blockRegistrationPrecedesBlockItemRegistration(GameTestHelper helper) {
         try (LegacyTestSupport.RegistrySnapshot snapshot =
@@ -104,7 +104,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void builderSharesOneLiveRegistrationAcrossTypes(GameTestHelper helper) {
         try (LegacyTestSupport.RegistrySnapshot ignored =
                      LegacyTestSupport.registrySnapshot()) {
@@ -129,7 +129,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void bundlingSupportGatesInventoryResolution(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack stone = new ItemStack(Items.STONE);
@@ -158,7 +158,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void openabilityAndHandPolicyRemainIndependent(GameTestHelper helper) {
         try (LegacyTestSupport.RegistrySnapshot ignored =
                      LegacyTestSupport.registrySnapshot()) {
@@ -181,7 +181,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void defaultInsertionPolicyRejectsNestedShulkers(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         QuickShulkerData data = new QuickShulkerData();
@@ -197,7 +197,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void customInsertionPolicyReceivesFullStackCount(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         AtomicInteger observed = new AtomicInteger(-1);
@@ -221,7 +221,7 @@ public final class LegacyRegistryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void itemEqualityIgnoresCountButNotComponents(GameTestHelper helper) {
         ItemStack one = new ItemStack(Items.STONE, 1);
         ItemStack many = new ItemStack(Items.STONE, 42);

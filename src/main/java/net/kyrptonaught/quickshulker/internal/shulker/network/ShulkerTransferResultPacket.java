@@ -5,12 +5,12 @@ import net.kyrptonaught.quickshulker.api.shulker.ShulkerTransferResult;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public record ShulkerTransferResultPacket(long sequence, ShulkerTransferResult result)
         implements CustomPacketPayload {
     public static final Type<ShulkerTransferResultPacket> ID = new Type<>(
-            Identifier.fromNamespaceAndPath(
+            ResourceLocation.fromNamespaceAndPath(
                     QuickShulkerMod.MOD_ID, "shulker_transfer_result"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ShulkerTransferResultPacket> CODEC =
             StreamCodec.ofMember(

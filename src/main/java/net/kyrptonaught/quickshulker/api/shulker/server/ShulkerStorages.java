@@ -47,7 +47,7 @@ public final class ShulkerStorages {
         }
 
         Inventory inventory = player.getInventory();
-        if (playerInventorySlot >= inventory.getNonEquipmentItems().size()) {
+        if (playerInventorySlot >= inventory.items.size()) {
             return Optional.empty();
         }
 

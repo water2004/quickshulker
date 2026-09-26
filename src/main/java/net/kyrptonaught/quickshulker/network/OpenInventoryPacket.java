@@ -5,12 +5,12 @@ import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class OpenInventoryPacket implements CustomPacketPayload {
 
-    public static final Identifier OPEN_INV = Identifier.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "open_inv");
+    public static final ResourceLocation OPEN_INV = ResourceLocation.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "open_inv");
 
     public static final Type<OpenInventoryPacket> OPEN_INV_ID = new CustomPacketPayload.Type<>(OPEN_INV);
 

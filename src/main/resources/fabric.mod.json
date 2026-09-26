@@ -59,10 +59,10 @@
     ]
   },
   "depends": {
-    "minecraft": "~26.3",
-    "fabricloader": ">=0.19.5",
+    "minecraft": "1.21.1",
+    "fabricloader": ">=0.16.14",
     "fabric-api": "*",
-    "java": ">=25"
+    "java": ">=21"
   },
   "accessWidener": "quickshulker.accesswidener"
 }

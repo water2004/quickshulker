@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayer.class)
 public class ContainerOpenMixin {
     @Inject(method = "openMenu", at = @At("TAIL"))
-    private void onOpenHandledScreen(MenuProvider factory, CallbackInfoReturnable<Boolean> cir){
+    private void onOpenHandledScreen(MenuProvider factory, CallbackInfoReturnable<java.util.OptionalInt> cir){
         ServerPlayer player = (ServerPlayer) (Object) this;
         if(player.containerMenu instanceof ChestMenu chestMenu && chestMenu.getContainer() == player.getEnderChestInventory()){
             EventListeners.containerOpenedListener(player, chestMenu);

@@ -11,9 +11,9 @@ public final class ShulkerTransferProtocol {
     }
 
     public static void register() {
-        PayloadTypeRegistry.serverboundPlay().register(
+        PayloadTypeRegistry.playC2S().register(
                 ShulkerTransferRequestPacket.ID, ShulkerTransferRequestPacket.CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(
+        PayloadTypeRegistry.playS2C().register(
                 ShulkerTransferResultPacket.ID, ShulkerTransferResultPacket.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(ShulkerTransferRequestPacket.ID,
                 (payload, context) -> context.server().execute(() -> {

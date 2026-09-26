@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.gametest;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -25,7 +25,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.ContainerUser;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +41,7 @@ public final class QuickShulkerTransferGameTests {
     private static final int BOX_SLOT = 9;
     private static final int OUTPUT_SLOT = 10;
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void legacyAndPublicStorageUseTheSameInsertionSemantics(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack legacyBox = box(new ItemStack(Items.STONE, 60));
@@ -66,7 +66,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void abortedTransactionRestoresShulkerContents(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box(new ItemStack(Items.STONE, 12));
@@ -84,7 +84,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void exactSlotsComposeWithPlayerInventoryStorage(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box(
@@ -115,7 +115,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void storageRejectsNestedShulkerBoxes(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box();
@@ -135,7 +135,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void resolvedStorageStopsWhenSlotIsUnsupportedAndFollowsLiveContents(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -168,7 +168,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void versionAndUnderlyingViewsFollowAuthoritativeSlotState(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -199,7 +199,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void independentlyResolvedHandlesRemainComposableAcrossCommits(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -230,7 +230,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void resolvedStorageRemainsUsableAcrossItsOwnCommits(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box();
@@ -256,7 +256,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void storageVersionAdvancesAfterCommit(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         player.getInventory().setItem(BOX_SLOT, box());
@@ -273,7 +273,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void transactionMutationIsVisibleThroughTheAuthoritativeSlot(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -297,7 +297,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void finalCommitMustNotOverwriteOutOfBandHostChange(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -322,7 +322,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void rollbackRestoresTheWholeAuthoritativePlayerSlot(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -347,7 +347,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void rolledBackMutationMustNotPermanentlyInvalidatePeerHandle(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -383,7 +383,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void builtInHandlesMustComposeInOneOuterTransaction(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -409,7 +409,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void fabricContainerItemContextsComposeAcrossMultipleHandles(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -436,7 +436,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void detachedHandlesMustComposeInOneOuterTransaction(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box(new ItemStack(Items.STONE, 8));
@@ -477,7 +477,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void insertionPolicyMustReceiveAttemptedAmount(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box();
@@ -537,7 +537,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void legacyUnbundleAndStorageToStorageStillWork(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack source = box(
@@ -560,7 +560,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void duplicateSequenceMutatesStorageOnlyOnce(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box(new ItemStack(Items.STONE, 16));
@@ -582,7 +582,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void lostSequenceDoesNotBlockLaterRequests(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         player.getInventory().setItem(BOX_SLOT, box(new ItemStack(Items.STONE, 8)));
@@ -601,7 +601,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void protocolStateAndRateLimitsArePerPlayer(GameTestHelper helper) {
         ServerPlayer noisy = player(helper);
         ServerPlayer other = player(helper);
@@ -625,7 +625,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void protocolRejectsNonShulkerHostsAndBundles(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         player.getInventory().setItem(0, new ItemStack(Items.STONE, 4));
@@ -647,7 +647,7 @@ public final class QuickShulkerTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void originalRegistryRemainsTheCapabilitySource(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box();
@@ -710,7 +710,7 @@ public final class QuickShulkerTransferGameTests {
         ItemContainerContents contents = box.get(DataComponents.CONTAINER);
         if (contents == null) return List.of();
         List<ItemStack> result = new ArrayList<>();
-        contents.nonEmptyItemCopyStream().forEach(result::add);
+        contents.nonEmptyItems().forEach(stack -> result.add(stack.copy()));
         return result;
     }
 
@@ -740,7 +740,7 @@ public final class QuickShulkerTransferGameTests {
         }
 
         @Override
-        public void stopOpen(ContainerUser user) {
+        public void stopOpen(Player user) {
             List<ItemStack> stacks = new ArrayList<>(getContainerSize());
             for (int slot = 0; slot < getContainerSize(); slot++) {
                 stacks.add(getItem(slot).copy());

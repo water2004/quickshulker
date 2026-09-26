@@ -6,6 +6,8 @@ on:
       - main
       - "26.1"
       - "26.2"
+      - "1.21.1"
+      - "codex/mc-1.21.1"
     tags:
       - "[0-9]*"
   pull_request:
@@ -13,6 +15,7 @@ on:
       - main
       - "26.1"
       - "26.2"
+      - "1.21.1"
 
 permissions:
   contents: read
@@ -28,11 +31,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Microsoft OpenJDK 25
+      - name: Set up Microsoft OpenJDK 21
         uses: actions/setup-java@v6
         with:
           distribution: microsoft
-          java-version: "25"
+          java-version: "21"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -85,7 +88,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 mesa-vulkan-drivers
 
-      - name: Verify real vanilla, Fabric, original-v3 and v4 clients
+      - name: Verify real vanilla, Fabric, legacy-wire and v4 clients
         env:
           # The matrix launches real Minecraft clients under Xvfb. Force Mesa
           # software rendering so the test does not depend on a GPU-backed
@@ -129,6 +132,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$GITHUB_REF_NAME" in
+            *+1.21.1) release_branch="1.21.1" ;;
             *+26.3) release_branch="main" ;;
             *-26.2) release_branch="26.2" ;;
             *-26.1) release_branch="26.1" ;;

@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.internal.legacy;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -128,7 +128,7 @@ public final class LegacyStorageTransfers {
                 () -> !host.isEmpty()
                         && QuickOpenableRegistry.getQuickie(host.getItem()) == data
                         && (data.ignoreSingleStackCheck || host.getCount() == 1),
-                ContainerStorage.of(container, null));
+                InventoryStorage.of(container, null));
         return new LegacyStorage(player, container, storage);
     }
 

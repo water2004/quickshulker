@@ -5,7 +5,8 @@ import net.kyrptonaught.jankson.JsonPrimitive;
 import net.kyrptonaught.kyrptconfig.config.CustomMarshaller;
 import net.kyrptonaught.kyrptconfig.config.CustomSerializable;
 import com.mojang.blaze3d.platform.InputConstants;
-import org.lwjgl.sdl.SDLMouse;
+import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.Minecraft;
 import java.util.Optional;
 
 public class CustomKeyBinding implements CustomSerializable {
@@ -66,17 +67,9 @@ public class CustomKeyBinding implements CustomSerializable {
             return unknownIsActivated; // Always pressed for empty or explicitly "key.keyboard.unknown"
         boolean pressed;
         if (parsedKey.getType() == InputConstants.Type.MOUSE) {
-            int mask = switch (parsedKey.getValue()) {
-                case 0 -> SDLMouse.SDL_BUTTON_LMASK;
-                case 1 -> SDLMouse.SDL_BUTTON_MMASK;
-                case 2 -> SDLMouse.SDL_BUTTON_RMASK;
-                case 3 -> SDLMouse.SDL_BUTTON_X1MASK;
-                case 4 -> SDLMouse.SDL_BUTTON_X2MASK;
-                default -> 0;
-            };
-            pressed = mask != 0 && (SDLMouse.SDL_GetMouseState(null, null) & mask) != 0;
+            pressed = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), parsedKey.getValue()) == GLFW.GLFW_PRESS;
         } else {
-            pressed = InputConstants.isKeyDown(parsedKey.getValue());
+            pressed = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), parsedKey.getValue());
         }
         return pressed;
     }

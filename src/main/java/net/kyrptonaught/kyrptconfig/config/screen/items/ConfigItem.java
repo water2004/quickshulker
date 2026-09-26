@@ -2,14 +2,11 @@ package net.kyrptonaught.kyrptconfig.config.screen.items;
 
 import net.kyrptonaught.kyrptconfig.config.screen.NotSuckyButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.ARGB;
+import net.minecraft.util.FastColor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -132,55 +129,55 @@ public abstract class ConfigItem<T> {
     public void tick() {
     }
 
-    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
+    public void mouseClicked(double mouseX, double mouseY, int button) {
         if (isHidden) return;
         if (resetButton != null)
-            resetButton.mouseClicked(click, doubled);
+            resetButton.mouseClicked(mouseX, mouseY, button);
     }
 
-    public boolean charTyped(CharacterEvent input) {
+    public boolean charTyped(char codePoint, int modifiers) {
         return false;
     }
 
-    public boolean keyPressed(KeyEvent input) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return false;
     }
 
-    public void extractRenderState(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         if (isHidden) return;
 
         int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int height = y + getHeaderSize();
         if (mouseY > y && mouseY < height)
-            context.fill(0, y - 1, width, height + 1, ARGB.color(50, 255, 255, 255));
+            context.fill(0, y - 1, width, height + 1, FastColor.ARGB32.color(50, 255, 255, 255));
 
-        context.text(Minecraft.getInstance().font, this.fieldTitle, x, y + 6, -1, true);
+        context.drawString(Minecraft.getInstance().font, this.fieldTitle, x, y + 6, -1, true);
 
         if (resetButton != null) {
             this.resetButton.setY(y);
             this.resetButton.setX(width - resetButton.getWidth() - 20);
             resetButton.active = !isValueDefault();
-            resetButton.extractRenderState(context, mouseX, mouseY, delta);
+            resetButton.render(context, mouseX, mouseY, delta);
         }
 
     }
 
-    public void extractRenderState2(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render2(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         if (isHidden) return;
         if (mouseX > x && mouseX < x + Minecraft.getInstance().font.width(fieldTitle) &&
                 mouseY > y && mouseY < y + 12)
             renderToolTip(context, mouseX, mouseY);
     }
 
-    public void renderToolTip(GuiGraphicsExtractor context, int x, int y) {
+    public void renderToolTip(GuiGraphics context, int x, int y) {
         if (toolTipText != null && requiresRestart) {
             List<Component> newList = new ArrayList<>(toolTipText);
             newList.add(Component.translatable("key.kyrptconfig.config.restartRequired"));
-            context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, newList, x, y);
+            context.renderComponentTooltip(Minecraft.getInstance().font, newList, x, y);
         } else if (toolTipText != null)
-            context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, toolTipText, x, y);
+            context.renderComponentTooltip(Minecraft.getInstance().font, toolTipText, x, y);
         else if (requiresRestart) {
-            context.setTooltipForNextFrame(Minecraft.getInstance().font, Component.translatable("key.kyrptconfig.config.restartRequired"), x, y);
+            context.renderTooltip(Minecraft.getInstance().font, Component.translatable("key.kyrptconfig.config.restartRequired"), x, y);
         }
     }
 }

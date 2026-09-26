@@ -3,10 +3,7 @@ package net.kyrptonaught.kyrptconfig.config.screen.items;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class SubItem<E> extends ConfigItem<E> {
@@ -53,25 +50,25 @@ public class SubItem<E> extends ConfigItem<E> {
     }
 
     @Override
-    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
-        super.mouseClicked(click, doubled);
-        if (!isHidden() && click.y() > subStart && click.y() < subStart + 20)
+    public void mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
+        if (!isHidden() && mouseY > subStart && mouseY < subStart + 20)
             expanded = !expanded;
 
         if (expanded && !isHidden()) {
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                item.mouseClicked(click, doubled);
+                item.mouseClicked(mouseX, mouseY, button);
             }
         }
     }
 
     @Override
-    public boolean charTyped(CharacterEvent input) {
+    public boolean charTyped(char codePoint, int modifiers) {
         if (expanded && !isHidden()) {
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                if (item.charTyped(input))
+                if (item.charTyped(codePoint, modifiers))
                     return true;
             }
         }
@@ -79,11 +76,11 @@ public class SubItem<E> extends ConfigItem<E> {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (expanded && !isHidden()) {
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                if (item.keyPressed(input))
+                if (item.keyPressed(keyCode, scanCode, modifiers))
                     return true;
             }
         }
@@ -112,31 +109,31 @@ public class SubItem<E> extends ConfigItem<E> {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float delta) {
-        super.extractRenderState(context, x, y, mouseX, mouseY, delta);
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+        super.render(context, x, y, mouseX, mouseY, delta);
         if (isHidden()) return;
-        context.text(Minecraft.getInstance().font, expanded ? "-" : "+", x - 10, y + 5, -1, false);
+        context.drawString(Minecraft.getInstance().font, expanded ? "-" : "+", x - 10, y + 5, -1, false);
         subStart = y;
         if (expanded) {
             int runningY = subStart + 23;
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                item.extractRenderState(context, 30, runningY, mouseX, mouseY, delta);
+                item.render(context, 30, runningY, mouseX, mouseY, delta);
                 runningY += item.getSize() + 3;
             }
         }
     }
 
     @Override
-    public void extractRenderState2(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float delta) {
-        super.extractRenderState2(context, x, y, mouseX, mouseY, delta);
+    public void render2(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+        super.render2(context, x, y, mouseX, mouseY, delta);
         if (isHidden()) return;
 
         if (expanded) {
             int runningY = y + 23;
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                item.extractRenderState2(context, 30, runningY, mouseX, mouseY, delta);
+                item.render2(context, 30, runningY, mouseX, mouseY, delta);
                 runningY += item.getSize() + 3;
             }
         }

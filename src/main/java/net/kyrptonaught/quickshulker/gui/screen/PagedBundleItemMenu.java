@@ -1,6 +1,5 @@
 package net.kyrptonaught.quickshulker.gui.screen;
 
-import com.mojang.serialization.DataResult;
 import net.kyrptonaught.quickshulker.api.ItemInventoryContainer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -9,7 +8,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -54,14 +53,22 @@ public class PagedBundleItemMenu extends AbstractContainerMenu {
         }
 
         updateControls();
-        addStandardInventorySlots(playerInventory, 8, 18 + 6 * 18 + 13);
+        int inventoryY = 18 + 6 * 18 + 13;
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 9; col++) {
+                addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, inventoryY + row * 18));
+            }
+        }
+        for (int col = 0; col < 9; col++) {
+            addSlot(new Slot(playerInventory, col, 8 + col * 18, inventoryY + 58));
+        }
     }
 
     @Override
-    public void clicked(int slotId, int button, ContainerInput input, Player player) {
+    public void clicked(int slotId, int button, ClickType input, Player player) {
         if (slotId >= CONTENT_SLOTS && slotId < MENU_SLOTS) {
-            if (input == ContainerInput.PICKUP && slotId == PREVIOUS_SLOT) setPage(page - 1);
-            else if (input == ContainerInput.PICKUP && slotId == NEXT_SLOT) setPage(page + 1);
+            if (input == ClickType.PICKUP && slotId == PREVIOUS_SLOT) setPage(page - 1);
+            else if (input == ClickType.PICKUP && slotId == NEXT_SLOT) setPage(page + 1);
             else sendAllDataToRemote();
             return;
         }
@@ -124,7 +131,7 @@ public class PagedBundleItemMenu extends AbstractContainerMenu {
     }
 
     private int insertIntoBundle(ItemStack source) {
-        if (!BundleContents.canItemBeInBundle(source)) return 0;
+        if (source.isEmpty() || !source.getItem().canFitInsideContainerItems()) return 0;
 
         int allowed = Math.min(source.getCount(), backing.countCanInsertToBundle(source));
         int remaining = allowed;
@@ -195,15 +202,15 @@ public class PagedBundleItemMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            if (!container.canPlaceItem(index, stack) || !BundleContents.canItemBeInBundle(stack)) return false;
+            if (!container.canPlaceItem(index, stack)
+                    || stack.isEmpty() || !stack.getItem().canFitInsideContainerItems()) return false;
 
             BundleContents contents = backing.getBundleContents();
             if (contents == null) return false;
-            BundleContents.Mutable mutable = contents.asMutable();
+            BundleContents.Mutable mutable = new BundleContents.Mutable(contents);
             ItemStack stackInSlot = getItem();
             if (stackInSlot.isEmpty() || ItemStack.isSameItemSameComponents(stackInSlot, stack)) {
-                DataResult<Fraction> weight = BundleContents.getWeight(stack);
-                return weight.isSuccess() && mutable.getMaxAmountToAdd(weight.getOrThrow()) > 0;
+                return mutable.getMaxAmountToAdd(stack) > 0;
             }
 
             Fraction oldWeight = calculateWeight(stackInSlot);
@@ -212,7 +219,7 @@ public class PagedBundleItemMenu extends AbstractContainerMenu {
         }
 
         private static Fraction calculateWeight(ItemStack stack) {
-            return BundleContents.getWeight(stack).getOrThrow()
+            return BundleContents.getWeight(stack)
                     .multiplyBy(Fraction.getFraction(stack.getCount(), 1));
         }
 

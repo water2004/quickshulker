@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.kyrptonaught.shulkerutils.ItemStackInventory;
 import net.kyrptonaught.shulkerutils.ShulkerUtils;
 import net.minecraft.core.component.DataComponents;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class LegacyItemStackInventoryGameTests {
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void inventoryLoadsHostContentsAndRequestedSize(GameTestHelper helper) {
         ItemStack host = LegacyTestSupport.box(
                 new ItemStack(Items.DIRT, 3),
@@ -28,7 +28,7 @@ public final class LegacyItemStackInventoryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void setItemImmediatelySerializesTheWholeHost(GameTestHelper helper) {
         ItemStack host = LegacyTestSupport.box(new ItemStack(Items.DIRT, 3));
         ItemStackInventory inventory = new ItemStackInventory(host, 27);
@@ -42,7 +42,7 @@ public final class LegacyItemStackInventoryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void removeItemImmediatelySerializesTheRemainder(GameTestHelper helper) {
         ItemStack host = LegacyTestSupport.box(new ItemStack(Items.STONE, 10));
         ItemStackInventory inventory = new ItemStackInventory(host, 27);
@@ -56,7 +56,7 @@ public final class LegacyItemStackInventoryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void stopOpenSplitsStackedHostIntoEmptyExtras(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack host = LegacyTestSupport.box(new ItemStack(Items.STONE, 5));
@@ -85,7 +85,7 @@ public final class LegacyItemStackInventoryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void containsAnyComparesItemTypeOnly(GameTestHelper helper) {
         ItemStack namedStone = new ItemStack(Items.STONE, 1);
         namedStone.set(DataComponents.CUSTOM_NAME, Component.literal("named"));
@@ -100,7 +100,7 @@ public final class LegacyItemStackInventoryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void utilityInsertionRejectsNestedShulkers(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         SimpleContainer inventory = new SimpleContainer(27);
@@ -116,7 +116,7 @@ public final class LegacyItemStackInventoryGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void utilityInsertionReturnsOnlyCapacityRemainder(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         LegacyTestSupport.TrackingContainer inventory =

@@ -1,6 +1,6 @@
-accessWidener v2 official
+accessWidener v2 named
 
 accessible class net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$SlotWrapper
 accessible class net/minecraft/client/Options$FieldAccess
-accessible method net/minecraft/world/item/component/BundleContents$Mutable getMaxAmountToAdd (Lorg/apache/commons/lang3/math/Fraction;)I
-accessible method net/minecraft/world/item/component/BundleContents getWeight (Lnet/minecraft/world/item/ItemInstance;)Lcom/mojang/serialization/DataResult;
+accessible method net/minecraft/world/item/component/BundleContents$Mutable getMaxAmountToAdd (Lnet/minecraft/world/item/ItemStack;)I
+accessible method net/minecraft/world/item/component/BundleContents getWeight (Lnet/minecraft/world/item/ItemStack;)Lorg/apache/commons/lang3/math/Fraction;

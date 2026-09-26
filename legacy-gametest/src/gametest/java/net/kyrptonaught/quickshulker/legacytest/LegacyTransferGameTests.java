@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.kyrptonaught.quickshulker.api.QuickOpenableRegistry;
 import net.kyrptonaught.quickshulker.util.BundleHelper;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -19,7 +19,7 @@ public final class LegacyTransferGameTests {
     private static final int SOURCE_SLOT = 9;
     private static final int OUTPUT_SLOT = 10;
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void bundlePredicateRequiresEligibleSecondaryClick(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack box = LegacyTestSupport.box();
@@ -45,7 +45,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void unbundleAndBoxTransferPredicatesAreDistinct(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack filled = LegacyTestSupport.box(new ItemStack(Items.STONE, 1));
@@ -69,7 +69,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void directInsertionMergesBeforeUsingEmptySlots(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack host = LegacyTestSupport.box(
@@ -88,7 +88,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void directInsertionConsumesOnlyAvailableCapacity(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack[] full = new ItemStack[27];
@@ -108,7 +108,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void rejectedInsertionDoesNotMutateEitherStack(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack host = LegacyTestSupport.box();
@@ -132,7 +132,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void slotInsertionHonorsMayPickupBeforeMutatingHost(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         player.getInventory().setItem(SOURCE_SLOT,
@@ -156,7 +156,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void slotInsertionDebitsExactlyWhatWasAccepted(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack[] full = new ItemStack[27];
@@ -180,7 +180,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void boxTransferMergesAndPreservesRemainders(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack source = LegacyTestSupport.box(
@@ -203,7 +203,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void playersAndHostsRemainIsolated(GameTestHelper helper) {
         ServerPlayer first = LegacyTestSupport.player(helper);
         ServerPlayer second = LegacyTestSupport.player(helper);
@@ -224,7 +224,7 @@ public final class LegacyTransferGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void successfulDirectInsertionFinishesTheContainer(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         LegacyTestSupport.TrackingContainer container =

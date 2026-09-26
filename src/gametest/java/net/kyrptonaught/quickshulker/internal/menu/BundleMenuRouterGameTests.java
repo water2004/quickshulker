@@ -1,13 +1,13 @@
 package net.kyrptonaught.quickshulker.internal.menu;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.kyrptonaught.quickshulker.api.Util;
 import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
 import net.kyrptonaught.quickshulker.internal.compat.ClientProtocolResolver.ClientProtocol;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
@@ -20,19 +20,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class BundleMenuRouterGameTests {
     private static final int PLAYER_SLOT = 9;
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void originalV3CanExtractContentsBeyondFirstPage(GameTestHelper helper) {
         verifySecondPage(helper, ClientProtocol.ORIGINAL_V3);
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void vanillaCanExtractContentsBeyondFirstPage(GameTestHelper helper) {
         verifySecondPage(helper, ClientProtocol.VANILLA);
     }
 
     private static void verifySecondPage(GameTestHelper helper, ClientProtocol protocol) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        var contents = BundleContents.EMPTY.asMutable();
+        var contents = new BundleContents.Mutable(BundleContents.EMPTY);
         contents.tryInsert(new ItemStack(Items.DIAMOND, 4));
         int preceding = 0;
         for (var item : BuiltInRegistries.ITEM) {
@@ -46,18 +46,18 @@ public final class BundleMenuRouterGameTests {
         player.getInventory().setItem(PLAYER_SLOT, bundle);
         BundleMenuRouter.open(protocol, player, bundle,
                 () -> helper.fail("Unexpected enhanced bundle path"));
-        player.containerMenu.clicked(50, 0, ContainerInput.PICKUP, player);
+        player.containerMenu.clicked(50, 0, ClickType.PICKUP, player);
         helper.assertTrue(player.containerMenu.getSlot(0).getItem().is(Items.DIAMOND),
                 "Second page must expose the last bundle entry");
         player.containerMenu.quickMoveStack(player, 0);
         player.closeContainer();
-        int diamonds = player.getInventory().getNonEquipmentItems().stream()
+        int diamonds = player.getInventory().items.stream()
                 .filter(stack -> stack.is(Items.DIAMOND)).mapToInt(ItemStack::getCount).sum();
         helper.assertValueEqual(diamonds, 4, "All diamonds must reach the player inventory");
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void originalV3GetsTheVanillaPagedBundleMenu(
             GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
@@ -75,7 +75,7 @@ public final class BundleMenuRouterGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void vanillaGetsOnlyTheVanillaPagedBundleMenu(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.BUNDLE));
@@ -90,7 +90,7 @@ public final class BundleMenuRouterGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void vanillaGetsTheVanillaShulkerMenu(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         player.getInventory().setItem(
@@ -104,7 +104,7 @@ public final class BundleMenuRouterGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void v4UsesOnlyTheModernBundleCallback(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         AtomicInteger modernOpens = new AtomicInteger();

@@ -18,7 +18,7 @@ import net.kyrptonaught.quickshulker.gui.screen.BundleItemMenu;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -49,29 +49,29 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
                     if(level.isClientSide()){
                         if (OpenShulkerPacket.canSendOpenPacket()) {
                             int menuSlot = hand == InteractionHand.MAIN_HAND
-                                    ? 36 + player.getInventory().getSelectedSlot()
+                                    ? 36 + player.getInventory().selected
                                     : 45;
                             OpenShulkerPacket.sendOpenPacket(menuSlot, stack);
-                            return InteractionResult.FAIL;
+                            return InteractionResultHolder.fail(stack);
                         }
                         // The server does not provide Quick Shulker. Do not consume the
                         // interaction; let vanilla or another mod handle the item normally.
-                        return InteractionResult.PASS;
+                        return InteractionResultHolder.pass(stack);
                     }else{
                         int playerInvSlot = hand == InteractionHand.MAIN_HAND
-                                ? player.getInventory().getSelectedSlot()
+                                ? player.getInventory().selected
                                 : Inventory.SLOT_OFFHAND;
                         Util.openItem(player, 0, playerInvSlot);
-                        return InteractionResult.SUCCESS_SERVER;
+                        return InteractionResultHolder.consume(stack);
                     }
                 }
             }
-            return InteractionResult.PASS;
+            return InteractionResultHolder.pass(stack);
         });
 
-        PayloadTypeRegistry.clientboundPlay().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(EnderChestS2CSyncPacket.S2CEChestContentPacket.S2C_ECHEST_CONTENT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestContentPacket.CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(EnderChestS2CSyncPacket.S2CEChestSlotPacket.S2C_ECHEST_SLOT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestSlotPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(EnderChestS2CSyncPacket.S2CEChestContentPacket.S2C_ECHEST_CONTENT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestContentPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(EnderChestS2CSyncPacket.S2CEChestSlotPacket.S2C_ECHEST_SLOT_PACKET_ID, EnderChestS2CSyncPacket.S2CEChestSlotPacket.CODEC);
 
         FabricLoader.getInstance().getEntrypoints(MOD_ID, RegisterQuickShulker.class).forEach(RegisterQuickShulker::registerProviders);
     }

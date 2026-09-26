@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTest;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.kyrptonaught.quickshulker.api.ItemInventoryContainer;
 import net.kyrptonaught.quickshulker.api.QuickOpenableRegistry;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class LegacyOpeningGameTests {
     private static final int PLAYER_SLOT = 9;
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void registeredOpenInvokesCallbackAndRecordsPlayerSlot(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
@@ -48,7 +48,7 @@ public final class LegacyOpeningGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void unregisteredOpenRequestIsIgnored(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.STICK));
@@ -64,7 +64,7 @@ public final class LegacyOpeningGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void rightClickCloseSuppressesSecondOpenCallback(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.STONE));
@@ -89,7 +89,7 @@ public final class LegacyOpeningGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void forceCloseListenerAcceptsSameTypeWithChangedComponents(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
@@ -114,7 +114,7 @@ public final class LegacyOpeningGameTests {
         helper.succeed();
     }
 
-    @GameTest
+    @GameTest(template = "fabric-gametest-api-v1:empty")
     public void forceCloseListenerAllowsStackingOnlyWhenRegistered(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);

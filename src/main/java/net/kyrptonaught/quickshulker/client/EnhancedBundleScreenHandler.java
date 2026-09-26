@@ -34,7 +34,7 @@ public final class EnhancedBundleScreenHandler {
         Inventory inventory = client.player.getInventory();
         BundleItemMenu menu = new BundleItemMenu(packet.getContainerId(), inventory);
         client.player.containerMenu = menu;
-        client.gui.setScreen(new BundleItemScreen(menu, inventory, packet.getTitle()));
+        client.setScreen(new BundleItemScreen(menu, inventory, packet.getTitle()));
         return true;
     }
 }

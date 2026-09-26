@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'fabric-loom' version "${loom_version}"
 }
 
 version = '1.0.0'
@@ -20,13 +20,16 @@ if (behaviorProfile != 'baseline-3.0.4' && behaviorProfile != 'current') {
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://maven.fallenbreath.me/releases' }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
-    implementation files(quickShulkerJar)
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    modImplementation files(quickShulkerJar)
+    modRuntimeOnly "me.fallenbreath:conditional-mixin-fabric:0.6.4"
 }
 
 fabricApi {
@@ -45,10 +48,10 @@ tasks.named('runGameTest') {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.release = 25
+    options.release = 21
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }

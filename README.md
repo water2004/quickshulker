@@ -3,33 +3,37 @@
 [简体中文](README_CN.md)
 
 [![GitHub release](https://img.shields.io/github/v/release/water2004/quickshulker?include_prereleases)](https://github.com/water2004/quickshulker/releases)
-[![Minecraft](https://img.shields.io/badge/Minecraft-26.2%20%7C%2026.3-blue)](#downloads)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-blue)](#downloads)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > [!IMPORTANT]
 > This repository is a maintained fork of [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker). It has its own releases, compatibility range, APIs, issue tracker, and documentation. Download this fork only from the [water2004/quickshulker Releases page](https://github.com/water2004/quickshulker/releases).
 
-Quick Shulker is a Fabric mod for opening useful items directly from the player's hand or inventory and moving items into or out of carried containers. This fork supports Minecraft 26.2 and 26.3, preserves the established public extension API, makes server-side bundle support safe for unmodded clients, and adds a screen-independent shulker API for other mods.
+Quick Shulker is a Fabric mod for opening useful items directly from the player's hand or inventory and moving items into or out of carried containers. This branch targets Minecraft 1.21.1, preserves the established public extension API, makes server-side bundle support safe for unmodded clients, and adds a screen-independent shulker API for other mods.
 
 ## Downloads
 
-### 4.0 stable
+### Minecraft 1.21.1
 
 Quick Shulker 4.0 adds a screen-independent shulker protocol and Fabric Transfer API server access while retaining the established public API and user-facing behavior.
+
+Build `quickshulker-4.0.1+1.21.1.jar` from this branch using the instructions below. See the [1.21.1 port notes](PORTING_1.21.1.md) for validation results and limits.
+
+### Other Minecraft releases
 
 | Minecraft | Release |
 | --- | --- |
 | 26.2 | [4.0.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.1-26.2) |
 | 26.3 | [4.0.1+26.3](https://github.com/water2004/quickshulker/releases/tag/4.0.1%2B26.3) |
 
-The two Minecraft artifacts are not interchangeable.
+These 26.x releases are retained for reference and cannot be used on Minecraft 1.21.1.
 
 ## Requirements
 
-- Minecraft 26.2 or 26.3
-- [Fabric Loader](https://fabricmc.net/use/installer/)
-- [Fabric API](https://modrinth.com/mod/fabric-api)
-- Java 25
+- Minecraft 1.21.1
+- [Fabric Loader](https://fabricmc.net/use/installer/) 0.16.14 or newer
+- [Fabric API](https://modrinth.com/mod/fabric-api) for Minecraft 1.21.1 (tested with 0.116.7+1.21.1)
+- Java 21 or newer
 
 [Mod Menu](https://modrinth.com/mod/modmenu) is optional. The built-in configuration screen can also be opened with the keypad `+` key by default.
 
@@ -38,11 +42,11 @@ The two Minecraft artifacts are not interchangeable.
 | Client | Server | Behavior |
 | --- | --- | --- |
 | This fork 4.x | This fork 4.x | Full quick-open UI, inventory actions, enhanced bundle screen, and the 4.0 direct shulker protocol. |
-| Original Quick Shulker 3.x | This fork 4.x | The server accepts the frozen original-v3 packets. Bundles use the vanilla paged container; other quick-open features remain available. |
+| Legacy protocol on Minecraft 1.21.1 | This fork 4.x | The server accepts the frozen original-v3 open/inventory channels. Bundles use the vanilla paged container. |
 | Not installed | Installed | Vanilla clients can still join. Server-side right-click behavior uses vanilla menus, and bundles use a paged `9 x 6` vanilla container instead of a custom menu type. Client keybind and hover actions are unavailable. |
 | This fork 4.x | Not installed | The client does not pretend the protocol is available. Unsupported Quick Shulker interactions pass through to vanilla or other mods. |
 
-“Original v3” specifically means the matching MoRanpcy Quick Shulker `3.1.0-26.2` or `3.1.0-26.3` release. This fork's own discontinued 3.x releases are not a protocol-compatibility target.
+Legacy protocol compatibility on 1.21.1 is verified by an independent `legacy-wire` test client without the v4 implementation. Historical 26.x binaries cannot run on 1.21.1; this test does not claim binary compatibility with them. The upstream original-v3 wire format remains the compatibility target.
 
 For the 4.0 direct protocol, keep the Quick Shulker client and server on matching compatible releases. Integrations must capability-detect the protocol; API submission never silently falls back to screen simulation.
 
@@ -221,17 +225,17 @@ For reproducible bugs, open an issue in [this repository](https://github.com/wat
 
 ## Building and testing
 
-The project requires JDK 25 and includes the Gradle wrapper.
+The project requires JDK 21 and includes the Gradle wrapper.
 
 ```bash
-git clone https://github.com/water2004/quickshulker.git
+git clone --branch codex/mc-1.21.1 https://github.com/water2004/quickshulker.git
 cd quickshulker
 ./gradlew clean test runGameTest build
 ```
 
 On Windows, use `gradlew.bat`. The release jar is written to `build/libs/`.
 
-The main suite covers quick-open, shulker transactions, the original-v3 packet contract, and the absence of mandatory Quick Shulker registry entries. `legacy-gametest/` checks the retained public extension API. `compat-test/` connects real vanilla, Fabric-without-QS, original-v3 and v4 clients to a dedicated server, checks container extraction and authoritative inventory contents, and gates CI releases. Tagged commits on `main` publish Minecraft 26.3 artifacts; tagged commits on `26.2` publish Minecraft 26.2 artifacts.
+The main suite covers quick-open, shulker transactions, the original-v3 packet contract, and the absence of mandatory Quick Shulker registry entries. [`legacy-gametest/`](legacy-gametest/README.md) checks the retained public extension API. [`compat-test/`](compat-test/README.md) connects real vanilla, Fabric-without-QS, legacy-wire and v4 clients to a dedicated server and checks container extraction and authoritative inventory contents. Pushes to `codex/mc-1.21.1` run these CI checks without publishing a release. The release workflow accepts `+1.21.1` tags only when their commits belong to the `1.21.1` release branch.
 
 ## License
 

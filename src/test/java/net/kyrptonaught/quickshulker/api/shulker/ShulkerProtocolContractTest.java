@@ -1,11 +1,20 @@
 package net.kyrptonaught.quickshulker.api.shulker;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ShulkerProtocolContractTest {
+    @BeforeAll
+    static void bootstrapMinecraftRegistries() {
+        SharedConstants.tryDetectVersion();
+        Bootstrap.bootStrap();
+    }
+
     @Test
     void requestsDescribeExactlyOnePlayerAndOneShulkerSlot() {
         new ShulkerTransferRequest(

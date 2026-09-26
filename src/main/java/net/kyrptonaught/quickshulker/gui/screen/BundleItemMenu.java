@@ -1,6 +1,5 @@
 package net.kyrptonaught.quickshulker.gui.screen;
 
-import com.mojang.serialization.DataResult;
 import net.kyrptonaught.quickshulker.mixin.SlotAccessor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -41,7 +40,15 @@ public class BundleItemMenu extends AbstractContainerMenu {
             }
         }
 
-        this.addStandardInventorySlots(playerInventory, 8, 18 + VISIBLE_ROWS * 18 + 13);
+        int inventoryY = 18 + VISIBLE_ROWS * 18 + 13;
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 9; col++) {
+                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, inventoryY + row * 18));
+            }
+        }
+        for (int col = 0; col < 9; col++) {
+            this.addSlot(new Slot(playerInventory, col, 8 + col * 18, inventoryY + 58));
+        }
     }
 
     public void scrollItems(float position){
@@ -204,18 +211,15 @@ public class BundleItemMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            if(!BundleContents.canItemBeInBundle(stack)){
+            if(stack.isEmpty() || !stack.getItem().canFitInsideContainerItems()){
                 return false;
             }else{
                 BundleContents contents = ((BundleContainer) BundleItemMenu.this.container).getBundleContents();
                 if(contents == null) return false;
-                BundleContents.Mutable builder = contents.asMutable();
+                BundleContents.Mutable builder = new BundleContents.Mutable(contents);
                 ItemStack stackInSlot = this.getItem();
                 if(stackInSlot.isEmpty() || ItemStack.isSameItemSameComponents(stackInSlot, stack)){
-                    DataResult<Fraction> maybeItemWeight = BundleContents.getWeight(stack);
-                    if(maybeItemWeight.isError()) return false;
-                    Fraction itemWeight = (Fraction)maybeItemWeight.getOrThrow();
-                    return builder.getMaxAmountToAdd(itemWeight) > 0;
+                    return builder.getMaxAmountToAdd(stack) > 0;
                 }else{
                     Fraction stack1 = calculateFraction(stackInSlot);
                     Fraction stack2 = calculateFraction(stack);
@@ -225,7 +229,7 @@ public class BundleItemMenu extends AbstractContainerMenu {
         }
         
         private static Fraction calculateFraction(ItemStack stack){
-            return BundleContents.getWeight(stack).getOrThrow().multiplyBy(Fraction.getFraction(stack.getCount(), 1));
+            return BundleContents.getWeight(stack).multiplyBy(Fraction.getFraction(stack.getCount(), 1));
         }
 
         @Override

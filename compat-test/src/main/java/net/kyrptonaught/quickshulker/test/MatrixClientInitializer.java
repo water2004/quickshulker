@@ -3,14 +3,14 @@ package net.kyrptonaught.quickshulker.test;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
+import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -28,11 +28,15 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     private static Stage stage = Stage.WAIT_TITLE;
     private static int stageTicks;
     private static int authoritativeTicks;
+    private static int menuTicks;
     private static Object directHandle;
     private static boolean bundlePhase;
 
     @Override
     public void onInitializeClient() {
+        if ("legacy-wire".equals(System.getProperty("quickshulker.matrix.expectedClient"))) {
+            LegacyWireClient.register();
+        }
         ClientTickEvents.END_CLIENT_TICK.register(MatrixClientInitializer::tick);
     }
 
@@ -63,24 +67,24 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     private static void connect(Minecraft client) {
         // Fresh CI profiles show onboarding while the initial resource reload is
         // still running. Connecting at that point can also precede model loading.
-        if (client.getConnection() != null || client.gui.overlay() != null) return;
-        if (client.gui.screen() instanceof AccessibilityOnboardingScreen onboarding) {
+        if (client.getConnection() != null || client.getOverlay() != null) return;
+        if (client.screen instanceof AccessibilityOnboardingScreen onboarding) {
             onboarding.onClose();
             return;
         }
-        if (!(client.gui.screen() instanceof TitleScreen)) return;
+        if (!(client.screen instanceof TitleScreen)) return;
         client.options.pauseOnLostFocus = false;
         String address = System.getProperty(
                 "quickshulker.matrix.address", "127.0.0.1:25571");
         ServerData data = new ServerData(
                 "Quick Shulker matrix", address, ServerData.Type.OTHER);
-        ConnectScreen.startConnecting(client.gui.screen(), client,
+        ConnectScreen.startConnecting(client.screen, client,
                 ServerAddress.parseString(address), data, false, null);
         advance(Stage.WAIT_JOIN);
     }
 
     private static void waitForInventory(Minecraft client) throws Exception {
-        if (client.player == null || client.gui.screen() != null) return;
+        if (client.player == null || client.screen != null) return;
         ItemStack box = client.player.getInventory().getItem(9);
         if (!box.is(Items.SHULKER_BOX) || countStoredStone(box) != 4) return;
 
@@ -112,8 +116,8 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         }
 
         if (expectedClient.equals("none")) {
-            client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId,
-                    9, 0, ContainerInput.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId,
+                    9, 0, ClickType.SWAP, client.player);
             advance(Stage.WAIT_HELD);
             return;
         }
@@ -180,9 +184,14 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         if (client.player == null || client.gameMode == null
                 || client.player.containerMenu == client.player.inventoryMenu) return;
         var menu = client.player.containerMenu;
+        // Opening the screen and receiving its contents are separate packets in 1.21.1.
+        // Keep the strict contents assertion, but allow the initial snapshot to arrive.
+        if (++menuTicks < 5) return;
         if (menu.slots.isEmpty() || !menu.slots.getFirst().getItem().is(bundlePhase ? Items.DIAMOND : Items.STONE)
                 || menu.slots.getFirst().getItem().getCount() != 4) {
-            throw new AssertionError("Screen did not expose the four expected items (bundle=" + bundlePhase + ")");
+            throw new AssertionError("Screen did not expose the four expected items (bundle=" + bundlePhase
+                    + ", menu=" + menu.getClass().getName()
+                    + ", slot0=" + (menu.slots.isEmpty() ? "absent" : menu.slots.getFirst().getItem()) + ")");
         }
         if (bundlePhase) {
             int expectedSlots = System.getProperty("quickshulker.matrix.expectedClient").equals("new") ? 100 : 90;
@@ -190,8 +199,8 @@ public final class MatrixClientInitializer implements ClientModInitializer {
                 throw new AssertionError("Bundle menu slot count=" + menu.slots.size() + ", expected=" + expectedSlots);
             }
         }
-        client.gameMode.handleContainerInput(
-                menu.containerId, 0, 0, ContainerInput.QUICK_MOVE, client.player);
+        client.gameMode.handleInventoryMouseClick(
+                menu.containerId, 0, 0, ClickType.QUICK_MOVE, client.player);
         advance(Stage.WAIT_AUTHORITATIVE_ITEM);
     }
 
@@ -225,8 +234,8 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         bundlePhase = true;
         authoritativeTicks = 0;
         if (System.getProperty("quickshulker.matrix.expectedClient").equals("none")) {
-            client.gameMode.handleContainerInput(client.player.inventoryMenu.containerId,
-                    10, 0, ContainerInput.SWAP, client.player);
+            client.gameMode.handleInventoryMouseClick(client.player.inventoryMenu.containerId,
+                    10, 0, ClickType.SWAP, client.player);
             advance(Stage.WAIT_HELD);
         } else {
             openModded(client, 10);
@@ -234,6 +243,11 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     }
 
     private static void openModded(Minecraft client, int slot) throws Exception {
+        if ("legacy-wire".equals(System.getProperty("quickshulker.matrix.expectedClient"))) {
+            LegacyWireClient.open(slot);
+            advance(Stage.WAIT_MENU);
+            return;
+        }
         Class<?> packet = Class.forName(LEGACY_PACKET_CLASS);
         if (System.getProperty("quickshulker.matrix.expectedClient").equals("new")) {
             packet.getMethod("sendOpenPacket", int.class, ItemStack.class)
@@ -245,13 +259,13 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     }
 
     private static int countLooseDiamonds(Minecraft client) {
-        return client.player.getInventory().getNonEquipmentItems().stream()
+        return client.player.getInventory().items.stream()
                 .filter(stack -> stack.is(Items.DIAMOND))
                 .mapToInt(ItemStack::getCount).sum();
     }
 
     private static int countLooseStone(Minecraft client) {
-        return client.player.getInventory().getNonEquipmentItems().stream()
+        return client.player.getInventory().items.stream()
                 .filter(stack -> stack.is(Items.STONE))
                 .mapToInt(ItemStack::getCount)
                 .sum();
@@ -260,7 +274,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
     private static int countStoredStone(ItemStack box) {
         ItemContainerContents contents = box.get(DataComponents.CONTAINER);
         if (contents == null) return 0;
-        return contents.nonEmptyItemCopyStream()
+        return contents.nonEmptyStream()
                 .filter(stack -> stack.is(Items.STONE))
                 .mapToInt(ItemStack::getCount)
                 .sum();
@@ -277,8 +291,8 @@ public final class MatrixClientInitializer implements ClientModInitializer {
 
     private static String describeState(Minecraft client) {
         String state = "stage=" + stage + " bundle=" + bundlePhase
-                + " overlay=" + (client.gui.overlay() == null ? "none" : client.gui.overlay().getClass().getName())
-                + " screen=" + (client.gui.screen() == null ? "none" : client.gui.screen().getClass().getName());
+                + " overlay=" + (client.getOverlay() == null ? "none" : client.getOverlay().getClass().getName())
+                + " screen=" + (client.screen == null ? "none" : client.screen.getClass().getName());
         if (client.player == null) return state + " player=absent";
         ItemStack box = client.player.getInventory().getItem(9);
         return state + " player=" + client.player.getName().getString()
@@ -292,6 +306,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         System.out.println("[compat-test] " + stage + " -> " + next + " bundle=" + bundlePhase);
         stage = next;
         stageTicks = 0;
+        menuTicks = 0;
     }
 
     private static void fail(Minecraft client, Throwable error) {

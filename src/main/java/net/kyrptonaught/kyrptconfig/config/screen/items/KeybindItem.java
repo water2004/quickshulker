@@ -7,10 +7,8 @@ import net.kyrptonaught.quickshulker.event.KeyBindingRegister;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -84,36 +82,36 @@ public class KeybindItem extends ConfigItem<String> {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (isListening) {
-            if (input.input() == InputConstants.KEY_ESCAPE) {
+            if (keyCode == InputConstants.KEY_ESCAPE) {
                 setValue("");
                 return true;
             }
-            setValue(InputConstants.getKey(input).getName());
+            setValue(InputConstants.getKey(keyCode, scanCode).getName());
             return true;
         }
         return false;
     }
 
     @Override
-    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
-        super.mouseClicked(click, doubled);
+    public void mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
         boolean handled;
-        handled = (keyButton.mouseClicked(click, doubled) || resetButton.mouseClicked(click, doubled));
+        handled = (keyButton.mouseClicked(mouseX, mouseY, button) || resetButton.mouseClicked(mouseX, mouseY, button));
         if (isListening && !handled) {
-            setValue(InputConstants.Type.MOUSE.getOrCreate(click.button()).getName());
+            setValue(InputConstants.Type.MOUSE.getOrCreate(button).getName());
         }
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float delta) {
-        super.extractRenderState(context, x, y, mouseX, mouseY, delta);
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+        super.render(context, x, y, mouseX, mouseY, delta);
         this.keyButton.setY(y);
 
         this.keyButton.setX(resetButton.getX() - resetButton.getWidth() - (keyButton.getWidth() / 2) - 20);
 
-        keyButton.extractRenderState(context, mouseX, mouseY, delta);
+        keyButton.render(context, mouseX, mouseY, delta);
 
         if(duplicate){
             int m = keyButton.getX() - 6;

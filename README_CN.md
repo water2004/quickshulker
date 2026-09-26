@@ -3,33 +3,37 @@
 [English](README.md)
 
 [![GitHub release](https://img.shields.io/github/v/release/water2004/quickshulker?include_prereleases)](https://github.com/water2004/quickshulker/releases)
-[![Minecraft](https://img.shields.io/badge/Minecraft-26.2%20%7C%2026.3-blue)](#下载)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-blue)](#下载)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > [!IMPORTANT]
 > 本项目是 [MoRanpcy/quickshulker](https://github.com/MoRanpcy/quickshulker) 的持续维护分支。本仓库拥有独立的发布、兼容范围、API、问题追踪和文档；请只从 [water2004/quickshulker Releases](https://github.com/water2004/quickshulker/releases) 下载本分支。
 
-Quick Shulker 是一个 Fabric 模组，可以直接打开玩家手中或物品栏内的实用物品，并在玩家携带的容器中快速存取物品。本分支支持 Minecraft 26.2 与 26.3，保留既有公共扩展 API，允许未安装客户端模组的玩家安全使用服务端收纳袋兼容界面，并为其他模组增加不依赖界面的潜影盒 API。
+Quick Shulker 是一个 Fabric 模组，可以直接打开玩家手中或物品栏内的实用物品，并在玩家携带的容器中快速存取物品。本分支适配 Minecraft 1.21.1，保留既有公共扩展 API，允许未安装客户端模组的玩家安全使用服务端收纳袋兼容界面，并为其他模组增加不依赖界面的潜影盒 API。
 
 ## 下载
 
-### 4.0 正式版
+### Minecraft 1.21.1
 
 Quick Shulker 4.0 在保留既有公共 API 与玩家功能的同时，增加无界面的潜影盒协议和基于 Fabric Transfer API 的服务端访问。
+
+按下方说明从本分支构建 `quickshulker-4.0.1+1.21.1.jar`。验证结果与适配范围见 [1.21.1 移植说明](PORTING_1.21.1.md)。
+
+### 其他 Minecraft 版本
 
 | Minecraft | Release |
 | --- | --- |
 | 26.2 | [4.0.1-26.2](https://github.com/water2004/quickshulker/releases/tag/4.0.1-26.2) |
 | 26.3 | [4.0.1+26.3](https://github.com/water2004/quickshulker/releases/tag/4.0.1%2B26.3) |
 
-两个 Minecraft 版本的文件不能混用。
+以上 26.x 发布保留供参考，不能用于 Minecraft 1.21.1。
 
 ## 运行要求
 
-- Minecraft 26.2 或 26.3
-- [Fabric Loader](https://fabricmc.net/use/installer/)
-- [Fabric API](https://modrinth.com/mod/fabric-api)
-- Java 25
+- Minecraft 1.21.1
+- [Fabric Loader](https://fabricmc.net/use/installer/) 0.16.14 或更新版本
+- 对应 Minecraft 1.21.1 的 [Fabric API](https://modrinth.com/mod/fabric-api)，已验证 0.116.7+1.21.1
+- Java 21 或更新版本
 
 [Mod Menu](https://modrinth.com/mod/modmenu) 是可选前置。没有 Mod Menu 时，也可使用默认的小键盘 `+` 打开内置设置界面。
 
@@ -38,11 +42,11 @@ Quick Shulker 4.0 在保留既有公共 API 与玩家功能的同时，增加无
 | 客户端 | 服务端 | 行为 |
 | --- | --- | --- |
 | 本分支 4.x | 本分支 4.x | 完整的快速打开界面、物品栏操作、增强收纳袋界面，以及 4.0 潜影盒直接协议。 |
-| 原版 Quick Shulker 3.x | 本分支 4.x | 服务端接受已冻结的原版 v3 数据包。收纳袋使用原版分页容器，其他快速打开功能继续可用。 |
+| Minecraft 1.21.1 旧协议客户端 | 本分支 4.x | 服务端接受已冻结的原版 v3 打开和物品栏通道，收纳袋使用原版分页容器。 |
 | 未安装 | 已安装 | 原版客户端仍可加入。服务端右键功能使用原版菜单，收纳袋使用分页的原版 `9 x 6` 容器，客户端不会收到自定义菜单类型；快捷键和悬停操作不可用。 |
 | 本分支 4.x | 未安装 | 客户端不会假装协议可用。不受支持的 Quick Shulker 交互会交还给原版或其他模组处理。 |
 
-“原版 v3”特指匹配 Minecraft 版本的 MoRanpcy Quick Shulker `3.1.0-26.2` 或 `3.1.0-26.3`。本分支自身已经停止维护的 3.x 版本不属于协议兼容目标。
+1.21.1 的旧协议兼容性由不含 v4 实现的独立 `legacy-wire` 测试客户端验证。历史 26.x 二进制不能在 1.21.1 中运行，此测试不代表与这些文件二进制兼容；兼容目标仍是上游原版 v3 的网络格式。
 
 使用 4.0 直接协议时，Quick Shulker 客户端与服务端应保持相互匹配的版本。集成方必须先探测能力；新 API 不会在提交失败后暗中回退到模拟界面的旧路径。
 
@@ -221,17 +225,17 @@ try (Transaction transaction = Transaction.openOuter()) {
 
 ## 构建与测试
 
-项目需要 JDK 25，并已包含 Gradle Wrapper。
+项目需要 JDK 21，并已包含 Gradle Wrapper。
 
 ```bash
-git clone https://github.com/water2004/quickshulker.git
+git clone --branch codex/mc-1.21.1 https://github.com/water2004/quickshulker.git
 cd quickshulker
 ./gradlew clean test runGameTest build
 ```
 
 Windows 使用 `gradlew.bat`。发布 jar 输出到 `build/libs/`。
 
-主测试锁定快速打开、潜影盒事务和原版 v3 数据包契约，并检查 Fabric 握手注册表不会要求 Quick Shulker 客户端；`legacy-gametest/` 检查继续保留的公共扩展 API。`compat-test/` 使用独立服务端和真实客户端，验证纯原版、未装 QS 的 Fabric、原版 v3、v4 四种连接及容器取物行为，CI 发布前必须全部通过。`main` 分支上的标签发布 Minecraft 26.3 文件，`26.2` 分支上的标签发布 Minecraft 26.2 文件。
+主测试锁定快速打开、潜影盒事务和原版 v3 数据包契约，并检查 Fabric 握手注册表不会要求 Quick Shulker 客户端；[`legacy-gametest/`](legacy-gametest/README.md) 检查继续保留的公共扩展 API。[`compat-test/`](compat-test/README.md) 使用独立服务端和真实客户端，验证纯原版、未装 QS 的 Fabric、legacy-wire、v4 四种连接及容器取物行为。推送到 `codex/mc-1.21.1` 会执行 CI 检查，不会发布版本；带 `+1.21.1` 的标签只有在提交属于 `1.21.1` 发布分支时才能通过发布工作流。
 
 ## 许可证
 

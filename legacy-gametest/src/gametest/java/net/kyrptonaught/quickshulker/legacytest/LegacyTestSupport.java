@@ -8,7 +8,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.ContainerUser;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -41,7 +41,7 @@ final class LegacyTestSupport {
         ItemContainerContents component = box.get(DataComponents.CONTAINER);
         if (component == null) return List.of();
         List<ItemStack> result = new ArrayList<>();
-        component.nonEmptyItemCopyStream().forEach(result::add);
+        component.nonEmptyStream().forEach(result::add);
         return result;
     }
 
@@ -75,7 +75,7 @@ final class LegacyTestSupport {
             action.run();
         } catch (Throwable thrown) {
             if (expected.isInstance(thrown)) return;
-            throw helper.assertionException(
+            throw new AssertionError(
                     message + "; expected " + expected.getSimpleName()
                             + " but got " + thrown, thrown);
         }
@@ -142,7 +142,7 @@ final class LegacyTestSupport {
         }
 
         @Override
-        public void stopOpen(ContainerUser user) {
+        public void stopOpen(Player user) {
             closeCount++;
             List<ItemStack> stacks = new ArrayList<>(getContainerSize());
             for (int slot = 0; slot < getContainerSize(); slot++) {
@@ -172,7 +172,7 @@ final class LegacyTestSupport {
         }
 
         @Override
-        public void stopOpen(ContainerUser user) {
+        public void stopOpen(Player user) {
             closeCount++;
         }
     }

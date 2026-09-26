@@ -8,13 +8,13 @@ public class DisplayOnlyKeyBind extends KeyMapping {
     private CustomKeyBinding customKeyBinding;
     private final Consumer<InputConstants.Key> keySet;
 
-    public DisplayOnlyKeyBind(String translationKey, InputConstants.Type type, int code, KeyMapping.Category category) {
+    public DisplayOnlyKeyBind(String translationKey, InputConstants.Type type, int code, String category) {
         super(translationKey, type, code, category);
         keySet = (boundKey) -> {
         };
     }
 
-    public DisplayOnlyKeyBind(String translationKey, KeyMapping.Category category, CustomKeyBinding customKeyBinding, Consumer<InputConstants.Key> keySet) {
+    public DisplayOnlyKeyBind(String translationKey, String category, CustomKeyBinding customKeyBinding, Consumer<InputConstants.Key> keySet) {
         super(translationKey, customKeyBinding.getDefaultKey().getType(), customKeyBinding.getDefaultKey().getValue(), category);
         this.customKeyBinding = customKeyBinding;
         this.keySet = keySet;
@@ -33,7 +33,7 @@ public class DisplayOnlyKeyBind extends KeyMapping {
     }
 
     @Override
-    public KeyMapping.Category getCategory() {
+    public String getCategory() {
         updateSetKey();
         return super.getCategory();
     }

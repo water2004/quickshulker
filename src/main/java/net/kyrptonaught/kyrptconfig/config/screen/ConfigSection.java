@@ -1,11 +1,8 @@
 package net.kyrptonaught.kyrptconfig.config.screen;
 
 import net.kyrptonaught.kyrptconfig.config.screen.items.ConfigItem;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import java.util.List;
@@ -65,29 +62,29 @@ public class ConfigSection extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         for (ConfigItem<?> configItem : configs) {
-            if (configItem.keyPressed(input))
+            if (configItem.keyPressed(keyCode, scanCode, modifiers))
                 return true;
         }
         return false;
     }
 
     @Override
-    public boolean charTyped(CharacterEvent input) {
+    public boolean charTyped(char codePoint, int modifiers) {
         for (ConfigItem<?> configItem : configs) {
-            if (configItem.charTyped(input))
+            if (configItem.charTyped(codePoint, modifiers))
                 return true;
         }
         return false;
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (ConfigItem<?> configItem : configs) {
-            configItem.mouseClicked(click, doubled);
+            configItem.mouseClicked(mouseX, mouseY, button);
         }
-        mouseScrolled(click.x(), click.y(), 0,0); // update scroll if option changes screen size
+        mouseScrolled(mouseX, mouseY, 0,0); // update scroll if option changes screen size
         return false;
     }
 
@@ -104,26 +101,26 @@ public class ConfigSection extends Screen {
         return sectionSize - visibleHeight;
     }
 
-    public void extractRenderState(GuiGraphicsExtractor context, int startY, int mouseX, int mouseY, float delta) {
-        super.extractRenderState(context, mouseX, mouseY, delta);
+    public void render(GuiGraphics context, int startY, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
         int runningY = scrollOffset + startY + 5;
         for (ConfigItem<?> configItem : configs) {
             // if (runningY + configItem.getSize() > 55 && runningY < 55 + height)
-            configItem.extractRenderState(context, 20, runningY, mouseX, mouseY, delta);
+            configItem.render(context, 20, runningY, mouseX, mouseY, delta);
             runningY += configItem.getSize() + 3;
         }
 
     }
 
-    public void extractRenderState2(GuiGraphicsExtractor context, int startY, int mouseX, int mouseY, float delta) {
+    public void render2(GuiGraphics context, int startY, int mouseX, int mouseY, float delta) {
         int runningY = scrollOffset + startY + 5;
         for (ConfigItem<?> configItem : configs) {
-            configItem.extractRenderState2(context, 20, runningY, mouseX, mouseY, delta);
+            configItem.render2(context, 20, runningY, mouseX, mouseY, delta);
             runningY += configItem.getSize() + 3;
         }
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
     }
 }

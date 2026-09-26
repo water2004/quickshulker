@@ -1,8 +1,7 @@
 package net.kyrptonaught.kyrptconfig.config.screen.items;
 
 import net.kyrptonaught.kyrptconfig.config.screen.NotSuckyButton;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 
@@ -31,17 +30,17 @@ public class BooleanItem extends ConfigItem<Boolean> {
     }
 
     @Override
-    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
-        super.mouseClicked(click, doubled);
-        boolWidget.mouseClicked(click, doubled);
+    public void mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
+        boolWidget.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float delta) {
-        super.extractRenderState(context, x, y, mouseX, mouseY, delta);
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+        super.render(context, x, y, mouseX, mouseY, delta);
         this.boolWidget.setY(y);
         this.boolWidget.setX(resetButton.getX() - resetButton.getWidth() - (boolWidget.getWidth() / 2) - 20);
 
-        boolWidget.extractRenderState(context, mouseX, mouseY, delta);
+        boolWidget.render(context, mouseX, mouseY, delta);
     }
 }

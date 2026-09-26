@@ -4,7 +4,6 @@ import java.util.Objects;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -37,7 +36,7 @@ public class ItemStackInventory extends SimpleContainer {
     }
 
     @Override
-    public void stopOpen(ContainerUser user) {
+    public void stopOpen(Player user) {
         if (itemStack.getCount() > 1) {
             int count = itemStack.getCount();
             itemStack.setCount(1);
