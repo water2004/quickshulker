@@ -228,14 +228,14 @@ try (Transaction transaction = Transaction.openOuter()) {
 项目需要 JDK 21，并已包含 Gradle Wrapper。
 
 ```bash
-git clone --branch codex/mc-1.21.1 https://github.com/water2004/quickshulker.git
+git clone --branch 1.21.1 https://github.com/water2004/quickshulker.git
 cd quickshulker
 ./gradlew clean test runGameTest build
 ```
 
 Windows 使用 `gradlew.bat`。发布 jar 输出到 `build/libs/`。
 
-主测试锁定快速打开、潜影盒事务和原版 v3 数据包契约，并检查 Fabric 握手注册表不会要求 Quick Shulker 客户端；[`legacy-gametest/`](legacy-gametest/README.md) 检查继续保留的公共扩展 API。[`compat-test/`](compat-test/README.md) 使用独立服务端和真实客户端，验证纯原版、未装 QS 的 Fabric、legacy-wire、v4 四种连接及容器取物行为。推送到 `codex/mc-1.21.1` 会执行 CI 检查，不会发布版本；带 `+1.21.1` 的标签只有在提交属于 `1.21.1` 发布分支时才能通过发布工作流。
+主测试锁定快速打开、潜影盒事务和原版 v3 数据包契约，并检查 Fabric 握手注册表不会要求 Quick Shulker 客户端；[`legacy-gametest/`](legacy-gametest/README.md) 检查继续保留的公共扩展 API。[`compat-test/`](compat-test/README.md) 使用独立服务端和真实客户端，验证纯原版、未装 QS 的 Fabric、legacy-wire、v4 四种连接及容器取物行为。推送到 `1.21.1` 会执行 CI 检查，不会发布版本；带 `+1.21.1` 的标签只有在提交属于 `1.21.1` 发布分支时才能通过发布工作流。
 
 ## 许可证
 

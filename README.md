@@ -228,14 +228,14 @@ For reproducible bugs, open an issue in [this repository](https://github.com/wat
 The project requires JDK 21 and includes the Gradle wrapper.
 
 ```bash
-git clone --branch codex/mc-1.21.1 https://github.com/water2004/quickshulker.git
+git clone --branch 1.21.1 https://github.com/water2004/quickshulker.git
 cd quickshulker
 ./gradlew clean test runGameTest build
 ```
 
 On Windows, use `gradlew.bat`. The release jar is written to `build/libs/`.
 
-The main suite covers quick-open, shulker transactions, the original-v3 packet contract, and the absence of mandatory Quick Shulker registry entries. [`legacy-gametest/`](legacy-gametest/README.md) checks the retained public extension API. [`compat-test/`](compat-test/README.md) connects real vanilla, Fabric-without-QS, legacy-wire and v4 clients to a dedicated server and checks container extraction and authoritative inventory contents. Pushes to `codex/mc-1.21.1` run these CI checks without publishing a release. The release workflow accepts `+1.21.1` tags only when their commits belong to the `1.21.1` release branch.
+The main suite covers quick-open, shulker transactions, the original-v3 packet contract, and the absence of mandatory Quick Shulker registry entries. [`legacy-gametest/`](legacy-gametest/README.md) checks the retained public extension API. [`compat-test/`](compat-test/README.md) connects real vanilla, Fabric-without-QS, legacy-wire and v4 clients to a dedicated server and checks container extraction and authoritative inventory contents. Pushes to `1.21.1` run these CI checks without publishing a release. The release workflow accepts `+1.21.1` tags only when their commits belong to the `1.21.1` release branch.
 
 ## License
 
