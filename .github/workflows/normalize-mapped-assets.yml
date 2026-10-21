@@ -1,0 +1,31 @@
+name: Normalize mapped release filenames
+on:
+  push:
+    branches: ["dory/1.21.10"]
+    paths: [".github/workflows/normalize-mapped-assets.yml"]
+permissions:
+  contents: write
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rename the existing tested artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          base = "https://api.github.com/repos/water2004/quickshulker"
+          headers = {"Authorization":"Bearer "+os.environ["GH_TOKEN"], "Accept":"application/vnd.github+json", "X-GitHub-Api-Version":"2022-11-28"}
+          def api(path, data=None):
+              req=urllib.request.Request(base+path, data=None if data is None else json.dumps(data).encode(), headers=headers, method="GET" if data is None else "PATCH")
+              with urllib.request.urlopen(req, timeout=60) as r: return json.load(r)
+          asset=api("/releases/assets/662179670")
+          assert asset["name"] in ["quickshulker-4.0.1-backport.1+1.21.10.jar","quickshulker-4.0.1+1.21.10.jar"]
+          assert asset["digest"] == "sha256:818263d06b35584ecc8dbe65bd15d29a6250a4c04d4f5432b113f197926d18b0"
+          assert asset["size"] == 747631
+          if asset["name"] != "quickshulker-4.0.1+1.21.10.jar":
+              asset=api("/releases/assets/662179670", {"name":"quickshulker-4.0.1+1.21.10.jar"})
+          assert asset["name"] == "quickshulker-4.0.1+1.21.10.jar" and asset["digest"] == "sha256:818263d06b35584ecc8dbe65bd15d29a6250a4c04d4f5432b113f197926d18b0"
+          print(asset["browser_download_url"])
+          PY
