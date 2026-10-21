@@ -676,7 +676,7 @@ public final class QuickShulkerTransferGameTests {
             ServerPlayer player, int slot) {
         ContainerItemContext context = ContainerItemContext.ofPlayerSlot(
                 player, PlayerInventoryStorage.of(player).getSlot(slot));
-        Storage<ItemVariant> storage = context.find(ItemStorage.ITEM);
+        Storage<ItemVariant> storage = new net.kyrptonaught.quickshulker.internal.storage.CarriedComponentStorage(context, 27);
         if (!(storage instanceof SlottedStorage<?> slotted)) {
             throw new AssertionError("Carried shulker did not expose slotted Fabric item storage");
         }

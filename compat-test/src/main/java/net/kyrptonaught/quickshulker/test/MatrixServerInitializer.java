@@ -45,7 +45,7 @@ public final class MatrixServerInitializer implements ModInitializer {
                 int diamond = items.stream().filter(s -> s.is(Items.DIAMOND)).mapToInt(ItemStack::getCount).sum();
                 boolean boxesEmpty = items.stream().filter(s -> s.is(Items.SHULKER_BOX))
                         .allMatch(s -> s.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-                                .nonEmptyStream().findAny().isEmpty());
+                                .stream().filter(stack -> !stack.isEmpty()).findAny().isEmpty());
                 boolean bundlesEmpty = items.stream().filter(s -> s.is(Items.BUNDLE))
                         .allMatch(s -> s.getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY).isEmpty());
                 if (stone != 4 || diamond != 4 || !boxesEmpty || !bundlesEmpty

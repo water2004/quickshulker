@@ -61,7 +61,7 @@ public final class ShulkerStorages {
                 PlayerInventoryStorage.of(player).getSlot(playerInventorySlot);
         ContainerItemContext context =
                 ContainerItemContext.ofPlayerSlot(player, hostSlot);
-        Storage<ItemVariant> storage = context.find(ItemStorage.ITEM);
+        Storage<ItemVariant> storage = new net.kyrptonaught.quickshulker.internal.storage.CarriedComponentStorage(context, data.getInventory(player, host).getContainerSize());
         if (!(storage instanceof SlottedStorage<?> slotted)) {
             return Optional.empty();
         }
