@@ -1,0 +1,41 @@
+name: Append verified Minecraft 1.21.10 asset
+on:
+  push:
+    branches: ["dory/1.21.10"]
+    paths: [".github/workflows/append-1.21.10.yml"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  append:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dory/1.21.10'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Verify pinned successful test run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${{ github.repository }}/actions/runs/39585062971 > /tmp/verified-run.json
+          jq -e '.conclusion == "success" and .head_sha == "e34cff564ca1d21a8d9e52165d991eab2718c920"' /tmp/verified-run.json
+          gh release view '4.0.1+26.3' --repo '${{ github.repository }}'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 39585062971
+          name: quickshulker-e34cff564ca1d21a8d9e52165d991eab2718c920
+          path: release
+      - name: Append only the expected production asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(find release -type f | wc -l)" -eq 1
+          test -f 'release/quickshulker-4.0.1-backport.1+1.21.10.jar'
+          sha256sum 'release/quickshulker-4.0.1-backport.1+1.21.10.jar'
+          # No clobber: preserve every existing release asset and its metadata.
+          gh release upload '4.0.1+26.3' 'release/quickshulker-4.0.1-backport.1+1.21.10.jar' --repo '${{ github.repository }}'
+
