@@ -41,7 +41,7 @@ final class LegacyTestSupport {
         ItemContainerContents component = box.get(DataComponents.CONTAINER);
         if (component == null) return List.of();
         List<ItemStack> result = new ArrayList<>();
-        component.nonEmptyStream().forEach(result::add);
+        component.stream().filter(stack -> !stack.isEmpty()).map(ItemStack::copy).forEach(result::add);
         return result;
     }
 
@@ -75,9 +75,7 @@ final class LegacyTestSupport {
             action.run();
         } catch (Throwable thrown) {
             if (expected.isInstance(thrown)) return;
-            throw new AssertionError(
-                    message + "; expected " + expected.getSimpleName()
-                            + " but got " + thrown, thrown);
+            throw new AssertionError(message + "; expected " + expected.getSimpleName() + " but got " + thrown, thrown);
         }
         helper.fail(message + "; expected " + expected.getSimpleName());
     }
@@ -142,7 +140,7 @@ final class LegacyTestSupport {
         }
 
         @Override
-        public void stopOpen(Player user) {
+        public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
             closeCount++;
             List<ItemStack> stacks = new ArrayList<>(getContainerSize());
             for (int slot = 0; slot < getContainerSize(); slot++) {
@@ -172,7 +170,7 @@ final class LegacyTestSupport {
         }
 
         @Override
-        public void stopOpen(Player user) {
+        public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
             closeCount++;
         }
     }

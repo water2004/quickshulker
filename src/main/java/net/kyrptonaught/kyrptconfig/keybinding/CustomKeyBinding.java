@@ -67,9 +67,9 @@ public class CustomKeyBinding implements CustomSerializable {
             return unknownIsActivated; // Always pressed for empty or explicitly "key.keyboard.unknown"
         boolean pressed;
         if (parsedKey.getType() == InputConstants.Type.MOUSE) {
-            pressed = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), parsedKey.getValue()) == GLFW.GLFW_PRESS;
+            pressed = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), parsedKey.getValue()) == GLFW.GLFW_PRESS;
         } else {
-            pressed = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), parsedKey.getValue());
+            pressed = InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), parsedKey.getValue());
         }
         return pressed;
     }

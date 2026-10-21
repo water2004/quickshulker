@@ -126,7 +126,7 @@ public final class ShulkerTransferClientRuntime {
         PendingTransfer active = REQUESTS.activateNext();
         PlayerSlotEndpoint playerEndpoint = active.request.playerEndpoint();
         if (playerEndpoint.slot()
-                >= player.getInventory().items.size()) {
+                >= player.getInventory().getNonEquipmentItems().size()) {
             finishActive(ShulkerTransferResult.empty(
                     ShulkerTransferStatus.INVALID_ENDPOINT));
             return;

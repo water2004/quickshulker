@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.kyrptonaught.quickshulker.api.QuickOpenableRegistry;
 import net.kyrptonaught.quickshulker.api.QuickShulkerData;
 import net.kyrptonaught.quickshulker.api.Util;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class LegacyKnownBugGameTests {
     /** QS-LB-001: retained deprecated-API compatibility quirk. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     @SuppressWarnings("deprecation")
     public void qsLb001DeprecatedSingularArgumentIsIgnored(GameTestHelper helper) {
         try (LegacyTestSupport.RegistrySnapshot ignored =
@@ -33,15 +33,14 @@ public final class LegacyKnownBugGameTests {
                     (player, stack) -> { });
             QuickShulkerData data = QuickOpenableRegistry.getQuickie(
                     new LegacyTestSupport.FirstItemLike());
-            helper.assertTrue(!data.ignoreSingleStackCheck,
-                    "QS-LB-001: the deprecated requiresSingularStack=false "
-                            + "argument was and remains ignored");
+            helper.assertTrue(!data.ignoreSingleStackCheck, net.minecraft.network.chat.Component.literal("QS-LB-001: the deprecated requiresSingularStack=false "
+                            + "argument was and remains ignored"));
         }
         helper.succeed();
     }
 
     /** QS-LB-002: 3.0.4 rejected valid non-SimpleContainer registrations. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb002BoxTransferSupportsAnyContainer(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack sourceHost = LegacyTestSupport.box();
@@ -68,22 +67,19 @@ public final class LegacyKnownBugGameTests {
                         () -> BundleHelper.transferItemsToShulker(
                                 player, targetHost, sourceHost, null),
                         "QS-LB-002 must reproduce the 3.0.4 concrete-container cast");
-                helper.assertValueEqual(target.countItem(Items.STONE), 0,
-                        "The baseline failure must occur before mutation");
+                helper.assertValueEqual(target.countItem(Items.STONE), 0, net.minecraft.network.chat.Component.literal("The baseline failure must occur before mutation"));
             } else {
                 BundleHelper.transferItemsToShulker(
                         player, targetHost, sourceHost, null);
-                helper.assertValueEqual(target.countItem(Items.STONE), 6,
-                        "Current code must honor the public Container abstraction");
-                helper.assertValueEqual(source.countItem(Items.STONE), 0,
-                        "A successful current transfer must debit the source");
+                helper.assertValueEqual(target.countItem(Items.STONE), 6, net.minecraft.network.chat.Component.literal("Current code must honor the public Container abstraction"));
+                helper.assertValueEqual(source.countItem(Items.STONE), 0, net.minecraft.network.chat.Component.literal("A successful current transfer must debit the source"));
             }
         }
         helper.succeed();
     }
 
     /** QS-LB-003: 3.0.4 bypassed the target registration's insertion rule. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb003BoxTransferEnforcesDestinationPolicy(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack source = LegacyTestSupport.box(new ItemStack(Items.STONE, 6));
@@ -101,21 +97,17 @@ public final class LegacyKnownBugGameTests {
         }
 
         if (LegacyTestSupport.baseline()) {
-            helper.assertValueEqual(LegacyTestSupport.count(target, Items.STONE), 6,
-                    "QS-LB-003 must reproduce the 3.0.4 policy bypass");
-            helper.assertValueEqual(LegacyTestSupport.count(source, Items.STONE), 0,
-                    "The baseline bypass moved the rejected items");
+            helper.assertValueEqual(LegacyTestSupport.count(target, Items.STONE), 6, net.minecraft.network.chat.Component.literal("QS-LB-003 must reproduce the 3.0.4 policy bypass"));
+            helper.assertValueEqual(LegacyTestSupport.count(source, Items.STONE), 0, net.minecraft.network.chat.Component.literal("The baseline bypass moved the rejected items"));
         } else {
-            helper.assertValueEqual(LegacyTestSupport.count(target, Items.STONE), 0,
-                    "Current code must keep rejected items out of the destination");
-            helper.assertValueEqual(LegacyTestSupport.count(source, Items.STONE), 6,
-                    "A rejected current transfer must preserve the source");
+            helper.assertValueEqual(LegacyTestSupport.count(target, Items.STONE), 0, net.minecraft.network.chat.Component.literal("Current code must keep rejected items out of the destination"));
+            helper.assertValueEqual(LegacyTestSupport.count(source, Items.STONE), 6, net.minecraft.network.chat.Component.literal("A rejected current transfer must preserve the source"));
         }
         helper.succeed();
     }
 
     /** QS-LB-004: 3.0.4 coupled persistence to a mixin callback object. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb004NullCallbackStillPersistsBoxTransfer(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack sourceHost = LegacyTestSupport.box(new ItemStack(Items.STONE, 6));
@@ -141,27 +133,20 @@ public final class LegacyKnownBugGameTests {
         }
 
         if (LegacyTestSupport.baseline()) {
-            helper.assertValueEqual(target.closeCount, 0,
-                    "QS-LB-004 must reproduce the callback-dependent close");
-            helper.assertValueEqual(LegacyTestSupport.count(targetHost, Items.STONE), 0,
-                    "The detached baseline target was not persisted");
-            helper.assertValueEqual(LegacyTestSupport.count(sourceHost, Items.STONE), 6,
-                    "The detached baseline source was not persisted");
+            helper.assertValueEqual(target.closeCount, 0, net.minecraft.network.chat.Component.literal("QS-LB-004 must reproduce the callback-dependent close"));
+            helper.assertValueEqual(LegacyTestSupport.count(targetHost, Items.STONE), 0, net.minecraft.network.chat.Component.literal("The detached baseline target was not persisted"));
+            helper.assertValueEqual(LegacyTestSupport.count(sourceHost, Items.STONE), 6, net.minecraft.network.chat.Component.literal("The detached baseline source was not persisted"));
         } else {
-            helper.assertValueEqual(target.closeCount, 1,
-                    "Current persistence must not depend on a callback object");
-            helper.assertValueEqual(source.closeCount, 1,
-                    "Both current containers must finish together");
-            helper.assertValueEqual(LegacyTestSupport.count(targetHost, Items.STONE), 6,
-                    "The current destination must contain the moved items");
-            helper.assertValueEqual(LegacyTestSupport.count(sourceHost, Items.STONE), 0,
-                    "The current source must be persisted as empty");
+            helper.assertValueEqual(target.closeCount, 1, net.minecraft.network.chat.Component.literal("Current persistence must not depend on a callback object"));
+            helper.assertValueEqual(source.closeCount, 1, net.minecraft.network.chat.Component.literal("Both current containers must finish together"));
+            helper.assertValueEqual(LegacyTestSupport.count(targetHost, Items.STONE), 6, net.minecraft.network.chat.Component.literal("The current destination must contain the moved items"));
+            helper.assertValueEqual(LegacyTestSupport.count(sourceHost, Items.STONE), 0, net.minecraft.network.chat.Component.literal("The current source must be persisted as empty"));
         }
         helper.succeed();
     }
 
     /** QS-LB-005: currently retained observable eager inventory lookup. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb005DisabledUnbundleStillResolvesInventory(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         AtomicInteger lookups = new AtomicInteger();
@@ -179,16 +164,14 @@ public final class LegacyKnownBugGameTests {
                     player, ClickAction.PRIMARY, LegacyTestSupport.box(),
                     new ItemStack(Items.STONE), false);
 
-            helper.assertTrue(!attempted,
-                    "An ineligible disabled click must not attempt extraction");
-            helper.assertValueEqual(lookups.get(), 1,
-                    "QS-LB-005 records the retained eager inventory lookup");
+            helper.assertTrue(!attempted, net.minecraft.network.chat.Component.literal("An ineligible disabled click must not attempt extraction"));
+            helper.assertValueEqual(lookups.get(), 1, net.minecraft.network.chat.Component.literal("QS-LB-005 records the retained eager inventory lookup"));
         }
         helper.succeed();
     }
 
     /** QS-LB-006: currently retained invalid-input failure. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb006NegativeOpenSlotStillFailsFast(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         LegacyTestSupport.assertThrows(helper, IndexOutOfBoundsException.class,
@@ -198,7 +181,7 @@ public final class LegacyKnownBugGameTests {
     }
 
     /** QS-LB-007: 3.0.4 treated a zero-item safeInsert as success. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb007UnbundleSkipsZeroMoveCandidate(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         ItemStack host = LegacyTestSupport.box(
@@ -210,27 +193,20 @@ public final class LegacyKnownBugGameTests {
         ItemStack result = BundleHelper.unbundleItem(player, host, output);
 
         if (LegacyTestSupport.baseline()) {
-            helper.assertTrue(result != null,
-                    "QS-LB-007 must reproduce the false-positive baseline result");
-            helper.assertValueEqual(player.getInventory().getItem(10).getCount(), 60,
-                    "The baseline stopped after moving zero items");
-            helper.assertValueEqual(LegacyTestSupport.count(host, Items.DIRT), 8,
-                    "The compatible earlier item was never considered in 3.0.4");
+            helper.assertTrue(result != null, net.minecraft.network.chat.Component.literal("QS-LB-007 must reproduce the false-positive baseline result"));
+            helper.assertValueEqual(player.getInventory().getItem(10).getCount(), 60, net.minecraft.network.chat.Component.literal("The baseline stopped after moving zero items"));
+            helper.assertValueEqual(LegacyTestSupport.count(host, Items.DIRT), 8, net.minecraft.network.chat.Component.literal("The compatible earlier item was never considered in 3.0.4"));
         } else {
-            helper.assertTrue(result != null,
-                    "Current code must find the compatible earlier item");
-            helper.assertValueEqual(player.getInventory().getItem(10).getCount(), 64,
-                    "Current code must fill the destination's remaining capacity");
-            helper.assertValueEqual(LegacyTestSupport.count(host, Items.DIRT), 4,
-                    "Current code must preserve only the unmoved remainder");
+            helper.assertTrue(result != null, net.minecraft.network.chat.Component.literal("Current code must find the compatible earlier item"));
+            helper.assertValueEqual(player.getInventory().getItem(10).getCount(), 64, net.minecraft.network.chat.Component.literal("Current code must fill the destination's remaining capacity"));
+            helper.assertValueEqual(LegacyTestSupport.count(host, Items.DIRT), 4, net.minecraft.network.chat.Component.literal("Current code must preserve only the unmoved remainder"));
         }
-        helper.assertValueEqual(LegacyTestSupport.count(host, Items.STONE), 12,
-                "The incompatible candidate itself must remain untouched");
+        helper.assertValueEqual(LegacyTestSupport.count(host, Items.STONE), 12, net.minecraft.network.chat.Component.literal("The incompatible candidate itself must remain untouched"));
         helper.succeed();
     }
 
     /** QS-LB-007 companion case: no candidate can move at all. */
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void qsLb007UnbundleReportsNoTransferWhenEveryMoveIsZero(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
@@ -241,14 +217,11 @@ public final class LegacyKnownBugGameTests {
         ItemStack result = BundleHelper.unbundleItem(player, host, output);
 
         if (LegacyTestSupport.baseline()) {
-            helper.assertTrue(result != null,
-                    "QS-LB-007 must reproduce the baseline false success");
+            helper.assertTrue(result != null, net.minecraft.network.chat.Component.literal("QS-LB-007 must reproduce the baseline false success"));
         } else {
-            helper.assertTrue(result == null,
-                    "Current code must report that no transfer occurred");
+            helper.assertTrue(result == null, net.minecraft.network.chat.Component.literal("Current code must report that no transfer occurred"));
         }
-        helper.assertValueEqual(LegacyTestSupport.count(host, Items.STONE), 12,
-                "A zero-move extraction must never mutate the source");
+        helper.assertValueEqual(LegacyTestSupport.count(host, Items.STONE), 12, net.minecraft.network.chat.Component.literal("A zero-move extraction must never mutate the source"));
         helper.succeed();
     }
 }

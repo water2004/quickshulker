@@ -45,13 +45,13 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
 
     @Override
     protected void renderBg(GuiGraphics context, float deltaTicks, int mouseX, int mouseY) {
-        context.blit(CONTAINER_TEXTURE, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, ROWS_COUNT * 18 + 17, 256, 256);
-        context.blit(CONTAINER_TEXTURE, this.leftPos, this.topPos + ROWS_COUNT * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, CONTAINER_TEXTURE, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, ROWS_COUNT * 18 + 17, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, CONTAINER_TEXTURE, this.leftPos, this.topPos + ROWS_COUNT * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
         this.drawScrollbarBackground(context);
         int i = this.leftPos + 156;
         int j = this.topPos + 18;
         int k = j + 88;
-        context.blitSprite(SCROLLER_TEXTURE, i, j + (int) ((k - j - SCROLLBAR_HEIGHT) * this.scrollPosition), SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT);
+        context.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, i, j + (int) ((k - j - SCROLLBAR_HEIGHT) * this.scrollPosition), SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT);
     }
 
 
@@ -59,18 +59,19 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     public void drawScrollbarBackground(GuiGraphics context){
         int i = this.leftPos + 8 + COLUMNS_COUNT * 18 - 1;
         int j = this.topPos + 18 - 1;
-        context.blit(SCROLLBAR_BACKGROUND_TEXTURE, i, j, 170, 17, 18, 72, 256, 256);
-        context.blit(SCROLLBAR_BACKGROUND_TEXTURE, i, j + 72, 170, 111, 18, 18, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLBAR_BACKGROUND_TEXTURE, i, j, 170, 17, 18, 72, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLBAR_BACKGROUND_TEXTURE, i, j + 72, 170, 111, 18, 18, 256, 256);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if(button == 0){
             if(this.isClickInScrollbar(mouseX, mouseY)){
                 return this.scrolling = true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubleClick);
     }
 
     protected boolean isClickInScrollbar(double mouseX, double mouseY) {
@@ -82,12 +83,13 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent click) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if(button == 0){
             this.scrolling = false;
         }
 
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override
@@ -98,7 +100,8 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double offsetX, double offsetY) {
+    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent click, double offsetX, double offsetY) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if(this.scrolling){
             int i = this.topPos + 18;
             int j = i + 88;
@@ -107,7 +110,7 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
             this.menu.scrollItems(this.scrollPosition);
             return true;
         }else {
-            return super.mouseDragged(mouseX, mouseY, button, offsetX, offsetY);
+            return super.mouseDragged(click, offsetX, offsetY);
         }
     }
 }

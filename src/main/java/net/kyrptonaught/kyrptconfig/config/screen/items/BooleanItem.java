@@ -30,9 +30,10 @@ public class BooleanItem extends ConfigItem<Boolean> {
     }
 
     @Override
-    public void mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        boolWidget.mouseClicked(mouseX, mouseY, button);
+    public void mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+        super.mouseClicked(click, doubleClick);
+        boolWidget.mouseClicked(click, doubleClick);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.legacytest;
 
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
 import net.kyrptonaught.quickshulker.api.ItemInventoryContainer;
 import net.kyrptonaught.quickshulker.api.QuickOpenableRegistry;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class LegacyOpeningGameTests {
     private static final int PLAYER_SLOT = 9;
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void registeredOpenInvokesCallbackAndRecordsPlayerSlot(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
@@ -28,27 +28,23 @@ public final class LegacyOpeningGameTests {
             new QuickOpenableRegistry.Builder()
                     .setItem(Items.STONE.getClass())
                     .setOpenAction((actualPlayer, actualStack) -> {
-                        helper.assertTrue(actualPlayer == player,
-                                "The callback must receive the initiating player");
-                        helper.assertTrue(actualStack == stack,
-                                "The callback must receive the live inventory stack");
+                        helper.assertTrue(actualPlayer == player, net.minecraft.network.chat.Component.literal("The callback must receive the initiating player"));
+                        helper.assertTrue(actualStack == stack, net.minecraft.network.chat.Component.literal("The callback must receive the live inventory stack"));
                         opens.incrementAndGet();
                     })
                     .register();
 
             Util.openItem(player, 0, PLAYER_SLOT);
-            helper.assertValueEqual(opens.get(), 1,
-                    "One open request must invoke one callback");
+            helper.assertValueEqual(opens.get(), 1, net.minecraft.network.chat.Component.literal("One open request must invoke one callback"));
             helper.assertValueEqual(
                     ((ItemInventoryContainer) player.containerMenu)
                             .getUsedSlotInPlayerInv(),
-                    PLAYER_SLOT,
-                    "The open menu must remember the player inventory slot");
+                    PLAYER_SLOT, net.minecraft.network.chat.Component.literal("The open menu must remember the player inventory slot"));
         }
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void unregisteredOpenRequestIsIgnored(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.STICK));
@@ -58,13 +54,12 @@ public final class LegacyOpeningGameTests {
             helper.assertValueEqual(
                     ((ItemInventoryContainer) player.containerMenu)
                             .getUsedSlotInPlayerInv(),
-                    -1,
-                    "An unregistered item must not mark a menu slot as open");
+                    -1, net.minecraft.network.chat.Component.literal("An unregistered item must not mark a menu slot as open"));
         }
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void rightClickCloseSuppressesSecondOpenCallback(GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
         player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.STONE));
@@ -81,15 +76,14 @@ public final class LegacyOpeningGameTests {
 
             Util.openItem(player, 0, PLAYER_SLOT);
             Util.openItem(player, 0, PLAYER_SLOT);
-            helper.assertValueEqual(opens.get(), 1,
-                    "Opening the already-used slot must toggle close, not reopen");
+            helper.assertValueEqual(opens.get(), 1, net.minecraft.network.chat.Component.literal("Opening the already-used slot must toggle close, not reopen"));
         } finally {
             QuickShulkerMod.getConfig().rightClickClose = previous;
         }
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void forceCloseListenerAcceptsSameTypeWithChangedComponents(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
@@ -108,13 +102,12 @@ public final class LegacyOpeningGameTests {
                     new ItemStack(Items.STONE));
             listener.slotChanged(player.containerMenu, 0,
                     player.getInventory().getItem(PLAYER_SLOT));
-            helper.assertTrue(true,
-                    "The legacy listener intentionally validates item type, not components");
+            helper.assertTrue(true, net.minecraft.network.chat.Component.literal("The legacy listener intentionally validates item type, not components"));
         }
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void forceCloseListenerAllowsStackingOnlyWhenRegistered(
             GameTestHelper helper) {
         ServerPlayer player = LegacyTestSupport.player(helper);
@@ -131,8 +124,7 @@ public final class LegacyOpeningGameTests {
             player.getInventory().getItem(PLAYER_SLOT).setCount(32);
             listener.dataChanged(player.containerMenu, 0, 0);
             helper.assertValueEqual(
-                    player.getInventory().getItem(PLAYER_SLOT).getCount(), 32,
-                    "The listener must honor ignoreSingleStackCheck");
+                    player.getInventory().getItem(PLAYER_SLOT).getCount(), 32, net.minecraft.network.chat.Component.literal("The listener must honor ignoreSingleStackCheck"));
         }
         helper.succeed();
     }

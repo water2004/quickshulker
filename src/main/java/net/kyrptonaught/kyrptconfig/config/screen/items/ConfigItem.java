@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -129,17 +129,20 @@ public abstract class ConfigItem<T> {
     public void tick() {
     }
 
-    public void mouseClicked(double mouseX, double mouseY, int button) {
+    public void mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if (isHidden) return;
         if (resetButton != null)
-            resetButton.mouseClicked(mouseX, mouseY, button);
+            resetButton.mouseClicked(click, doubleClick);
     }
 
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent characterEvent) {
+        char codePoint = (char) characterEvent.codepoint(); int modifiers = characterEvent.modifiers();
         return false;
     }
 
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
         return false;
     }
 
@@ -149,7 +152,7 @@ public abstract class ConfigItem<T> {
         int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int height = y + getHeaderSize();
         if (mouseY > y && mouseY < height)
-            context.fill(0, y - 1, width, height + 1, FastColor.ARGB32.color(50, 255, 255, 255));
+            context.fill(0, y - 1, width, height + 1, ARGB.color(50, 255, 255, 255));
 
         context.drawString(Minecraft.getInstance().font, this.fieldTitle, x, y + 6, -1, true);
 
@@ -173,11 +176,11 @@ public abstract class ConfigItem<T> {
         if (toolTipText != null && requiresRestart) {
             List<Component> newList = new ArrayList<>(toolTipText);
             newList.add(Component.translatable("key.kyrptconfig.config.restartRequired"));
-            context.renderComponentTooltip(Minecraft.getInstance().font, newList, x, y);
+            context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, newList, x, y);
         } else if (toolTipText != null)
-            context.renderComponentTooltip(Minecraft.getInstance().font, toolTipText, x, y);
+            context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, toolTipText, x, y);
         else if (requiresRestart) {
-            context.renderTooltip(Minecraft.getInstance().font, Component.translatable("key.kyrptconfig.config.restartRequired"), x, y);
+            context.setTooltipForNextFrame(Minecraft.getInstance().font, Component.translatable("key.kyrptconfig.config.restartRequired"), x, y);
         }
     }
 }

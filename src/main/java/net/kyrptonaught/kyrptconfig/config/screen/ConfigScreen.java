@@ -128,27 +128,30 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (sections.get(selectedSection).keyPressed(keyCode, scanCode, modifiers)) return true;
-        return super.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
+        if (sections.get(selectedSection).keyPressed(keyEvent)) return true;
+        return super.keyPressed(keyEvent);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        return sections.get(selectedSection).charTyped(codePoint, modifiers);
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent characterEvent) {
+        char codePoint = (char) characterEvent.codepoint(); int modifiers = characterEvent.modifiers();
+        return sections.get(selectedSection).charTyped(characterEvent);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+        super.mouseClicked(click, doubleClick);
 
-        if (scrollLeftBTN.mouseClicked(mouseX, mouseY, button) || scrollRightBTN.mouseClicked(mouseX, mouseY, button))
+        if (scrollLeftBTN.mouseClicked(click, doubleClick) || scrollRightBTN.mouseClicked(click, doubleClick))
             return true;
 
         for (ConfigSection section : sections)
-            if (section.sectionSelectionBTN.mouseClicked(mouseX, mouseY, button)) return true;
+            if (section.sectionSelectionBTN.mouseClicked(click, doubleClick)) return true;
 
-        return sections.get(selectedSection).mouseClicked(mouseX, mouseY, button);
+        return sections.get(selectedSection).mouseClicked(click, doubleClick);
     }
 
     @Override
@@ -207,7 +210,7 @@ public class ConfigScreen extends Screen {
             int y = Mth.lerpInt(percentage, 57, this.height - 30 - height);
 
             context.fill(x, 57, x + 6, this.height - 30, -16777216);
-            context.blitSprite(SCROLLER_TEXTURE, x, y, 6, height);
+            context.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, x, y, 6, height);
         }
 
         section.render2(context, 57, mouseX, mouseY, deltaTicks);
@@ -220,17 +223,17 @@ public class ConfigScreen extends Screen {
     }
 
     private void renderBackgroundTexture(GuiGraphics context) {
-        context.blit(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0, this.width, this.height, 32, 32);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0, this.width, this.height, 32, 32);
     }
 
     private void drawHeaderAndFooterSeparators(GuiGraphics context) {
-        context.blit(Screen.HEADER_SEPARATOR, 0, 55, 0.0f, 0.0f, this.width, 2, 32, 2);
-        context.blit(Screen.FOOTER_SEPARATOR, 0, this.height -30, 0.0f, 0.0f, this.width, 2, 32, 2);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, Screen.HEADER_SEPARATOR, 0, 55, 0.0f, 0.0f, this.width, 2, 32, 2);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.height -30, 0.0f, 0.0f, this.width, 2, 32, 2);
     }
 
     private void drawDirtTextureBlurred(GuiGraphics context, int x, int y, int width, int height) {
         int color = 0xB2000000;
-        context.blit(OPTIONS_BACKGROUND_TEXTURE, x, y, 0, 0, width, height, 64, 64);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, OPTIONS_BACKGROUND_TEXTURE, x, y, 0, 0, width, height, 64, 64);
         context.fillGradient(x, y, x + width, y + height, color, color);
     }
 }

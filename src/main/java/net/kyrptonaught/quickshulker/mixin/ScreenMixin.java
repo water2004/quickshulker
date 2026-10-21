@@ -38,7 +38,7 @@ public abstract class ScreenMixin {
     @Inject(method = "init", at = @At("TAIL"))
     private void fixMouse(CallbackInfo ci) {
         if (QuickShulkerMod.lastMouseX != 0 && QuickShulkerMod.lastMouseY != 0) {
-            InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL, QuickShulkerMod.lastMouseX, QuickShulkerMod.lastMouseY);
+            InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow(), org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL, QuickShulkerMod.lastMouseX, QuickShulkerMod.lastMouseY);
             QuickShulkerMod.lastMouseY = 0;
             QuickShulkerMod.lastMouseX = 0;
         }
@@ -46,7 +46,8 @@ public abstract class ScreenMixin {
 
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    private void QS$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    private void QS$keyPressed(net.minecraft.client.input.KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+        int keyCode = event.key();
         if (QuickShulkerMod.getConfig().keybingInInv) {
             if (QuickShulkerModClient.getKeybinding().matches(keyCode, InputConstants.Type.KEYSYM)) {
                 if (handleTrigger())
@@ -56,7 +57,8 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
-    private void QS$mousePressed(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void QS$mousePressed(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick, CallbackInfoReturnable<Boolean> cir) {
+        int button = event.button();
         if (QuickShulkerMod.getConfig().rightClickInv) {
             if (this.menu.getCarried().isEmpty() && button == 1 && this.hoveredSlot != null && this.hoveredSlot.getItem().getCount() == 1) {
                 if (handleTrigger()) {
@@ -78,7 +80,7 @@ public abstract class ScreenMixin {
     }
 
     @Inject(
-            method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
+            method = "renderContents(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderLabels(Lnet/minecraft/client/gui/GuiGraphics;II)V",

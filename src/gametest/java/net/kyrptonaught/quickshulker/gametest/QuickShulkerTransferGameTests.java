@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.gametest;
 
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -41,7 +41,7 @@ public final class QuickShulkerTransferGameTests {
     private static final int BOX_SLOT = 9;
     private static final int OUTPUT_SLOT = 10;
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void legacyAndPublicStorageUseTheSameInsertionSemantics(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack legacyBox = box(new ItemStack(Items.STONE, 60));
@@ -57,16 +57,13 @@ public final class QuickShulkerTransferGameTests {
             transaction.commit();
         }
 
-        helper.assertValueEqual(inserted, 70L,
-                "Public storage should accept the whole source");
-        helper.assertValueEqual(legacyInput.getCount(), 0,
-                "Legacy insertion should consume the same amount");
-        helper.assertTrue(sameContents(legacyBox, publicBox),
-                "Legacy and public paths must write identical contents");
+        helper.assertValueEqual(inserted, 70L, net.minecraft.network.chat.Component.literal("Public storage should accept the whole source"));
+        helper.assertValueEqual(legacyInput.getCount(), 0, net.minecraft.network.chat.Component.literal("Legacy insertion should consume the same amount"));
+        helper.assertTrue(sameContents(legacyBox, publicBox), net.minecraft.network.chat.Component.literal("Legacy and public paths must write identical contents"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void abortedTransactionRestoresShulkerContents(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box(new ItemStack(Items.STONE, 12));
@@ -76,15 +73,14 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     storage.extract(ItemVariant.of(Items.STONE), 5, transaction),
-                    5L, "The tentative extraction should be visible");
+                    5L, net.minecraft.network.chat.Component.literal("The tentative extraction should be visible"));
         }
 
-        helper.assertValueEqual(count(carriedBox, Items.STONE), 12,
-                "Closing without commit must roll back the host component");
+        helper.assertValueEqual(count(carriedBox, Items.STONE), 12, net.minecraft.network.chat.Component.literal("Closing without commit must roll back the host component"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void exactSlotsComposeWithPlayerInventoryStorage(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box(
@@ -104,18 +100,14 @@ public final class QuickShulkerTransferGameTests {
             transaction.commit();
         }
 
-        helper.assertValueEqual(moved, 5L,
-                "Fabric StorageUtil should move the requested amount");
-        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 5,
-                "The selected player slot should receive the items");
-        helper.assertValueEqual(count(carriedBox, Items.STONE), 7,
-                "Only the selected shulker slot should be debited");
-        helper.assertValueEqual(count(carriedBox, Items.DIRT), 8,
-                "Unselected contents must remain untouched");
+        helper.assertValueEqual(moved, 5L, net.minecraft.network.chat.Component.literal("Fabric StorageUtil should move the requested amount"));
+        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 5, net.minecraft.network.chat.Component.literal("The selected player slot should receive the items"));
+        helper.assertValueEqual(count(carriedBox, Items.STONE), 7, net.minecraft.network.chat.Component.literal("Only the selected shulker slot should be debited"));
+        helper.assertValueEqual(count(carriedBox, Items.DIRT), 8, net.minecraft.network.chat.Component.literal("Unselected contents must remain untouched"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void storageRejectsNestedShulkerBoxes(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box();
@@ -128,14 +120,12 @@ public final class QuickShulkerTransferGameTests {
             transaction.commit();
         }
 
-        helper.assertValueEqual(inserted, 0L,
-                "QuickShulker's nesting rule must constrain every storage slot");
-        helper.assertValueEqual(count(host, Items.SHULKER_BOX), 0,
-                "Rejected nesting must not mutate the box");
+        helper.assertValueEqual(inserted, 0L, net.minecraft.network.chat.Component.literal("QuickShulker's nesting rule must constrain every storage slot"));
+        helper.assertValueEqual(count(host, Items.SHULKER_BOX), 0, net.minecraft.network.chat.Component.literal("Rejected nesting must not mutate the box"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void resolvedStorageStopsWhenSlotIsUnsupportedAndFollowsLiveContents(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -148,7 +138,7 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     movedStorage.extract(ItemVariant.of(Items.STONE), 1, transaction),
-                    0L, "A location-bound storage must become inert after a move");
+                    0L, net.minecraft.network.chat.Component.literal("A location-bound storage must become inert after a move"));
         }
 
         player.getInventory().setItem(BOX_SLOT, box(new ItemStack(Items.DIRT, 4)));
@@ -159,16 +149,16 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     changedStorage.extract(ItemVariant.of(Items.DIRT), 1, transaction),
-                    1L, "A slot-bound storage must follow the authoritative contents");
+                    1L, net.minecraft.network.chat.Component.literal("A slot-bound storage must follow the authoritative contents"));
             transaction.commit();
         }
         helper.assertValueEqual(
                 count(player.getInventory().getItem(BOX_SLOT), Items.DIRT),
-                1, "The extraction should apply to the current host contents");
+                1, net.minecraft.network.chat.Component.literal("The extraction should apply to the current host contents"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void versionAndUnderlyingViewsFollowAuthoritativeSlotState(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -182,24 +172,21 @@ public final class QuickShulkerTransferGameTests {
         liveStorage.getVersion();
         helper.assertValueEqual(
                 liveStorage.getSlot(0).getUnderlyingView().getResource(),
-                ItemVariant.of(Items.DIRT),
-                "The underlying view must expose the authoritative slot state");
+                ItemVariant.of(Items.DIRT), net.minecraft.network.chat.Component.literal("The underlying view must expose the authoritative slot state"));
 
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     liveStorage.extract(ItemVariant.of(Items.DIRT), 1, transaction),
-                    1L, "getVersion() must not detach the live storage from its slot");
+                    1L, net.minecraft.network.chat.Component.literal("getVersion() must not detach the live storage from its slot"));
             transaction.commit();
         }
         ItemStack current = player.getInventory().getItem(BOX_SLOT);
-        helper.assertValueEqual(count(current, Items.DIRT), 3,
-                "The live storage must update the externally supplied contents");
-        helper.assertValueEqual(count(current, Items.STONE), 0,
-                "No obsolete container snapshot may be restored");
+        helper.assertValueEqual(count(current, Items.DIRT), 3, net.minecraft.network.chat.Component.literal("The live storage must update the externally supplied contents"));
+        helper.assertValueEqual(count(current, Items.STONE), 0, net.minecraft.network.chat.Component.literal("No obsolete container snapshot may be restored"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void independentlyResolvedHandlesRemainComposableAcrossCommits(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -211,26 +198,25 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     first.extract(ItemVariant.of(Items.STONE), 2, transaction),
-                    2L, "The first storage should commit normally");
+                    2L, net.minecraft.network.chat.Component.literal("The first storage should commit normally"));
             transaction.commit();
         }
-        helper.assertValueEqual(count(host, Items.STONE), 6,
-                "The first storage should debit the authoritative host");
+        helper.assertValueEqual(count(host, Items.STONE), 6, net.minecraft.network.chat.Component.literal("The first storage should debit the authoritative host"));
 
         second.getVersion();
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     second.extract(ItemVariant.of(Items.STONE), 1, transaction),
-                    1L, "A second handle must continue from the first commit");
+                    1L, net.minecraft.network.chat.Component.literal("A second handle must continue from the first commit"));
             transaction.commit();
         }
         helper.assertValueEqual(
                 count(player.getInventory().getItem(BOX_SLOT), Items.STONE),
-                5, "The second handle must preserve and extend the first commit");
+                5, net.minecraft.network.chat.Component.literal("The second handle must preserve and extend the first commit"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void resolvedStorageRemainsUsableAcrossItsOwnCommits(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box();
@@ -240,23 +226,22 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     storage.insert(ItemVariant.of(Items.STONE), 3, transaction),
-                    3L, "The first transaction should use the resolved storage");
+                    3L, net.minecraft.network.chat.Component.literal("The first transaction should use the resolved storage"));
             transaction.commit();
         }
         storage.getVersion();
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     storage.insert(ItemVariant.of(Items.STONE), 2, transaction),
-                    2L, "The same handle should follow its committed slot state");
+                    2L, net.minecraft.network.chat.Component.literal("The same handle should follow its committed slot state"));
             transaction.commit();
         }
 
-        helper.assertValueEqual(count(host, Items.STONE), 5,
-                "One storage handle should remain reusable after its own commit");
+        helper.assertValueEqual(count(host, Items.STONE), 5, net.minecraft.network.chat.Component.literal("One storage handle should remain reusable after its own commit"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void storageVersionAdvancesAfterCommit(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         player.getInventory().setItem(BOX_SLOT, box());
@@ -268,12 +253,11 @@ public final class QuickShulkerTransferGameTests {
             transaction.commit();
         }
 
-        helper.assertTrue(storage.getVersion() > before,
-                "A committed storage mutation should advance its version");
+        helper.assertTrue(storage.getVersion() > before, net.minecraft.network.chat.Component.literal("A committed storage mutation should advance its version"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void transactionMutationIsVisibleThroughTheAuthoritativeSlot(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -284,20 +268,19 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     storage.insert(ItemVariant.of(Items.DIRT), 4, transaction),
-                    4L, "The tentative insert should be accepted");
+                    4L, net.minecraft.network.chat.Component.literal("The tentative insert should be accepted"));
             helper.assertValueEqual(
                     count(player.getInventory().getItem(BOX_SLOT), Items.DIRT),
-                    4, "Fabric transactions mutate participant state before commit");
+                    4, net.minecraft.network.chat.Component.literal("Fabric transactions mutate participant state before commit"));
             transaction.commit();
         }
 
         helper.assertValueEqual(
-                count(player.getInventory().getItem(BOX_SLOT), Items.DIRT), 4,
-                "The committed insert should be written to the host");
+                count(player.getInventory().getItem(BOX_SLOT), Items.DIRT), 4, net.minecraft.network.chat.Component.literal("The committed insert should be written to the host"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void finalCommitMustNotOverwriteOutOfBandHostChange(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -308,7 +291,7 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     storage.insert(ItemVariant.of(Items.DIRT), 4, transaction),
-                    4L, "The tentative insert should be accepted");
+                    4L, net.minecraft.network.chat.Component.literal("The tentative insert should be accepted"));
             player.getInventory().getItem(BOX_SLOT).set(DataComponents.CONTAINER,
                     ItemContainerContents.fromItems(List.of(
                             new ItemStack(Items.GOLD_INGOT, 3))));
@@ -316,13 +299,12 @@ public final class QuickShulkerTransferGameTests {
         }
 
         ItemStack current = player.getInventory().getItem(BOX_SLOT);
-        helper.assertValueEqual(count(current, Items.GOLD_INGOT), 3,
-                "Final commit must not overwrite a later out-of-band host change; finalContents="
-                        + contents(current));
+        helper.assertValueEqual(count(current, Items.GOLD_INGOT), 3, net.minecraft.network.chat.Component.literal("Final commit must not overwrite a later out-of-band host change; finalContents="
+                        + contents(current)));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void rollbackRestoresTheWholeAuthoritativePlayerSlot(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -333,21 +315,19 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     storage.insert(ItemVariant.of(Items.DIRT), 4, transaction),
-                    4L, "The tentative insert should be accepted");
+                    4L, net.minecraft.network.chat.Component.literal("The tentative insert should be accepted"));
             player.getInventory().getItem(BOX_SLOT).set(DataComponents.CONTAINER,
                     ItemContainerContents.fromItems(List.of(
                             new ItemStack(Items.GOLD_INGOT, 3))));
         }
 
         ItemStack current = player.getInventory().getItem(BOX_SLOT);
-        helper.assertValueEqual(count(current, Items.GOLD_INGOT), 0,
-                "Out-of-transaction mutation of a participant is part of its rollback scope");
-        helper.assertValueEqual(count(current, Items.STONE), 8,
-                "Rollback must restore the authoritative pre-transaction slot state");
+        helper.assertValueEqual(count(current, Items.GOLD_INGOT), 0, net.minecraft.network.chat.Component.literal("Out-of-transaction mutation of a participant is part of its rollback scope"));
+        helper.assertValueEqual(count(current, Items.STONE), 8, net.minecraft.network.chat.Component.literal("Rollback must restore the authoritative pre-transaction slot state"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void rolledBackMutationMustNotPermanentlyInvalidatePeerHandle(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -360,12 +340,11 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     first.insert(ItemVariant.of(Items.DIRT), 1, transaction),
-                    1L, "The first handle should stage its mutation");
+                    1L, net.minecraft.network.chat.Component.literal("The first handle should stage its mutation"));
             peerDuringTentativeMutation =
                     peer.extract(ItemVariant.of(Items.STONE), 1, transaction);
         }
-        helper.assertValueEqual(count(host, Items.STONE), 8,
-                "The aborted outer transaction should restore the host");
+        helper.assertValueEqual(count(host, Items.STONE), 8, net.minecraft.network.chat.Component.literal("The aborted outer transaction should restore the host"));
 
         long extractedAfterRollback;
         try (Transaction transaction = Transaction.openOuter()) {
@@ -374,16 +353,14 @@ public final class QuickShulkerTransferGameTests {
             transaction.commit();
         }
 
-        helper.assertTrue(peerDuringTentativeMutation > 0 || extractedAfterRollback == 1,
-                "A tentative change that was rolled back permanently invalidated the peer: "
+        helper.assertTrue(peerDuringTentativeMutation > 0 || extractedAfterRollback == 1, net.minecraft.network.chat.Component.literal("A tentative change that was rolled back permanently invalidated the peer: "
                         + "during=" + peerDuringTentativeMutation
-                        + ", afterRollback=" + extractedAfterRollback);
-        helper.assertValueEqual(extractedAfterRollback, 1L,
-                "The peer handle must be usable again after the authoritative host is restored");
+                        + ", afterRollback=" + extractedAfterRollback));
+        helper.assertValueEqual(extractedAfterRollback, 1L, net.minecraft.network.chat.Component.literal("The peer handle must be usable again after the authoritative host is restored"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void builtInHandlesMustComposeInOneOuterTransaction(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -395,21 +372,19 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     first.insert(ItemVariant.of(Items.DIRT), 1, transaction),
-                    1L, "The first built-in handle should accept its mutation");
+                    1L, net.minecraft.network.chat.Component.literal("The first built-in handle should accept its mutation"));
             helper.assertValueEqual(
                     second.insert(ItemVariant.of(Items.GOLD_INGOT), 1, transaction),
-                    1L, "The second built-in handle should accept its mutation");
+                    1L, net.minecraft.network.chat.Component.literal("The second built-in handle should accept its mutation"));
             transaction.commit();
         }
 
-        helper.assertValueEqual(count(host, Items.DIRT), 1,
-                "The first built-in handle's committed mutation must survive");
-        helper.assertValueEqual(count(host, Items.GOLD_INGOT), 1,
-                "The second built-in handle's committed mutation must survive");
+        helper.assertValueEqual(count(host, Items.DIRT), 1, net.minecraft.network.chat.Component.literal("The first built-in handle's committed mutation must survive"));
+        helper.assertValueEqual(count(host, Items.GOLD_INGOT), 1, net.minecraft.network.chat.Component.literal("The second built-in handle's committed mutation must survive"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void fabricContainerItemContextsComposeAcrossMultipleHandles(
             GameTestHelper helper) {
         ServerPlayer player = player(helper);
@@ -421,22 +396,20 @@ public final class QuickShulkerTransferGameTests {
         try (Transaction transaction = Transaction.openOuter()) {
             helper.assertValueEqual(
                     first.insert(ItemVariant.of(Items.DIRT), 1, transaction),
-                    1L, "The first native item storage should accept its mutation");
+                    1L, net.minecraft.network.chat.Component.literal("The first native item storage should accept its mutation"));
             helper.assertValueEqual(
                     second.insert(ItemVariant.of(Items.GOLD_INGOT), 1, transaction),
-                    1L, "The second native item storage should accept its mutation");
+                    1L, net.minecraft.network.chat.Component.literal("The second native item storage should accept its mutation"));
             transaction.commit();
         }
 
         ItemStack committedHost = player.getInventory().getItem(BOX_SLOT);
-        helper.assertValueEqual(count(committedHost, Items.DIRT), 1,
-                "The first native storage mutation should survive");
-        helper.assertValueEqual(count(committedHost, Items.GOLD_INGOT), 1,
-                "The second native storage mutation should survive");
+        helper.assertValueEqual(count(committedHost, Items.DIRT), 1, net.minecraft.network.chat.Component.literal("The first native storage mutation should survive"));
+        helper.assertValueEqual(count(committedHost, Items.GOLD_INGOT), 1, net.minecraft.network.chat.Component.literal("The second native storage mutation should survive"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void detachedHandlesMustComposeInOneOuterTransaction(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box(new ItemStack(Items.STONE, 8));
@@ -458,10 +431,10 @@ public final class QuickShulkerTransferGameTests {
             try (Transaction transaction = Transaction.openOuter()) {
                 helper.assertValueEqual(
                         first.insert(ItemVariant.of(Items.DIRT), 1, transaction),
-                        1L, "The first detached handle should accept its mutation");
+                        1L, net.minecraft.network.chat.Component.literal("The first detached handle should accept its mutation"));
                 helper.assertValueEqual(
                         second.insert(ItemVariant.of(Items.GOLD_INGOT), 1, transaction),
-                        1L, "The second detached handle should accept its mutation");
+                        1L, net.minecraft.network.chat.Component.literal("The second detached handle should accept its mutation"));
                 transaction.commit();
             }
             dirt = count(host, Items.DIRT);
@@ -470,14 +443,12 @@ public final class QuickShulkerTransferGameTests {
             QuickOpenableRegistry.register(ShulkerBoxBlock.class, original);
         }
 
-        helper.assertValueEqual(dirt, 1,
-                "The first handle's committed mutation must survive");
-        helper.assertValueEqual(gold, 1,
-                "The second handle's committed mutation must survive");
+        helper.assertValueEqual(dirt, 1, net.minecraft.network.chat.Component.literal("The first handle's committed mutation must survive"));
+        helper.assertValueEqual(gold, 1, net.minecraft.network.chat.Component.literal("The second handle's committed mutation must survive"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void insertionPolicyMustReceiveAttemptedAmount(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack host = box();
@@ -524,20 +495,15 @@ public final class QuickShulkerTransferGameTests {
             QuickOpenableRegistry.register(ShulkerBoxBlock.class, original);
         }
 
-        helper.assertValueEqual(inserted, 64L,
-                "The storage should be able to stage one full stack");
-        helper.assertValueEqual(aggregateObserved, 64,
-                "Aggregate insertion must preserve the offered amount");
-        helper.assertValueEqual(directInserted, 37L,
-                "A direct empty-slot insertion should accept the offered stack");
-        helper.assertValueEqual(directObserved, 37,
-                "Direct slot insertion must preserve the offered amount");
-        helper.assertValueEqual(emptyCapacity, (long) expectedContainerCapacity,
-                "Empty-slot capacity must reflect the container's extensible limit");
+        helper.assertValueEqual(inserted, 64L, net.minecraft.network.chat.Component.literal("The storage should be able to stage one full stack"));
+        helper.assertValueEqual(aggregateObserved, 64, net.minecraft.network.chat.Component.literal("Aggregate insertion must preserve the offered amount"));
+        helper.assertValueEqual(directInserted, 37L, net.minecraft.network.chat.Component.literal("A direct empty-slot insertion should accept the offered stack"));
+        helper.assertValueEqual(directObserved, 37, net.minecraft.network.chat.Component.literal("Direct slot insertion must preserve the offered amount"));
+        helper.assertValueEqual(emptyCapacity, (long) expectedContainerCapacity, net.minecraft.network.chat.Component.literal("Empty-slot capacity must reflect the container's extensible limit"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void legacyUnbundleAndStorageToStorageStillWork(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack source = box(
@@ -547,20 +513,17 @@ public final class QuickShulkerTransferGameTests {
 
         ItemStack result = BundleHelper.unbundleItem(
                 player, source, new Slot(player.getInventory(), OUTPUT_SLOT, 0, 0));
-        helper.assertTrue(result != null, "Legacy unbundle should report success");
-        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 64,
-                "Unbundle should skip an incompatible later source slot");
+        helper.assertTrue(result != null, net.minecraft.network.chat.Component.literal("Legacy unbundle should report success"));
+        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 64, net.minecraft.network.chat.Component.literal("Unbundle should skip an incompatible later source slot"));
 
         ItemStack destination = box(new ItemStack(Items.STONE, 60));
         BundleHelper.transferItemsToShulker(player, destination, source, null);
-        helper.assertValueEqual(count(destination, Items.STONE), 72,
-                "Storage-to-storage should merge and then use empty slots");
-        helper.assertValueEqual(count(destination, Items.DIRT), 4,
-                "Storage-to-storage should preserve item identities");
+        helper.assertValueEqual(count(destination, Items.STONE), 72, net.minecraft.network.chat.Component.literal("Storage-to-storage should merge and then use empty slots"));
+        helper.assertValueEqual(count(destination, Items.DIRT), 4, net.minecraft.network.chat.Component.literal("Storage-to-storage should preserve item identities"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void duplicateSequenceMutatesStorageOnlyOnce(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box(new ItemStack(Items.STONE, 16));
@@ -570,19 +533,15 @@ public final class QuickShulkerTransferGameTests {
         ShulkerTransferResult first = ShulkerTransferTransactions.executeOnce(player, 1, request);
         ShulkerTransferResult duplicate = ShulkerTransferTransactions.executeOnce(player, 1, request);
 
-        helper.assertValueEqual(first.movedCount(), 6,
-                "The first request should move six items");
-        helper.assertValueEqual(duplicate, first,
-                "A duplicate should return the same fixed-size receipt");
-        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 6,
-                "A duplicate must not apply the mutation twice");
-        helper.assertValueEqual(count(carriedBox, Items.STONE), 10,
-                "Storage must be debited exactly once");
+        helper.assertValueEqual(first.movedCount(), 6, net.minecraft.network.chat.Component.literal("The first request should move six items"));
+        helper.assertValueEqual(duplicate, first, net.minecraft.network.chat.Component.literal("A duplicate should return the same fixed-size receipt"));
+        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 6, net.minecraft.network.chat.Component.literal("A duplicate must not apply the mutation twice"));
+        helper.assertValueEqual(count(carriedBox, Items.STONE), 10, net.minecraft.network.chat.Component.literal("Storage must be debited exactly once"));
         ShulkerTransferTransactions.clear(player);
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void lostSequenceDoesNotBlockLaterRequests(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         player.getInventory().setItem(BOX_SLOT, box(new ItemStack(Items.STONE, 8)));
@@ -591,17 +550,14 @@ public final class QuickShulkerTransferGameTests {
         ShulkerTransferResult afterGap = ShulkerTransferTransactions.executeOnce(player, 2, request);
         ShulkerTransferResult stale = ShulkerTransferTransactions.executeOnce(player, 1, request);
 
-        helper.assertValueEqual(afterGap.status(), ShulkerTransferStatus.SUCCESS,
-                "A later request should recover after a lost sequence");
-        helper.assertValueEqual(stale.status(), ShulkerTransferStatus.OUT_OF_ORDER,
-                "A stale sequence must still be rejected");
-        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 3,
-                "Only the accepted request should execute");
+        helper.assertValueEqual(afterGap.status(), ShulkerTransferStatus.SUCCESS, net.minecraft.network.chat.Component.literal("A later request should recover after a lost sequence"));
+        helper.assertValueEqual(stale.status(), ShulkerTransferStatus.OUT_OF_ORDER, net.minecraft.network.chat.Component.literal("A stale sequence must still be rejected"));
+        helper.assertValueEqual(player.getInventory().getItem(OUTPUT_SLOT).getCount(), 3, net.minecraft.network.chat.Component.literal("Only the accepted request should execute"));
         ShulkerTransferTransactions.clear(player);
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void protocolStateAndRateLimitsArePerPlayer(GameTestHelper helper) {
         ServerPlayer noisy = player(helper);
         ServerPlayer other = player(helper);
@@ -616,16 +572,14 @@ public final class QuickShulkerTransferGameTests {
         ShulkerTransferResult independent =
                 ShulkerTransferTransactions.executeOnce(other, 1, request);
 
-        helper.assertValueEqual(limited.status(), ShulkerTransferStatus.RATE_LIMITED,
-                "A ninth new request in one tick should be rate limited");
-        helper.assertValueEqual(independent.status(), ShulkerTransferStatus.SUCCESS,
-                "Another player must have independent protocol state");
+        helper.assertValueEqual(limited.status(), ShulkerTransferStatus.RATE_LIMITED, net.minecraft.network.chat.Component.literal("A ninth new request in one tick should be rate limited"));
+        helper.assertValueEqual(independent.status(), ShulkerTransferStatus.SUCCESS, net.minecraft.network.chat.Component.literal("Another player must have independent protocol state"));
         ShulkerTransferTransactions.clear(noisy);
         ShulkerTransferTransactions.clear(other);
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void protocolRejectsNonShulkerHostsAndBundles(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         player.getInventory().setItem(0, new ItemStack(Items.STONE, 4));
@@ -637,27 +591,22 @@ public final class QuickShulkerTransferGameTests {
         ShulkerTransferResult bundle = ShulkerTransferTransactions.executeOnce(
                 player, 2, insertRequest(4));
 
-        helper.assertValueEqual(enderChest.status(), ShulkerTransferStatus.UNSUPPORTED,
-                "The shulker protocol must reject non-shulker storage");
-        helper.assertValueEqual(bundle.status(), ShulkerTransferStatus.UNSUPPORTED,
-                "Bundles belong to a future container-specific protocol");
-        helper.assertValueEqual(player.getInventory().getItem(0).getCount(), 4,
-                "Rejected hosts must not consume player items");
+        helper.assertValueEqual(enderChest.status(), ShulkerTransferStatus.UNSUPPORTED, net.minecraft.network.chat.Component.literal("The shulker protocol must reject non-shulker storage"));
+        helper.assertValueEqual(bundle.status(), ShulkerTransferStatus.UNSUPPORTED, net.minecraft.network.chat.Component.literal("Bundles belong to a future container-specific protocol"));
+        helper.assertValueEqual(player.getInventory().getItem(0).getCount(), 4, net.minecraft.network.chat.Component.literal("Rejected hosts must not consume player items"));
         ShulkerTransferTransactions.clear(player);
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void originalRegistryRemainsTheCapabilitySource(GameTestHelper helper) {
         ServerPlayer player = player(helper);
         ItemStack carriedBox = box();
         player.getInventory().setItem(BOX_SLOT, carriedBox);
         QuickShulkerData registration = QuickOpenableRegistry.getQuickie(carriedBox.getItem());
 
-        helper.assertTrue(registration != null && registration.supportsBundleing,
-                "The original public registry must remain available");
-        helper.assertTrue(ShulkerStorages.findCarried(player, BOX_SLOT).isPresent(),
-                "The new API must resolve the original registration directly");
+        helper.assertTrue(registration != null && registration.supportsBundleing, net.minecraft.network.chat.Component.literal("The original public registry must remain available"));
+        helper.assertTrue(ShulkerStorages.findCarried(player, BOX_SLOT).isPresent(), net.minecraft.network.chat.Component.literal("The new API must resolve the original registration directly"));
         helper.succeed();
     }
 
@@ -740,7 +689,7 @@ public final class QuickShulkerTransferGameTests {
         }
 
         @Override
-        public void stopOpen(Player user) {
+        public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
             List<ItemStack> stacks = new ArrayList<>(getContainerSize());
             for (int slot = 0; slot < getContainerSize(); slot++) {
                 stacks.add(getItem(slot).copy());

@@ -1,6 +1,6 @@
 package net.kyrptonaught.quickshulker.internal.menu;
 
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.kyrptonaught.quickshulker.api.Util;
 import net.kyrptonaught.quickshulker.gui.screen.PagedBundleItemMenu;
 import net.kyrptonaught.quickshulker.internal.compat.ClientProtocolResolver.ClientProtocol;
@@ -20,12 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class BundleMenuRouterGameTests {
     private static final int PLAYER_SLOT = 9;
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void originalV3CanExtractContentsBeyondFirstPage(GameTestHelper helper) {
         verifySecondPage(helper, ClientProtocol.ORIGINAL_V3);
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void vanillaCanExtractContentsBeyondFirstPage(GameTestHelper helper) {
         verifySecondPage(helper, ClientProtocol.VANILLA);
     }
@@ -40,71 +40,62 @@ public final class BundleMenuRouterGameTests {
             if (filler.isEmpty() || item == Items.DIAMOND || filler.getMaxStackSize() != 64) continue;
             if (contents.tryInsert(filler) == 1 && ++preceding == 45) break;
         }
-        helper.assertValueEqual(preceding, 45, "Fixture must fill the first bundle page");
+        helper.assertValueEqual(preceding, 45, net.minecraft.network.chat.Component.literal("Fixture must fill the first bundle page"));
         ItemStack bundle = new ItemStack(Items.BUNDLE);
         bundle.set(DataComponents.BUNDLE_CONTENTS, contents.toImmutable());
         player.getInventory().setItem(PLAYER_SLOT, bundle);
         BundleMenuRouter.open(protocol, player, bundle,
-                () -> helper.fail("Unexpected enhanced bundle path"));
+                () -> helper.fail( net.minecraft.network.chat.Component.literal("Unexpected enhanced bundle path")));
         player.containerMenu.clicked(50, 0, ClickType.PICKUP, player);
-        helper.assertTrue(player.containerMenu.getSlot(0).getItem().is(Items.DIAMOND),
-                "Second page must expose the last bundle entry");
+        helper.assertTrue(player.containerMenu.getSlot(0).getItem().is(Items.DIAMOND), net.minecraft.network.chat.Component.literal("Second page must expose the last bundle entry"));
         player.containerMenu.quickMoveStack(player, 0);
         player.closeContainer();
-        int diamonds = player.getInventory().items.stream()
+        int diamonds = player.getInventory().getNonEquipmentItems().stream()
                 .filter(stack -> stack.is(Items.DIAMOND)).mapToInt(ItemStack::getCount).sum();
-        helper.assertValueEqual(diamonds, 4, "All diamonds must reach the player inventory");
+        helper.assertValueEqual(diamonds, 4, net.minecraft.network.chat.Component.literal("All diamonds must reach the player inventory"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void originalV3GetsTheVanillaPagedBundleMenu(
             GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         BundleMenuRouter.open(
                 ClientProtocol.ORIGINAL_V3,
                 player, new ItemStack(Items.BUNDLE),
-                () -> helper.fail("The v4 bundle path must not run for a v3 client"));
+                () -> helper.fail( net.minecraft.network.chat.Component.literal("The v4 bundle path must not run for a v3 client")));
 
-        helper.assertTrue(player.containerMenu instanceof PagedBundleItemMenu,
-                "Original v3 must use the vanilla-compatible paged presentation");
-        helper.assertTrue(player.containerMenu.getType() == MenuType.GENERIC_9x6,
-                "Original v3 must not require a custom registry entry");
-        helper.assertValueEqual(player.containerMenu.slots.size(), 90,
-                "Vanilla chest layout must contain 54 container and 36 player slots");
+        helper.assertTrue(player.containerMenu instanceof PagedBundleItemMenu, net.minecraft.network.chat.Component.literal("Original v3 must use the vanilla-compatible paged presentation"));
+        helper.assertTrue(player.containerMenu.getType() == MenuType.GENERIC_9x6, net.minecraft.network.chat.Component.literal("Original v3 must not require a custom registry entry"));
+        helper.assertValueEqual(player.containerMenu.slots.size(), 90, net.minecraft.network.chat.Component.literal("Vanilla chest layout must contain 54 container and 36 player slots"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void vanillaGetsOnlyTheVanillaPagedBundleMenu(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         player.getInventory().setItem(PLAYER_SLOT, new ItemStack(Items.BUNDLE));
         Util.openItem(player, 0, PLAYER_SLOT);
 
-        helper.assertTrue(player.containerMenu instanceof PagedBundleItemMenu,
-                "Vanilla must receive the screen-independent paged menu");
-        helper.assertTrue(player.containerMenu.getType() == MenuType.GENERIC_9x6,
-                "Vanilla must receive a vanilla menu identifier");
-        helper.assertValueEqual(player.containerMenu.slots.size(), 90,
-                "Vanilla expects 54 container and 36 player slots");
+        helper.assertTrue(player.containerMenu instanceof PagedBundleItemMenu, net.minecraft.network.chat.Component.literal("Vanilla must receive the screen-independent paged menu"));
+        helper.assertTrue(player.containerMenu.getType() == MenuType.GENERIC_9x6, net.minecraft.network.chat.Component.literal("Vanilla must receive a vanilla menu identifier"));
+        helper.assertValueEqual(player.containerMenu.slots.size(), 90, net.minecraft.network.chat.Component.literal("Vanilla expects 54 container and 36 player slots"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void vanillaGetsTheVanillaShulkerMenu(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         player.getInventory().setItem(
                 PLAYER_SLOT, new ItemStack(Items.SHULKER_BOX));
         Util.openItem(player, 0, PLAYER_SLOT);
 
-        helper.assertTrue(player.containerMenu instanceof ShulkerBoxMenu,
-                "Vanilla must receive Minecraft's standard shulker menu");
-        helper.assertTrue(player.containerMenu.getType() == MenuType.SHULKER_BOX,
-                "The shulker menu must use a vanilla identifier");
+        helper.assertTrue(player.containerMenu instanceof ShulkerBoxMenu, net.minecraft.network.chat.Component.literal("Vanilla must receive Minecraft's standard shulker menu"));
+        helper.assertTrue(player.containerMenu.getType() == MenuType.SHULKER_BOX, net.minecraft.network.chat.Component.literal("The shulker menu must use a vanilla identifier"));
         helper.succeed();
     }
 
-    @GameTest(template = "fabric-gametest-api-v1:empty")
+    @GameTest
     public void v4UsesOnlyTheModernBundleCallback(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         AtomicInteger modernOpens = new AtomicInteger();
@@ -112,10 +103,8 @@ public final class BundleMenuRouterGameTests {
                 ClientProtocol.V4,
                 player, new ItemStack(Items.BUNDLE), modernOpens::incrementAndGet);
 
-        helper.assertValueEqual(modernOpens.get(), 1,
-                "The v4 path must invoke its modern opener exactly once");
-        helper.assertTrue(!(player.containerMenu instanceof PagedBundleItemMenu),
-                "The v4 path must not silently fall back to the vanilla menu");
+        helper.assertValueEqual(modernOpens.get(), 1, net.minecraft.network.chat.Component.literal("The v4 path must invoke its modern opener exactly once"));
+        helper.assertTrue(!(player.containerMenu instanceof PagedBundleItemMenu), net.minecraft.network.chat.Component.literal("The v4 path must not silently fall back to the vanilla menu"));
         helper.succeed();
     }
 }

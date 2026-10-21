@@ -40,12 +40,12 @@ public final class MatrixServerInitializer implements ModInitializer {
                 return;
             }
             for (var player : server.getPlayerList().getPlayers()) {
-                var items = player.getInventory().items;
+                var items = player.getInventory().getNonEquipmentItems();
                 int stone = items.stream().filter(s -> s.is(Items.STONE)).mapToInt(ItemStack::getCount).sum();
                 int diamond = items.stream().filter(s -> s.is(Items.DIAMOND)).mapToInt(ItemStack::getCount).sum();
                 boolean boxesEmpty = items.stream().filter(s -> s.is(Items.SHULKER_BOX))
                         .allMatch(s -> s.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-                                .nonEmptyStream().findAny().isEmpty());
+                                .stream().filter(stack -> !stack.isEmpty()).findAny().isEmpty());
                 boolean bundlesEmpty = items.stream().filter(s -> s.is(Items.BUNDLE))
                         .allMatch(s -> s.getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY).isEmpty());
                 if (stone != 4 || diamond != 4 || !boxesEmpty || !bundlesEmpty

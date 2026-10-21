@@ -107,10 +107,14 @@ public final class PolicySlottedStorage implements SlottedStorage<ItemVariant> {
             TransactionContext transaction) {
         long inserted = 0;
         while (inserted < maxAmount) {
+            // An empty component slot reports the empty stack's capacity.
+            // Bound the delegate by the offered item's real stack limit.
+            long room = resource.toStack().getMaxStackSize() - slot.getAmount();
+            if (room <= 0) break;
             // Component-backed empty slots may only learn the resource's real
             // capacity after accepting their first item.
             long step = slot.insert(
-                    resource, maxAmount - inserted, transaction);
+                    resource, Math.min(maxAmount - inserted, room), transaction);
             if (step <= 0) break;
             inserted += step;
         }

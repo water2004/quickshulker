@@ -62,27 +62,30 @@ public class ConfigSection extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
         for (ConfigItem<?> configItem : configs) {
-            if (configItem.keyPressed(keyCode, scanCode, modifiers))
+            if (configItem.keyPressed(keyEvent))
                 return true;
         }
         return false;
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent characterEvent) {
+        char codePoint = (char) characterEvent.codepoint(); int modifiers = characterEvent.modifiers();
         for (ConfigItem<?> configItem : configs) {
-            if (configItem.charTyped(codePoint, modifiers))
+            if (configItem.charTyped(characterEvent))
                 return true;
         }
         return false;
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         for (ConfigItem<?> configItem : configs) {
-            configItem.mouseClicked(mouseX, mouseY, button);
+            configItem.mouseClicked(click, doubleClick);
         }
         mouseScrolled(mouseX, mouseY, 0,0); // update scroll if option changes screen size
         return false;
