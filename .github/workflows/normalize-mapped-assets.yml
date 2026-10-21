@@ -27,5 +27,12 @@ jobs:
           if asset["name"] != "quickshulker-4.0.1+1.21.10.jar":
               asset=api("/releases/assets/662179670", {"name":"quickshulker-4.0.1+1.21.10.jar"})
           assert asset["name"] == "quickshulker-4.0.1+1.21.10.jar" and asset["digest"] == "sha256:818263d06b35584ecc8dbe65bd15d29a6250a4c04d4f5432b113f197926d18b0"
+          release=api("/releases/392814921")
+          assert release["tag_name"] == "4.0.1+26.3"
+          marker="<!-- mapped-1.21.10-download -->"
+          original=release.get("body") or ""
+          note="## Minecraft 1.21.10 download\n\n- Fabric / Java 21: `quickshulker-4.0.1+1.21.10.jar`\n- Artifact filenames use `mod-version+minecraft.jar`.\n"
+          if marker not in original:
+              api("/releases/392814921", {"body":original.rstrip()+"\n\n"+marker+"\n"+note})
           print(asset["browser_download_url"])
           PY
