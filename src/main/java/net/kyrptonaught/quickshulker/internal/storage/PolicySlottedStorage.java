@@ -107,10 +107,16 @@ public final class PolicySlottedStorage implements SlottedStorage<ItemVariant> {
             TransactionContext transaction) {
         long inserted = 0;
         while (inserted < maxAmount) {
+            // Fabric 5.4.0 reports an empty component slot's capacity using
+            // the empty stack (64), even for an unstackable offered variant.
+            // Enforce the offered stack's component-aware limit before the
+            // delegate writes anything; retain its transactional semantics.
+            long room = resource.toStack().getMaxStackSize() - slot.getAmount();
+            if (room <= 0) break;
             // Component-backed empty slots may only learn the resource's real
             // capacity after accepting their first item.
             long step = slot.insert(
-                    resource, maxAmount - inserted, transaction);
+                    resource, Math.min(maxAmount - inserted, room), transaction);
             if (step <= 0) break;
             inserted += step;
         }

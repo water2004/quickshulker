@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -149,7 +149,7 @@ public abstract class ConfigItem<T> {
         int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int height = y + getHeaderSize();
         if (mouseY > y && mouseY < height)
-            context.fill(0, y - 1, width, height + 1, FastColor.ARGB32.color(50, 255, 255, 255));
+            context.fill(0, y - 1, width, height + 1, ARGB.color(50, 255, 255, 255));
 
         context.drawString(Minecraft.getInstance().font, this.fieldTitle, x, y + 6, -1, true);
 

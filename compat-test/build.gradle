@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version "${loom_version}"
+    id 'net.fabricmc.fabric-loom-remap' version '1.17.20'
 }
 
 version = '1.0.0'
@@ -19,7 +19,6 @@ def serverStopFile = file("build/matrix-results/${matrixName}-stop").absolutePat
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
-    maven { url = 'https://maven.fallenbreath.me/releases' }
 }
 
 dependencies {
@@ -27,11 +26,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
-    if (quickShulkerJar != null) {
-        modImplementation files(quickShulkerJar)
-        // Loom does not load nested dependencies from local modImplementation files.
-        modRuntimeOnly "me.fallenbreath:conditional-mixin-fabric:0.6.4"
-    }
+    if (quickShulkerJar != null) modImplementation files(quickShulkerJar)
 }
 
 loom {
