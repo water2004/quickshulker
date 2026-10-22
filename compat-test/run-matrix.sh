@@ -48,5 +48,6 @@ run_client() {
 }
 run_client vanilla runVanillaClient
 run_client fabric-without-qs runClient -PexpectedClient=none
-run_client original-v3 runClient -PexpectedClient=old -PquickShulkerJar="$old_jar"
+run_client original-v3 runProductionMatrixClient -PexpectedClient=old -PquickShulkerJar="$old_jar"
 run_client v4 runClient -PexpectedClient=new -PexpectedDirect=true -PquickShulkerJar="$jar"
+
