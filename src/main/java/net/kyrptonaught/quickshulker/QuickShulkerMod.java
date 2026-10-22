@@ -18,7 +18,7 @@ import net.kyrptonaught.quickshulker.gui.screen.BundleItemMenu;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -52,21 +52,21 @@ public class QuickShulkerMod implements ModInitializer, RegisterQuickShulker {
                                     ? 36 + player.getInventory().selected
                                     : 45;
                             OpenShulkerPacket.sendOpenPacket(menuSlot, stack);
-                            return InteractionResultHolder.fail(stack);
+                            return InteractionResult.FAIL;
                         }
                         // The server does not provide Quick Shulker. Do not consume the
                         // interaction; let vanilla or another mod handle the item normally.
-                        return InteractionResultHolder.pass(stack);
+                        return InteractionResult.PASS;
                     }else{
                         int playerInvSlot = hand == InteractionHand.MAIN_HAND
                                 ? player.getInventory().selected
                                 : Inventory.SLOT_OFFHAND;
                         Util.openItem(player, 0, playerInvSlot);
-                        return InteractionResultHolder.consume(stack);
+                        return InteractionResult.CONSUME;
                     }
                 }
             }
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         });
 
         PayloadTypeRegistry.playS2C().register(OpenInventoryPacket.OPEN_INV_ID, OpenInventoryPacket.CODEC);

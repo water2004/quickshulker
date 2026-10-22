@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(AbstractContainerScreen.class)
 public interface HandledScreenInvoker {
-    @Invoker("findSlot")
+    @Invoker("getHoveredSlot")
     Slot QS$getSlotAt(double mouseX, double mouseY);
 
     @Invoker("slotClicked")

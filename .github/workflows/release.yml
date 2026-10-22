@@ -7,6 +7,7 @@ on:
       - "26.1"
       - "26.2"
       - "1.21.1"
+      - "dory/1.21.3"
     tags:
       - "[0-9]*"
   pull_request:
@@ -15,6 +16,7 @@ on:
       - "26.1"
       - "26.2"
       - "1.21.1"
+      - "dory/1.21.3"
 
 permissions:
   contents: read
@@ -87,7 +89,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 mesa-vulkan-drivers
 
-      - name: Verify real vanilla, Fabric, legacy-wire and v4 clients
+      - name: Verify real vanilla, Fabric, original-v3 and v4 clients
         env:
           # The matrix launches real Minecraft clients under Xvfb. Force Mesa
           # software rendering so the test does not depend on a GPU-backed
@@ -101,14 +103,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: connection-tests-${{ github.ref_name }}
+          name: connection-tests-${{ github.sha }}
           path: compat-test/build/matrix-results/
           if-no-files-found: ignore
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
         with:
-          name: quickshulker-${{ github.ref_name }}
+          name: quickshulker-${{ github.sha }}
           path: release/*.jar
           if-no-files-found: error
 
@@ -146,7 +148,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v7
         with:
-          name: quickshulker-${{ github.ref_name }}
+          name: quickshulker-${{ github.sha }}
           path: release
 
       - name: Create or update GitHub release
