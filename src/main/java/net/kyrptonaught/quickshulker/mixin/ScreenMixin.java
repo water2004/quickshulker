@@ -78,7 +78,7 @@ public abstract class ScreenMixin {
     }
 
     @Inject(
-            method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
+            method = "renderContents(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderLabels(Lnet/minecraft/client/gui/GuiGraphics;II)V",

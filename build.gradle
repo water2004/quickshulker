@@ -39,7 +39,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modImplementation ("com.terraformersmc:modmenu:14.0.2") { exclude group: "net.fabricmc.fabric-api" }
+	modImplementation ("com.terraformersmc:modmenu:15.0.2") { exclude group: "net.fabricmc.fabric-api" }
 //	modImplementation ("curse.maven:reinforced-shulker-boxes-529874:7225066") { exclude group: "net.fabricmc.fabric-api" }
 //	modImplementation "atonkish.reinfcore:reinforced-core:4.0.8+1.21.10"
 

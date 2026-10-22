@@ -26,6 +26,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
             "net.kyrptonaught.quickshulker.network.OpenShulkerPacket";
 
     private static Stage stage = Stage.WAIT_TITLE;
+    private static Object closingOnboarding;
     private static int stageTicks;
     private static int authoritativeTicks;
     private static Object directHandle;
@@ -65,6 +66,18 @@ public final class MatrixClientInitializer implements ClientModInitializer {
         // still running. Connecting at that point can also precede model loading.
         if (client.getConnection() != null || client.getOverlay() != null) return;
         if (client.screen instanceof AccessibilityOnboardingScreen onboarding) {
+            // Repeated close calls reset the native fade-out timer. Act once per screen.
+            if (closingOnboarding == onboarding) return;
+            String continueLabel = net.minecraft.network.chat.Component.translatable("gui.continue").getString();
+            for (var child : onboarding.children()) {
+                if (child instanceof net.minecraft.client.gui.components.Button button
+                        && button.getMessage().getString().equals(continueLabel)) {
+                    closingOnboarding = onboarding;
+                    button.onPress();
+                    return;
+                }
+            }
+            closingOnboarding = onboarding;
             onboarding.onClose();
             return;
         }

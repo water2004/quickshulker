@@ -173,11 +173,11 @@ public abstract class ConfigItem<T> {
         if (toolTipText != null && requiresRestart) {
             List<Component> newList = new ArrayList<>(toolTipText);
             newList.add(Component.translatable("key.kyrptconfig.config.restartRequired"));
-            context.renderComponentTooltip(Minecraft.getInstance().font, newList, x, y);
+            context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, newList, x, y);
         } else if (toolTipText != null)
-            context.renderComponentTooltip(Minecraft.getInstance().font, toolTipText, x, y);
+            context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, toolTipText, x, y);
         else if (requiresRestart) {
-            context.renderTooltip(Minecraft.getInstance().font, Component.translatable("key.kyrptconfig.config.restartRequired"), x, y);
+            context.setTooltipForNextFrame(Minecraft.getInstance().font, Component.translatable("key.kyrptconfig.config.restartRequired"), x, y);
         }
     }
 }

@@ -7,7 +7,7 @@ on:
       - "26.1"
       - "26.2"
       - "1.21.1"
-      - "dory/1.21.5"
+      - "dory/1.21.6"
     tags:
       - "[0-9]*"
   pull_request:
@@ -16,7 +16,7 @@ on:
       - "26.1"
       - "26.2"
       - "1.21.1"
-      - "dory/1.21.5"
+      - "dory/1.21.6"
 
 permissions:
   contents: read

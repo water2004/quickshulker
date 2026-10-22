@@ -207,7 +207,7 @@ public class ConfigScreen extends Screen {
             int y = Mth.lerpInt(percentage, 57, this.height - 30 - height);
 
             context.fill(x, 57, x + 6, this.height - 30, -16777216);
-            context.blitSprite(net.minecraft.client.renderer.RenderType::guiTextured, SCROLLER_TEXTURE, x, y, 6, height);
+            context.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, x, y, 6, height);
         }
 
         section.render2(context, 57, mouseX, mouseY, deltaTicks);
@@ -220,17 +220,17 @@ public class ConfigScreen extends Screen {
     }
 
     private void renderBackgroundTexture(GuiGraphics context) {
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0, this.width, this.height, 32, 32);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0, this.width, this.height, 32, 32);
     }
 
     private void drawHeaderAndFooterSeparators(GuiGraphics context) {
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, Screen.HEADER_SEPARATOR, 0, 55, 0.0f, 0.0f, this.width, 2, 32, 2);
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, Screen.FOOTER_SEPARATOR, 0, this.height -30, 0.0f, 0.0f, this.width, 2, 32, 2);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, Screen.HEADER_SEPARATOR, 0, 55, 0.0f, 0.0f, this.width, 2, 32, 2);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.height -30, 0.0f, 0.0f, this.width, 2, 32, 2);
     }
 
     private void drawDirtTextureBlurred(GuiGraphics context, int x, int y, int width, int height) {
         int color = 0xB2000000;
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, OPTIONS_BACKGROUND_TEXTURE, x, y, 0, 0, width, height, 64, 64);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, OPTIONS_BACKGROUND_TEXTURE, x, y, 0, 0, width, height, 64, 64);
         context.fillGradient(x, y, x + width, y + height, color, color);
     }
 }

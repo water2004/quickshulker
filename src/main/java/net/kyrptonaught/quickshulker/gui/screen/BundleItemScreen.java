@@ -45,13 +45,13 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
 
     @Override
     protected void renderBg(GuiGraphics context, float deltaTicks, int mouseX, int mouseY) {
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, CONTAINER_TEXTURE, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, ROWS_COUNT * 18 + 17, 256, 256);
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, CONTAINER_TEXTURE, this.leftPos, this.topPos + ROWS_COUNT * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, CONTAINER_TEXTURE, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, ROWS_COUNT * 18 + 17, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, CONTAINER_TEXTURE, this.leftPos, this.topPos + ROWS_COUNT * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
         this.drawScrollbarBackground(context);
         int i = this.leftPos + 156;
         int j = this.topPos + 18;
         int k = j + 88;
-        context.blitSprite(net.minecraft.client.renderer.RenderType::guiTextured, SCROLLER_TEXTURE, i, j + (int) ((k - j - SCROLLBAR_HEIGHT) * this.scrollPosition), SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT);
+        context.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, i, j + (int) ((k - j - SCROLLBAR_HEIGHT) * this.scrollPosition), SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT);
     }
 
 
@@ -59,8 +59,8 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     public void drawScrollbarBackground(GuiGraphics context){
         int i = this.leftPos + 8 + COLUMNS_COUNT * 18 - 1;
         int j = this.topPos + 18 - 1;
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, SCROLLBAR_BACKGROUND_TEXTURE, i, j, 170, 17, 18, 72, 256, 256);
-        context.blit(net.minecraft.client.renderer.RenderType::guiTextured, SCROLLBAR_BACKGROUND_TEXTURE, i, j + 72, 170, 111, 18, 18, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLBAR_BACKGROUND_TEXTURE, i, j, 170, 17, 18, 72, 256, 256);
+        context.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, SCROLLBAR_BACKGROUND_TEXTURE, i, j + 72, 170, 111, 18, 18, 256, 256);
     }
 
     @Override
