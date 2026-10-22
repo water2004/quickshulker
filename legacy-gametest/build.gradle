@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version "${loom_version}"
+    id 'net.fabricmc.fabric-loom-remap' version '1.17.20'
 }
 
 version = '1.0.0'
@@ -29,7 +29,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
     modImplementation files(quickShulkerJar)
-    modRuntimeOnly "me.fallenbreath:conditional-mixin-fabric:0.6.4"
+    modImplementation "me.fallenbreath:conditional-mixin-fabric:0.6.4"
 }
 
 fabricApi {

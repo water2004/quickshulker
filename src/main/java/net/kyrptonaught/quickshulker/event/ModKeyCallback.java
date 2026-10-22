@@ -22,7 +22,7 @@ public class ModKeyCallback {
                 if (player.getMainHandItem().isEmpty() && !player.getOffhandItem().isEmpty())
                     ClientUtil.CheckAndSend(player.getOffhandItem(), 45);
                 else
-                    ClientUtil.CheckAndSend(player.getMainHandItem(), 36 + player.getInventory().selected);
+                    ClientUtil.CheckAndSend(player.getMainHandItem(), 36 + player.getInventory().getSelectedSlot());
             }
         }
     }
