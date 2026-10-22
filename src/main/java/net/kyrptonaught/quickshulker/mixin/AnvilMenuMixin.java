@@ -22,8 +22,8 @@ import java.util.function.BiConsumer;
 @Mixin(AnvilMenu.class)
 public abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
-    public AnvilMenuMixin(@Nullable MenuType<?> type, int syncId, Inventory playerInventory, ContainerLevelAccess context) {
-        super(type, syncId, playerInventory, context);
+    public AnvilMenuMixin(@Nullable MenuType<?> type, int syncId, Inventory playerInventory, ContainerLevelAccess context, ItemCombinerMenuSlotDefinition slotDefinition) {
+        super(type, syncId, playerInventory, context, slotDefinition);
     }
 
 //    @Inject(method = "canUse", at = @At("HEAD"), cancellable = true)
