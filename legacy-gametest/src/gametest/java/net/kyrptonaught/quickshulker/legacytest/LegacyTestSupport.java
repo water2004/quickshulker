@@ -140,7 +140,7 @@ final class LegacyTestSupport {
         }
 
         @Override
-        public void stopOpen(net.minecraft.world.entity.player.Player user) {
+        public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
             closeCount++;
             List<ItemStack> stacks = new ArrayList<>(getContainerSize());
             for (int slot = 0; slot < getContainerSize(); slot++) {
@@ -170,7 +170,7 @@ final class LegacyTestSupport {
         }
 
         @Override
-        public void stopOpen(net.minecraft.world.entity.player.Player user) {
+        public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
             closeCount++;
         }
     }

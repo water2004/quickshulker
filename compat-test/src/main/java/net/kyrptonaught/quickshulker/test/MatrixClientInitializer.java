@@ -73,7 +73,7 @@ public final class MatrixClientInitializer implements ClientModInitializer {
                 if (child instanceof net.minecraft.client.gui.components.Button button
                         && button.getMessage().getString().equals(continueLabel)) {
                     closingOnboarding = onboarding;
-                    button.onPress();
+                    button.onPress(new net.minecraft.client.input.KeyEvent(org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER, 0, 0));
                     return;
                 }
             }

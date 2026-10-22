@@ -5,17 +5,23 @@ import java.util.function.Consumer;
 import net.minecraft.client.KeyMapping;
 
 public class DisplayOnlyKeyBind extends KeyMapping {
+    private static final java.util.Map<String, Category> CATEGORIES = new java.util.HashMap<>();
+    private static synchronized Category resolveCategory(String category) {
+        return CATEGORIES.computeIfAbsent(category, key -> Category.register(
+                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("quickshulker",
+                        key.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_"))));
+    }
     private CustomKeyBinding customKeyBinding;
     private final Consumer<InputConstants.Key> keySet;
 
     public DisplayOnlyKeyBind(String translationKey, InputConstants.Type type, int code, String category) {
-        super(translationKey, type, code, category);
+        super(translationKey, type, code, resolveCategory(category));
         keySet = (boundKey) -> {
         };
     }
 
     public DisplayOnlyKeyBind(String translationKey, String category, CustomKeyBinding customKeyBinding, Consumer<InputConstants.Key> keySet) {
-        super(translationKey, customKeyBinding.getDefaultKey().getType(), customKeyBinding.getDefaultKey().getValue(), category);
+        super(translationKey, customKeyBinding.getDefaultKey().getType(), customKeyBinding.getDefaultKey().getValue(), resolveCategory(category));
         this.customKeyBinding = customKeyBinding;
         this.keySet = keySet;
         updateSetKey();
@@ -33,7 +39,7 @@ public class DisplayOnlyKeyBind extends KeyMapping {
     }
 
     @Override
-    public String getCategory() {
+    public Category getCategory() {
         updateSetKey();
         return super.getCategory();
     }

@@ -82,23 +82,25 @@ public class KeybindItem extends ConfigItem<String> {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
         if (isListening) {
             if (keyCode == InputConstants.KEY_ESCAPE) {
                 setValue("");
                 return true;
             }
-            setValue(InputConstants.getKey(keyCode, scanCode).getName());
+            setValue(InputConstants.getKey(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)).getName());
             return true;
         }
         return false;
     }
 
     @Override
-    public void mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public void mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+        super.mouseClicked(click, doubleClick);
         boolean handled;
-        handled = (keyButton.mouseClicked(mouseX, mouseY, button) || resetButton.mouseClicked(mouseX, mouseY, button));
+        handled = (keyButton.mouseClicked(click, doubleClick) || resetButton.mouseClicked(click, doubleClick));
         if (isListening && !handled) {
             setValue(InputConstants.Type.MOUSE.getOrCreate(button).getName());
         }

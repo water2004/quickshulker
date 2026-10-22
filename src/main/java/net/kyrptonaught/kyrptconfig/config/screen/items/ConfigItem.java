@@ -129,17 +129,20 @@ public abstract class ConfigItem<T> {
     public void tick() {
     }
 
-    public void mouseClicked(double mouseX, double mouseY, int button) {
+    public void mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if (isHidden) return;
         if (resetButton != null)
-            resetButton.mouseClicked(mouseX, mouseY, button);
+            resetButton.mouseClicked(click, doubleClick);
     }
 
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent characterEvent) {
+        char codePoint = (char) characterEvent.codepoint(); int modifiers = characterEvent.modifiers();
         return false;
     }
 
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
         return false;
     }
 

@@ -50,25 +50,27 @@ public class SubItem<E> extends ConfigItem<E> {
     }
 
     @Override
-    public void mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public void mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+        super.mouseClicked(click, doubleClick);
         if (!isHidden() && mouseY > subStart && mouseY < subStart + 20)
             expanded = !expanded;
 
         if (expanded && !isHidden()) {
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                item.mouseClicked(mouseX, mouseY, button);
+                item.mouseClicked(click, doubleClick);
             }
         }
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent characterEvent) {
+        char codePoint = (char) characterEvent.codepoint(); int modifiers = characterEvent.modifiers();
         if (expanded && !isHidden()) {
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                if (item.charTyped(codePoint, modifiers))
+                if (item.charTyped(characterEvent))
                     return true;
             }
         }
@@ -76,11 +78,12 @@ public class SubItem<E> extends ConfigItem<E> {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
         if (expanded && !isHidden()) {
             for (ConfigItem<?> item : configs) {
                 if (item.isHidden()) continue;
-                if (item.keyPressed(keyCode, scanCode, modifiers))
+                if (item.keyPressed(keyEvent))
                     return true;
             }
         }

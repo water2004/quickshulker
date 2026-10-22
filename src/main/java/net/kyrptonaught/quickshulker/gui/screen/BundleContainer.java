@@ -65,7 +65,7 @@ public class BundleContainer extends SimpleContainer {
     }
 
     @Override
-    public void stopOpen(Player playerEntity) {
+    public void stopOpen(net.minecraft.world.entity.ContainerUser playerEntity) {
         setChanged();
     }
 }

@@ -689,7 +689,7 @@ public final class QuickShulkerTransferGameTests {
         }
 
         @Override
-        public void stopOpen(net.minecraft.world.entity.player.Player user) {
+        public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
             List<ItemStack> stacks = new ArrayList<>(getContainerSize());
             for (int slot = 0; slot < getContainerSize(); slot++) {
                 stacks.add(getItem(slot).copy());

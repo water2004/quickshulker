@@ -64,13 +64,14 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if(button == 0){
             if(this.isClickInScrollbar(mouseX, mouseY)){
                 return this.scrolling = true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubleClick);
     }
 
     protected boolean isClickInScrollbar(double mouseX, double mouseY) {
@@ -82,12 +83,13 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent click) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if(button == 0){
             this.scrolling = false;
         }
 
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override
@@ -98,7 +100,8 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double offsetX, double offsetY) {
+    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent click, double offsetX, double offsetY) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
         if(this.scrolling){
             int i = this.topPos + 18;
             int j = i + 88;
@@ -107,7 +110,7 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
             this.menu.scrollItems(this.scrollPosition);
             return true;
         }else {
-            return super.mouseDragged(mouseX, mouseY, button, offsetX, offsetY);
+            return super.mouseDragged(click, offsetX, offsetY);
         }
     }
 }

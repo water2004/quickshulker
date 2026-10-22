@@ -128,27 +128,30 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (sections.get(selectedSection).keyPressed(keyCode, scanCode, modifiers)) return true;
-        return super.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key(), scanCode = keyEvent.scancode(), modifiers = keyEvent.modifiers();
+        if (sections.get(selectedSection).keyPressed(keyEvent)) return true;
+        return super.keyPressed(keyEvent);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        return sections.get(selectedSection).charTyped(codePoint, modifiers);
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent characterEvent) {
+        char codePoint = (char) characterEvent.codepoint(); int modifiers = characterEvent.modifiers();
+        return sections.get(selectedSection).charTyped(characterEvent);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick) {
+        double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+        super.mouseClicked(click, doubleClick);
 
-        if (scrollLeftBTN.mouseClicked(mouseX, mouseY, button) || scrollRightBTN.mouseClicked(mouseX, mouseY, button))
+        if (scrollLeftBTN.mouseClicked(click, doubleClick) || scrollRightBTN.mouseClicked(click, doubleClick))
             return true;
 
         for (ConfigSection section : sections)
-            if (section.sectionSelectionBTN.mouseClicked(mouseX, mouseY, button)) return true;
+            if (section.sectionSelectionBTN.mouseClicked(click, doubleClick)) return true;
 
-        return sections.get(selectedSection).mouseClicked(mouseX, mouseY, button);
+        return sections.get(selectedSection).mouseClicked(click, doubleClick);
     }
 
     @Override

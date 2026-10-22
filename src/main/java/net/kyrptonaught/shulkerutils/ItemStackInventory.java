@@ -36,7 +36,7 @@ public class ItemStackInventory extends SimpleContainer {
     }
 
     @Override
-    public void stopOpen(Player user) {
+    public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
         if (itemStack.getCount() > 1) {
             int count = itemStack.getCount();
             itemStack.setCount(1);
