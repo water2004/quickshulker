@@ -128,3 +128,36 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
+
+// Released v3 jars are tested without development remapping of optional mixins.
+// https://docs.fabricmc.net/develop/loom/production-run-tasks
+dependencies {
+    productionRuntimeMods "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    productionRuntimeMods "me.fallenbreath:conditional-mixin-fabric:0.6.4"
+    if (quickShulkerJar != null) productionRuntimeMods files(quickShulkerJar)
+}
+tasks.register('runProductionMatrixClient', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+    runDir = file("run/production-${matrixName}")
+    jvmArgs.addAll([
+        "-Dquickshulker.matrix.address=127.0.0.1:${matrixPort}",
+        "-Dquickshulker.matrix.expectedClient=${expectedClient}",
+        "-Dquickshulker.matrix.expectedDirect=${expectedDirect}",
+        "-Dquickshulker.matrix.result=${resultFile}",
+        '-Xmx3G', '-Djava.net.preferIPv4Stack=true'
+    ])
+    programArgs.addAll(['--username', 'MatrixClient', '--uuid', '00000000000000000000000000000002', '--width', '854', '--height', '480'])
+    doFirst {
+        def directory = runDir.get().asFile
+        directory.mkdirs()
+        new File(directory, 'options.txt').text = 'soundCategory_master:0.0\nmaxFps:60\nenableVsync:false\nrenderDistance:3\n'
+        file(resultFile).parentFile.mkdirs()
+        file(resultFile).delete()
+    }
+    doLast {
+        if (!file(resultFile).exists() || !file(resultFile).text.startsWith('PASS ')) {
+            throw new GradleException("Production compatibility test failed; see ${resultFile}")
+        }
+    }
+}
+
+repositories { maven { url = 'https://maven.fallenbreath.me/releases' } }
