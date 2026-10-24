@@ -1,0 +1,122 @@
+{
+  "repository": "water2004/quickshulker",
+  "branch": "dory/withdraw-1.21-releases-20261024",
+  "actions": [
+    {
+      "action": "remove_assets",
+      "releaseId": 392814921,
+      "tag": "4.0.1+26.3",
+      "assets": [
+        {
+          "id": 664732868,
+          "name": "quickshulker-4.0.1+1.21.1.jar",
+          "digest": "sha256:223c1c889dcae374a8a487e6cf6863bdd8d7234f5c3b34917c69f28f73e70d35",
+          "size": 744968,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T05:02:44Z"
+        },
+        {
+          "id": 662179670,
+          "name": "quickshulker-4.0.1+1.21.10.jar",
+          "digest": "sha256:818263d06b35584ecc8dbe65bd15d29a6250a4c04d4f5432b113f197926d18b0",
+          "size": 747631,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-21T10:46:09Z"
+        },
+        {
+          "id": 671139203,
+          "name": "quickshulker-4.0.1+1.21.2.jar",
+          "digest": "sha256:e9f69f36a787c82304de2e97925dffd282d8df42e70255efd624b1b5057056d3",
+          "size": 745418,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-24T03:20:55Z"
+        },
+        {
+          "id": 664863015,
+          "name": "quickshulker-4.0.1+1.21.3.jar",
+          "digest": "sha256:fe7be6dc953e790ac77b44f725d3f6751124a0e8469ba5feacfed0afb65effd4",
+          "size": 745417,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T06:09:10Z"
+        },
+        {
+          "id": 664866220,
+          "name": "quickshulker-4.0.1+1.21.4.jar",
+          "digest": "sha256:8c199f4c3bae6b3a698a7db92e4d45f9b8b6b7cbe3b93d2c6de12fc8c5580ed3",
+          "size": 745416,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T06:10:40Z"
+        },
+        {
+          "id": 664985597,
+          "name": "quickshulker-4.0.1+1.21.5.jar",
+          "digest": "sha256:185dd0ad178ea6a274b771f30c41c60d230b4fe289e641a102a019e60d0dabb9",
+          "size": 745418,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T07:01:48Z"
+        },
+        {
+          "id": 664989077,
+          "name": "quickshulker-4.0.1+1.21.6.jar",
+          "digest": "sha256:d47efa6d2bea87b432ed3372684594b37b520dc79c6b22edae17fc6e8ee8d3dc",
+          "size": 745196,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T07:03:22Z"
+        },
+        {
+          "id": 664992799,
+          "name": "quickshulker-4.0.1+1.21.7.jar",
+          "digest": "sha256:e4b33cbc4007bcc773910f1475cc8094d810b8489591a086c95b12ccb5f12b1b",
+          "size": 745197,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T07:04:55Z"
+        },
+        {
+          "id": 664996908,
+          "name": "quickshulker-4.0.1+1.21.8.jar",
+          "digest": "sha256:5bec4b766f7f2d5558793607abdb2a1c2ecfd4e2077041c7bb8717596044af09",
+          "size": 745197,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T07:06:40Z"
+        },
+        {
+          "id": 665000891,
+          "name": "quickshulker-4.0.1+1.21.9.jar",
+          "digest": "sha256:55b83a59d6c2efb94b9e2f286e52644fa9f4f65580895439e13aa5664c47404b",
+          "size": 747629,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-22T07:08:15Z"
+        },
+        {
+          "id": 671126097,
+          "name": "quickshulker-4.0.1+1.21.jar",
+          "digest": "sha256:ec6aff5f3488a2c5d1e87a48822079f7a0115f252a6c7946357665d9b1f2a22f",
+          "size": 748629,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-10-24T03:13:17Z"
+        }
+      ],
+      "beforeBody": "# QuickShulker 4.0.1+26.3\r\n\r\nFixes the 4.0.0 regression that prevented clients without Quick Shulker from joining a modded server.\r\n\r\n- Removed the unconditional `quickshulker:bundle_item` menu registration. Choosing a vanilla menu after login was insufficient: Fabric checked the custom registry entry during the handshake.\r\n- Vanilla clients and Fabric clients without Quick Shulker can join and use server-side quick-open actions again.\r\n- Original upstream v3 clients remain supported. Their bundle interface now uses the vanilla paged container instead of the custom 64-slot menu. All bundle contents remain accessible; v4 clients keep the enhanced scrolling interface.\r\n- Existing legacy integration APIs, v3 packet formats, and the v4 direct shulker API/protocol are unchanged.\r\n- Added a handshake-registry GameTest and dedicated-server connection tests with real vanilla, Fabric-without-QS, upstream-v3 and v4 clients. Tests extract items from both shulker boxes and bundles and verify the authoritative server inventory. The connection matrix now gates CI releases.\r\n\r\nRequires Minecraft 26.3, Java 25, Fabric Loader and Fabric API on the server. Install Quick Shulker on both sides to use client shortcuts and the direct shulker protocol; it is not required on the client just to join.\r\n\r\n## 中文\r\n\r\n修复 4.0.0 中未安装 Quick Shulker 的客户端无法进入服务器的问题。\r\n\r\n- 移除无条件注册的旧收纳袋菜单，消除登录阶段的“未知注册表项”错误，不修改 Fabric 全局注册表校验。\r\n- 纯原版客户端、未安装 QS 的 Fabric 客户端均可进服，并使用服务端快速打开功能。\r\n- 原版 v3 客户端继续兼容；收纳袋界面改为原版分页布局，全部内容仍可访问。v4 客户端保留增强滚动界面。\r\n- legacy 集成 API、v3 数据包格式、新版潜影盒 API 与协议保持不变。\r\n- 新增真实客户端连接与取物测试，核对服务端最终背包；四种客户端测试加入 CI，失败时不发布。\r\n\r\n4.0.0 服务端建议升级至此版本。\r\n\r\n<!-- mapped-1.21.10-download -->\r\n## Minecraft 1.21.10 download\r\n\r\n- Fabric / Java 21: `quickshulker-4.0.1+1.21.10.jar`\r\n- Artifact filenames use `mod-version+minecraft.jar`.\r\n\r\n<!-- dory-verified-1.21.1 -->\r\n## Verified Minecraft 1.21.1 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.1.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [57a97c6](https://github.com/water2004/quickshulker/tree/57a97c65b08bcc0ffce8a519883b51ffef23e816). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39724525047).\r\n<!-- /dory-verified-1.21.1 -->\r\n\r\n<!-- dory-verified-1.21.3 -->\r\n## Verified Minecraft 1.21.3 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.3.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [b11a7b0](https://github.com/water2004/quickshulker/tree/b11a7b005501bcde60bba3f886f5142d97587083). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39728349831).\r\n<!-- /dory-verified-1.21.3 -->\r\n\r\n<!-- dory-verified-1.21.4 -->\r\n## Verified Minecraft 1.21.4 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.4.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [7bb6b55](https://github.com/water2004/quickshulker/tree/7bb6b5591d164b2b44a6748af73adce00ac623da). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39728191068).\r\n<!-- /dory-verified-1.21.4 -->\r\n\r\n<!-- dory-verified-1.21.5 -->\r\n## Verified Minecraft 1.21.5 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.5.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [b1ffb27](https://github.com/water2004/quickshulker/tree/b1ffb2712e2ce9812d148db99a235a69c2228d69). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39734790808).\r\n<!-- /dory-verified-1.21.5 -->\r\n\r\n<!-- dory-verified-1.21.6 -->\r\n## Verified Minecraft 1.21.6 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.6.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [547c7c1](https://github.com/water2004/quickshulker/tree/547c7c1d761623f04ba9d00a72ea64ec5327fde7). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39735090563).\r\n<!-- /dory-verified-1.21.6 -->\r\n\r\n<!-- dory-verified-1.21.7 -->\r\n## Minecraft 1.21.7 mapped build — known printer packet-loss failure\r\n\r\n`quickshulker-4.0.1+1.21.7.jar` — Fabric / Java 21.\r\n\r\n**The unchanged-upstream Printer 1.1.3 combination failed the strict 15% bidirectional-loss test with Servux hand confirmation enabled: 2 wrong server blocks.** Material totals remained conserved and the direct API did not remain busy. This failed check remains a known limitation; it is not counted as a passing acceptance result. The experimental prediction change is not included.\r\n\r\nOrdinary production survival clients, genuine v3/v4 and vanilla/Fabric TCP clients, companion unit/server cases and both released bedrock miners passed. The source preserves upstream placement behavior. Further ghost-support investigation is deferred.\r\n\r\nSource: [edb1001](https://github.com/water2004/quickshulker/tree/edb10018e65c6cae98b4539f9f5392f571bd6fee). [Compilation and applicable CI checks](https://github.com/water2004/quickshulker/actions/runs/39735169766).\r\n<!-- /dory-verified-1.21.7 -->\r\n\r\n<!-- dory-verified-1.21.8 -->\r\n## Verified Minecraft 1.21.8 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.8.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [bb4f8cc](https://github.com/water2004/quickshulker/tree/bb4f8cc3f0b1475a977f3b110cc6c0e8b960fd77). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39735590952).\r\n<!-- /dory-verified-1.21.8 -->\r\n\r\n<!-- dory-verified-1.21.9 -->\r\n## Minecraft 1.21.9 mapped build — known printer packet-loss failure\r\n\r\n`quickshulker-4.0.1+1.21.9.jar` — Fabric / Java 21.\r\n\r\n**The unchanged-upstream Printer 1.1.3 combination failed the strict 15% bidirectional-loss test with Servux hand confirmation enabled: 4 wrong server blocks.** Material totals remained conserved and the direct API did not remain busy. This failed check remains a known limitation; it is not counted as a passing acceptance result. The experimental prediction change is not included.\r\n\r\nOrdinary production survival clients, genuine v3/v4 and vanilla/Fabric TCP clients, companion unit/server cases and both released bedrock miners passed. The source preserves upstream placement behavior. Further ghost-support investigation is deferred.\r\n\r\nSource: [e35f894](https://github.com/water2004/quickshulker/tree/e35f8943148ef58e21cb415b49df1a85137e14a4). [Compilation and applicable CI checks](https://github.com/water2004/quickshulker/actions/runs/39735755891).\r\n<!-- /dory-verified-1.21.9 -->\r\n\r\n<!-- dory-verified-1.21 -->\r\n## Verified Minecraft 1.21 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [5c632e5](https://github.com/water2004/quickshulker/tree/5c632e51a5ddb4eb88068606c7c4169689089eef). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/39589131493).\r\n<!-- /dory-verified-1.21 -->\r\n\r\n<!-- dory-verified-1.21.2 -->\r\n## Verified Minecraft 1.21.2 mapped build\r\n\r\n`quickshulker-4.0.1+1.21.2.jar` — Fabric / Java 21.\r\n\r\nValidation includes production survival clients, genuine Quick Shulker v3/v4 and vanilla/Fabric TCP clients, standalone/direct/legacy server cases, two released bedrock miners, and a dedicated-server 15% bidirectional-loss case. The Servux hand-confirmation case requires zero wrong server blocks and no persistent direct-API busy state. The 800-tick workload uses at most 160 drain ticks; complete random-loss convergence is not required.\r\n\r\nPrinter ports preserve upstream 1.1.3 placement behavior. Source: [9149e0d](https://github.com/water2004/quickshulker/tree/9149e0d3bba574a6548dfdf2b49ff6397498072d). [Pinned CI](https://github.com/water2004/quickshulker/actions/runs/40057287066).\r\n<!-- /dory-verified-1.21.2 -->\r\n",
+      "afterBody": "# QuickShulker 4.0.1+26.3\r\n\r\nFixes the 4.0.0 regression that prevented clients without Quick Shulker from joining a modded server.\r\n\r\n- Removed the unconditional `quickshulker:bundle_item` menu registration. Choosing a vanilla menu after login was insufficient: Fabric checked the custom registry entry during the handshake.\r\n- Vanilla clients and Fabric clients without Quick Shulker can join and use server-side quick-open actions again.\r\n- Original upstream v3 clients remain supported. Their bundle interface now uses the vanilla paged container instead of the custom 64-slot menu. All bundle contents remain accessible; v4 clients keep the enhanced scrolling interface.\r\n- Existing legacy integration APIs, v3 packet formats, and the v4 direct shulker API/protocol are unchanged.\r\n- Added a handshake-registry GameTest and dedicated-server connection tests with real vanilla, Fabric-without-QS, upstream-v3 and v4 clients. Tests extract items from both shulker boxes and bundles and verify the authoritative server inventory. The connection matrix now gates CI releases.\r\n\r\nRequires Minecraft 26.3, Java 25, Fabric Loader and Fabric API on the server. Install Quick Shulker on both sides to use client shortcuts and the direct shulker protocol; it is not required on the client just to join.\r\n\r\n## 中文\r\n\r\n修复 4.0.0 中未安装 Quick Shulker 的客户端无法进入服务器的问题。\r\n\r\n- 移除无条件注册的旧收纳袋菜单，消除登录阶段的“未知注册表项”错误，不修改 Fabric 全局注册表校验。\r\n- 纯原版客户端、未安装 QS 的 Fabric 客户端均可进服，并使用服务端快速打开功能。\r\n- 原版 v3 客户端继续兼容；收纳袋界面改为原版分页布局，全部内容仍可访问。v4 客户端保留增强滚动界面。\r\n- legacy 集成 API、v3 数据包格式、新版潜影盒 API 与协议保持不变。\r\n- 新增真实客户端连接与取物测试，核对服务端最终背包；四种客户端测试加入 CI，失败时不发布。\r\n\r\n4.0.0 服务端建议升级至此版本。",
+      "preserve": [
+        {
+          "id": 578661358,
+          "name": "quickshulker-4.0.1+26.3.jar",
+          "digest": "sha256:a9fbd695c98bcad1865f80ced0b5db6f5c6e5871b087eca8867578b654aa52c9",
+          "size": 746911,
+          "uploader": "github-actions[bot]",
+          "created_at": "2026-09-21T09:01:55Z"
+        },
+        {
+          "id": 672307994,
+          "name": "quickshulker-4.0.1-hotfix.1+26.3.jar",
+          "digest": "sha256:08cd46c9e39b35855a8b5573a72f2053f52dfeb743ba706ac56300a20541de1b",
+          "size": 747129,
+          "uploader": "water2004",
+          "created_at": "2026-10-24T13:13:39Z"
+        }
+      ]
+    }
+  ]
+}
+
