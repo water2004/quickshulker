@@ -1,5 +1,6 @@
 package net.kyrptonaught.quickshulker.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -65,7 +66,7 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-        if(click.button() == 0){
+        if(click.button() == InputConstants.MOUSE_BUTTON_LEFT){
             if(this.isClickInScrollbar(click.x(), click.y())){
                 return this.scrolling = true;
             }
@@ -83,7 +84,7 @@ public class BundleItemScreen extends AbstractContainerScreen<BundleItemMenu> {
 
     @Override
     public boolean mouseReleased(MouseButtonEvent click) {
-        if(click.button() == 0){
+        if(click.button() == InputConstants.MOUSE_BUTTON_LEFT){
             this.scrolling = false;
         }
 

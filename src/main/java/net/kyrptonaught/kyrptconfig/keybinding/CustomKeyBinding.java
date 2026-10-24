@@ -66,19 +66,23 @@ public class CustomKeyBinding implements CustomSerializable {
             return unknownIsActivated; // Always pressed for empty or explicitly "key.keyboard.unknown"
         boolean pressed;
         if (parsedKey.getType() == InputConstants.Type.MOUSE) {
-            int mask = switch (parsedKey.getValue()) {
-                case 0 -> SDLMouse.SDL_BUTTON_LMASK;
-                case 1 -> SDLMouse.SDL_BUTTON_MMASK;
-                case 2 -> SDLMouse.SDL_BUTTON_RMASK;
-                case 3 -> SDLMouse.SDL_BUTTON_X1MASK;
-                case 4 -> SDLMouse.SDL_BUTTON_X2MASK;
-                default -> 0;
-            };
+            int mask = mouseButtonMask(parsedKey.getValue());
             pressed = mask != 0 && (SDLMouse.SDL_GetMouseState(null, null) & mask) != 0;
         } else {
             pressed = InputConstants.isKeyDown(parsedKey.getValue());
         }
         return pressed;
+    }
+
+    static int mouseButtonMask(int button) {
+        return switch (button) {
+            case InputConstants.MOUSE_BUTTON_LEFT -> SDLMouse.SDL_BUTTON_LMASK;
+            case InputConstants.MOUSE_BUTTON_MIDDLE -> SDLMouse.SDL_BUTTON_MMASK;
+            case InputConstants.MOUSE_BUTTON_RIGHT -> SDLMouse.SDL_BUTTON_RMASK;
+            case InputConstants.MOUSE_BUTTON_4 -> SDLMouse.SDL_BUTTON_X1MASK;
+            case InputConstants.MOUSE_BUTTON_5 -> SDLMouse.SDL_BUTTON_X2MASK;
+            default -> 0;
+        };
     }
 
     public boolean matches(int keyCode, InputConstants.Type type) {
