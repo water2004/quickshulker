@@ -8,7 +8,7 @@ public class DisplayOnlyKeyBind extends KeyMapping {
     private static final java.util.Map<String, Category> CATEGORIES = new java.util.HashMap<>();
     private static synchronized Category resolveCategory(String category) {
         return CATEGORIES.computeIfAbsent(category, key -> Category.register(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("quickshulker",
+                net.minecraft.resources.Identifier.fromNamespaceAndPath("quickshulker",
                         key.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_"))));
     }
     private CustomKeyBinding customKeyBinding;

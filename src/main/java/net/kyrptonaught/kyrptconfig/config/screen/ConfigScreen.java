@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class ConfigScreen extends Screen {
@@ -17,8 +17,8 @@ public class ConfigScreen extends Screen {
     Screen previousScreen;
     private NotSuckyButton scrollLeftBTN, scrollRightBTN;
     int horizontalScrollOffset = -1;
-    private static final ResourceLocation SCROLLER_TEXTURE = ResourceLocation.parse("widget/scroller");
-    private static final ResourceLocation OPTIONS_BACKGROUND_TEXTURE = ResourceLocation.parse("textures/block/dirt.png");
+    private static final Identifier SCROLLER_TEXTURE = Identifier.parse("widget/scroller");
+    private static final Identifier OPTIONS_BACKGROUND_TEXTURE = Identifier.parse("textures/block/dirt.png");
 
     public ConfigScreen(Screen previousScreen, Component title) {
         super(title);
@@ -36,7 +36,7 @@ public class ConfigScreen extends Screen {
             this.minecraft.setScreen(previousScreen);
         }));
         for (ConfigSection section : sections) {
-            section.init(this.minecraft, width, height - 57 - 30);
+            section.init(width, height - 57 - 30);
         }
 
         adjustForHorizontalScroll(this.width);

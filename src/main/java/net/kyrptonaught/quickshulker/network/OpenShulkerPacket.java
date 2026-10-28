@@ -11,13 +11,13 @@ import net.kyrptonaught.quickshulker.client.EnhancedBundleScreenHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 
 public record OpenShulkerPacket(int invSlot) implements CustomPacketPayload {
 
-    public static final ResourceLocation OPEN_SHULKER_PACKET = ResourceLocation.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "open_shulker_packet");
+    public static final Identifier OPEN_SHULKER_PACKET = Identifier.fromNamespaceAndPath(QuickShulkerMod.MOD_ID, "open_shulker_packet");
 
     public static final Type<OpenShulkerPacket> OPEN_SHULKER_PACKET_ID = new Type<>(OPEN_SHULKER_PACKET);
 

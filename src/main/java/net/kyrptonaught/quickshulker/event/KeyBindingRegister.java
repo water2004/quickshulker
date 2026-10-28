@@ -3,7 +3,7 @@ package net.kyrptonaught.quickshulker.event;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.kyrptonaught.kyrptconfig.keybinding.DisplayOnlyKeyBind;
 import net.kyrptonaught.quickshulker.QuickShulkerMod;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class KeyBindingRegister {
     public static final String MAIN = "key.categories.quickshulker";
